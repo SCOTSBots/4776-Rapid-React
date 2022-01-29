@@ -22,6 +22,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
   public static final class DriveConstants {
+    public static final double drivePercentScale = 0.2;
+
     public static final int kFrontLeftDriveMotorPort = 4;
     public static final int kRearLeftDriveMotorPort = 3;
     public static final int kFrontRightDriveMotorPort = 1;
@@ -37,13 +39,13 @@ public final class Constants {
     public static final int[] kFrontRightTurningEncoderPorts = new int[] { 6, 7 };
     public static final int[] kRearRightTurningEncoderPorts = new int[] { 8, 9 };
 
-    public static final boolean kFrontLeftTurningEncoderReversed = true;
+    public static final boolean kFrontLeftTurningEncoderReversed = false;
     public static final boolean kRearLeftTurningEncoderReversed = false;
-    public static final boolean kFrontRightTurningEncoderReversed = true;
+    public static final boolean kFrontRightTurningEncoderReversed = false;
     public static final boolean kRearRightTurningEncoderReversed = false;
 
-    public static final boolean kFrontLeftDriveEncoderReversed = true;
-    public static final boolean kRearLeftDriveEncoderReversed = true;
+    public static final boolean kFrontLeftDriveEncoderReversed = false;
+    public static final boolean kRearLeftDriveEncoderReversed = false;
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kRearRightDriveEncoderReversed = false;
 

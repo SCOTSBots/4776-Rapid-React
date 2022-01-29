@@ -107,7 +107,8 @@ public class SwerveModule {
   // }
 
   public double getAngleRadians() {
-    return (InvertBack ? -1.0 : 1.0) * m_turningEncoder.get() * turningEncoderCounts;
+    return m_turningEncoder.get() * turningEncoderCounts;
+    // return (InvertBack ? -1.0 : 1.0) * m_turningEncoder.get() * turningEncoderCounts;
     // return (InvertBack? -1 : 1) * m_turningEncoder.get();
     // return (InvertBack? -1 : 1) * m_turningEncoder.get() * 2 * Math.PI / 418;
   }
@@ -152,10 +153,12 @@ public class SwerveModule {
           / DriveConstants.kMaxSpeedMetersPerSecond;
 
       // Calculate the turning motor output from the turning PID controller.
+      // Turning power is always negated because + motor power is clockwise regardless of module
+      // orientation and + turning power is requesting couter-clockwise rotation
       final var turnOutput =
           // m_turningPIDController.calculate(getAngleRadians(),
           // state.angle.getRadians());
-          turningPID.calculate(getAngleRadians(), state.angle.getRadians());
+          - turningPID.calculate(getAngleRadians(), state.angle.getRadians());
       
       //     var error = Math.abs((state.angle.getRadians() % (2 * Math.PI)) - (getAngleRadians() % (2 * Math.PI)));
       // error = Math.min(error, 2 * Math.PI - error);

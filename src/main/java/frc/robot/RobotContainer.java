@@ -87,14 +87,22 @@ public class RobotContainer {
         SmartDashboard.putNumber("LeftX", m_driverController.getLeftX());
         SmartDashboard.putNumber("RightX", m_driverController.getRightX());
 
-        //Swerve xSpeed is the vertical/forward movement
-        double xSpeed = DriveConstants.kMaxSpeedMetersPerSecond * xSpeedLimiter.calculate(new_deadzone(m_driverController.getLeftY()));
+        //Swerve xSpeed is the vertical/forward (negative because stick is inverse)
+        double xSpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond 
+        * xSpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftY()));
         
-        //Swerve ySpeed is the sideways left/right movement
-        double ySpeed = DriveConstants.kMaxSpeedMetersPerSecond * ySpeedLimiter.calculate(new_deadzone(m_driverController.getLeftX()));
+        //Swerve ySpeed is the sideways left/right movement (negative because chassis +y is LEFT)
+        double ySpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond 
+        * ySpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftX()));
         
-        //Swerve rotation is the counter-clockwise rotation of the robot
-        double rotation = DriveConstants.kMaxSpeedMetersPerSecond * rotLimiter.calculate(new_deadzone(m_driverController.getRightX()));
+        //Swerve rotation is the counter-clockwise rotation of the robot (negate stick input)
+        double rotation = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond 
+        * rotLimiter.calculate(new_deadzone(-m_driverController.getRightX()));
+
+        boolean resetModules = m_driverController.getLeftBumper();
+        if (resetModules){
+          m_robotDrive.resetEncoders();
+        }
 
         boolean resetRotation = m_driverController.getRightBumper();
         // System.out.println(m_robotDrive.getPose().getRotation().getRadians());

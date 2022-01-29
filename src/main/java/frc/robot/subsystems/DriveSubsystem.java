@@ -33,7 +33,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kFrontLeftTurningEncoderPorts,
       DriveConstants.kFrontLeftDriveEncoderReversed,
       DriveConstants.kFrontLeftTurningEncoderReversed,
-      true, false,
+      false, false,
       ModuleConstants.kFrontLeftTurningEncoderCounts);
 
   private final SwerveModule m_rearLeft = new SwerveModule(
@@ -42,7 +42,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearLeftTurningEncoderPorts,
       DriveConstants.kRearLeftDriveEncoderReversed,
       DriveConstants.kRearLeftTurningEncoderReversed,
-      true, true,
+      false, false,
       ModuleConstants.kRearLeftTurningEncoderCounts);
 
   private final SwerveModule m_frontRight = new SwerveModule(
@@ -60,7 +60,7 @@ public class DriveSubsystem extends SubsystemBase {
       DriveConstants.kRearRightTurningEncoderPorts,
       DriveConstants.kRearRightDriveEncoderReversed,
       DriveConstants.kRearRightTurningEncoderReversed,
-      false, true,
+      false, false,
       ModuleConstants.kRearRightTurningEncoderCounts);
 
   private final SwerveModule[] swerveModules = {
@@ -142,16 +142,12 @@ public class DriveSubsystem extends SubsystemBase {
       swerveModuleShuffleTargetSpeed[i].setDouble(swerveModuleStates[i].speedMetersPerSecond
           / DriveConstants.kMaxSpeedMetersPerSecond);
 
-      swerveModules[i].setDesiredState(swerveModuleStates[0], noMovement);
+      swerveModules[i].setDesiredState(swerveModuleStates[i], noMovement);
 
       swerveModuleShuffleActualAngle[i].setDouble(swerveModules[i].getState().angle.getDegrees());
       swerveModuleShuffleActualSpeed[i].setDouble(swerveModules[i].getState().speedMetersPerSecond);
     }
 
-    // m_frontLeft.setDesiredState(swerveModuleStates[0], noMovement);
-    // m_frontRight.setDesiredState(swerveModuleStates[1], noMovement);
-    // m_rearLeft.setDesiredState(swerveModuleStates[2], noMovement);
-    // m_rearRight.setDesiredState(swerveModuleStates[3], noMovement);
   }
 
   /**
@@ -216,10 +212,6 @@ public class DriveSubsystem extends SubsystemBase {
     Shuffleboard.getTab("Swerve").addNumber("Odometry Y Position", () -> this.getPose().getY());
     Shuffleboard.getTab("Swerve").addNumber("Odometry Rotation", () -> this.getPose().getRotation().getDegrees());
 
-    // swerveModuleShuffleAngle[0] = swerveAngleLayout.add("Module0", 0).getEntry();
-    // swerveModuleShuffleAngle[1] = swerveAngleLayout.add("Module1", 0).getEntry();
-    // swerveModuleShuffleAngle[2] = swerveAngleLayout.add("Module2", 0).getEntry();
-    // swerveModuleShuffleAngle[3] = swerveAngleLayout.add("Module3", 0).getEntry();
 
     for (int i = 0; i < 4; i++) {
       swerveModuleShuffleTargetAngle[i] = swerveTab.add("M" + i + " TarAngle", 0)
