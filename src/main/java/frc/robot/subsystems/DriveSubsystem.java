@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SPI;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -23,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
@@ -70,7 +73,9 @@ public class DriveSubsystem extends SubsystemBase {
       m_rearRight };
 
   // The gyro sensor
-  private final Gyro m_gyro = new ADXRS450_Gyro();
+  //private final Gyro m_gyro = new ADXRS450_Gyro();
+  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
@@ -79,6 +84,8 @@ public class DriveSubsystem extends SubsystemBase {
   private NetworkTableEntry[] swerveModuleShuffleTargetSpeed = new NetworkTableEntry[4];
   private NetworkTableEntry[] swerveModuleShuffleActualAngle = new NetworkTableEntry[4];
   private NetworkTableEntry[] swerveModuleShuffleActualSpeed = new NetworkTableEntry[4];
+
+  private NetworkTableEntry gyroAngle;
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
@@ -148,6 +155,8 @@ public class DriveSubsystem extends SubsystemBase {
       swerveModuleShuffleActualSpeed[i].setDouble(swerveModules[i].getState().speedMetersPerSecond);
     }
 
+    
+
   }
 
   /**
@@ -174,7 +183,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
-    // m_gyro.reset();
+    m_gyro.reset();
   }
 
   /**
@@ -198,6 +207,8 @@ public class DriveSubsystem extends SubsystemBase {
   private void setupShuffleBoard() {
     final ShuffleboardTab swerveTab = Shuffleboard.getTab("Swerve");
 
+    //Shuffleboard.getTab("SmartDashboard").add(m_gyro);
+
     // ShuffleboardLayout swerveAngleLayout = swerveTab
     // .getLayout("Swerve Angles", BuiltInLayouts.kList)
     // .withSize(6, 10)
@@ -211,6 +222,11 @@ public class DriveSubsystem extends SubsystemBase {
     Shuffleboard.getTab("Swerve").addNumber("Odometry X Position", () -> this.getPose().getX());
     Shuffleboard.getTab("Swerve").addNumber("Odometry Y Position", () -> this.getPose().getY());
     Shuffleboard.getTab("Swerve").addNumber("Odometry Rotation", () -> this.getPose().getRotation().getDegrees());
+
+    gyroAngle = swerveTab.add("Gyro Heading",0)
+      .withSize(3, 3)
+      .withPosition(0, 3)
+      .getEntry();
 
 
     for (int i = 0; i < 4; i++) {

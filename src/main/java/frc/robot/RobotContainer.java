@@ -28,7 +28,6 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
-
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -38,10 +37,11 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private boolean fieldRelative = true;
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  //XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
+  XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(3);
@@ -49,93 +49,74 @@ public class RobotContainer {
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
-
-    // Configure default commands
-    // Set the default drive command to split-stick arcade drive
-  //   m_robotDrive.setDefaultCommand(
-  //       // A split-stick arcade command, with forward/backward controlled by the left
-  //       // hand, and turning controlled by the right.
-  //       new RunCommand(
-  //           () ->
-  //               m_robotDrive.drive(
-  //                   m_driverController.getLeftY(),
-  //                 m_driverController.getRightX(),
-  //                   m_driverController.getLeftX(),
-  //                   false))
   }
 
   /**
-   * Use this method to define your button->command mappings. Buttons can be created by
+   * Use this method to define your button->command mappings. Buttons can be
+   * created by
    * instantiating a {@link GenericHID} or one of its subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling passing it to a
+   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
+   * passing it to a
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-      customAnglePID.enableContinuousInput(-Math.PI, Math.PI);
-      Runnable Control = ()->{
-        // m_driverController.getLeftY();
-        // m_driverController.getLeftX();
-        // m_driverController.getRightX();
+    customAnglePID.enableContinuousInput(-Math.PI, Math.PI);
+    Runnable Control = () -> {
 
-        //Create variables for controls
+      SmartDashboard.putNumber("LeftY", m_driverController.getLeftY());
+      SmartDashboard.putNumber("LeftX", m_driverController.getLeftX());
+      SmartDashboard.putNumber("RightX", m_driverController.getRightX());
 
-        SmartDashboard.putNumber("LeftY", m_driverController.getLeftY());
-        SmartDashboard.putNumber("LeftX", m_driverController.getLeftX());
-        SmartDashboard.putNumber("RightX", m_driverController.getRightX());
+      // Swerve xSpeed is the vertical/forward (negative because stick is inverse)
+      double xSpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
+          * xSpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftY()));
 
-        //Swerve xSpeed is the vertical/forward (negative because stick is inverse)
-        double xSpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond 
-        * xSpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftY()));
-        
-        //Swerve ySpeed is the sideways left/right movement (negative because chassis +y is LEFT)
-        double ySpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond 
-        * ySpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftX()));
-        
-        //Swerve rotation is the counter-clockwise rotation of the robot (negate stick input)
-        double rotation = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond 
-        * rotLimiter.calculate(new_deadzone(-m_driverController.getRightX()));
+      // Swerve ySpeed is the sideways left/right movement (negative because chassis
+      // +y is LEFT)
+      double ySpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
+          * ySpeedLimiter.calculate(new_deadzone(-m_driverController.getLeftX()));
 
-        boolean resetModules = m_driverController.getLeftBumper();
-        if (resetModules){
-          m_robotDrive.resetEncoders();
-        }
+      // Swerve rotation is the counter-clockwise rotation of the robot (negate stick
+      // input)
+      double rotation = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
+          * DriveConstants.rotRateModifier * rotLimiter.calculate(new_deadzone(-m_driverController.getRightX()));
 
-        boolean resetRotation = m_driverController.getRightBumper();
-        // System.out.println(m_robotDrive.getPose().getRotation().getRadians());
-        if (resetRotation) {
-          //We want full speed rotation when angle = 45 degrees = pi/4
-          rotation = m_robotDrive.getPose().getRotation().getRadians() * 8 / Math.PI;
-          rotation = Math.min(1, Math.max(-1, rotation));
-        }
-        //TODO: Driver can OVERRIDE manipulator rotation using right stick down button
-        //DIsabled Manipulator override
-        double rX = 0; //m_manipulatorController.getLeftX();
-        double rY = 0; //-m_manipulatorController.getLeftY();
-        if (rX * rX + rY * rY > 0.5) {
-          double angle = Math.atan2(rY, rX) + Math.PI/2;
-          // System.out.println("A: "+angle);
-          rotation = customAnglePID.calculate(m_robotDrive.getPose().getRotation().getRadians(), angle);
-        }
-        //Call the Method
-        SmartDashboard.putNumber("xSpeed", xSpeed);
-        SmartDashboard.putNumber("ySpeed", ySpeed);
-        SmartDashboard.putNumber("rotation", rotation);
-        m_robotDrive.drive(xSpeed, ySpeed, rotation, false);
-      };
-      m_robotDrive.setDefaultCommand(new RunCommand(Control,m_robotDrive));
+      // Swap field/robot relative mode
+      if (m_driverController.getLeftBumper()) {
+        fieldRelative = true;
+      } else if (m_driverController.getRightBumper()) {
+        fieldRelative = false;
+      }
+
+      // Reset Gyro
+      if (m_driverController.getPOV() == 0){
+        m_robotDrive.zeroHeading();
+      }
+
+      // Call the Method
+      SmartDashboard.putNumber("xSpeed", xSpeed);
+      SmartDashboard.putNumber("ySpeed", ySpeed);
+      SmartDashboard.putNumber("rotation", rotation);
+      SmartDashboard.putBoolean("Field Rel", fieldRelative);
+      m_robotDrive.drive(xSpeed, ySpeed, rotation, fieldRelative);
+
+    };
+    m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
   }
-double new_deadzone(double x) {
-  if (Math.abs(x) > 0.1) {
-return x;
+
+  double new_deadzone(double x) {
+    if (Math.abs(x) > 0.08) {
+      return x;
+    } else {
+      return 0;
+    }
   }
-  else {
-    return 0;
-  }
-}
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -144,41 +125,37 @@ return x;
    */
   public Command getAutonomousCommand() {
     // Create config for trajectory
-    TrajectoryConfig config =
-        new TrajectoryConfig(
-                AutoConstants.kMaxSpeedMetersPerSecond,
-                AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+    TrajectoryConfig config = new TrajectoryConfig(
+        AutoConstants.kMaxSpeedMetersPerSecond,
+        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(DriveConstants.kDriveKinematics);
 
-    // An example trajectory to follow.  All units in meters.
-    Trajectory exampleTrajectory =
-        TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
-            config);
+    // An example trajectory to follow. All units in meters.
+    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(3, 0, new Rotation2d(0)),
+        config);
 
-    var thetaController =
-        new ProfiledPIDController(
-            AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+    var thetaController = new ProfiledPIDController(
+        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand swerveControllerCommand =
-        new SwerveControllerCommand(
-            exampleTrajectory,
-            m_robotDrive::getPose, // Functional interface to feed supplier
-            DriveConstants.kDriveKinematics,
+    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+        exampleTrajectory,
+        m_robotDrive::getPose, // Functional interface to feed supplier
+        DriveConstants.kDriveKinematics,
 
-            // Position controllers
-            new PIDController(AutoConstants.kPXController, 0, 0),
-            new PIDController(AutoConstants.kPYController, 0, 0),
-            thetaController,
-            m_robotDrive::setModuleStates,
-            m_robotDrive);
+        // Position controllers
+        new PIDController(AutoConstants.kPXController, 0, 0),
+        new PIDController(AutoConstants.kPYController, 0, 0),
+        thetaController,
+        m_robotDrive::setModuleStates,
+        m_robotDrive);
 
     // Reset odometry to the starting pose of the trajectory.
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
@@ -186,4 +163,4 @@ return x;
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
-  }
+}

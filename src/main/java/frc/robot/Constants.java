@@ -22,7 +22,8 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  */
 public final class Constants {
   public static final class DriveConstants {
-    public static final double drivePercentScale = 0.2;
+    public static final double drivePercentScale = 0.5;
+    public static final double rotRateModifier = 1.2;
 
     public static final int kFrontLeftDriveMotorPort = 4;
     public static final int kRearLeftDriveMotorPort = 3;
