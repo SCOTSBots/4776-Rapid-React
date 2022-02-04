@@ -21,13 +21,13 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-public class SwerveModule {
+public class SwerveModuleAbs {
   private final CANSparkMax m_driveMotor;
   private final CANSparkMax m_turningMotor;
   private final boolean InvertLeft;
   private final boolean InvertBack;
   private final RelativeEncoder m_driveEncoder;
-  private final Encoder m_turningEncoder;
+  private final MA3Encoder m_turningEncoder;
   private double turningEncoderCounts;
   private int turningMotorChannel;
 
@@ -51,25 +51,24 @@ public class SwerveModule {
    * @param driveMotorChannel   ID for the drive motor.
    * @param turningMotorChannel ID for the turning motor.
    */
-  public SwerveModule(
+  public SwerveModuleAbs(
       int driveMotorChannel,
       int turningMotorChannel,
-      int[] turningEncoderPorts,
+      int turningAnaogPort,
       boolean driveEncoderReversed,
       boolean turningEncoderReversed,
       boolean is_invertedLeft,
       boolean is_invertedBack,
-      double encoderCounts) {
+      Rotation2d homeLoc) {
 
     this.turningMotorChannel = turningMotorChannel;
-    turningEncoderCounts = encoderCounts;
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
     m_driveMotor.setInverted(is_invertedLeft);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushed);
 
     this.m_driveEncoder = m_driveMotor.getEncoder();
     // m_driveEncoder.setInverted(is_invertedLeft);
-    this.m_turningEncoder = new Encoder(turningEncoderPorts[0], turningEncoderPorts[1]);
+    this.m_turningEncoder = new MA3Encoder(turningAnaogPort, homeLoc);
 
     InvertLeft = is_invertedLeft;
     InvertBack = is_invertedBack;
@@ -79,7 +78,7 @@ public class SwerveModule {
     // Set the distance (in this case, angle) per pulse for the turning encoder.
     // This is the the angle through an entire rotation (2 * wpi::math::pi)
     // divided by the encoder resolution.
-    m_turningEncoder.setDistancePerPulse(ModuleConstants.kTurningEncoderDistancePerPulse);
+    //m_turningEncoder.setDistancePerPulse(ModuleConstants.kTurningEncoderDistancePerPulse);
 
     // Set whether turning encoder should be reversed or not
     m_turningEncoder.setReverseDirection(turningEncoderReversed);
@@ -96,21 +95,8 @@ public class SwerveModule {
     resetEncoders();
   }
 
-  // public double getConstrictedAngleRadians(double Angle) {
-  //   double temp = Math.signum(Angle);
-  //   Angle = Math.abs(Angle);
-  //   Angle = Angle % Math.PI;
-  //   Angle = Angle * temp;
-  //   // System.out.printf("This is the actual angle %f and caculated is %f",
-  //   // getAngleRadians(), Angle);
-  //   return Angle;
-  // }
-
   public double getAngleRadians() {
-    return m_turningEncoder.get() * turningEncoderCounts;
-    // return (InvertBack ? -1.0 : 1.0) * m_turningEncoder.get() * turningEncoderCounts;
-    // return (InvertBack? -1 : 1) * m_turningEncoder.get();
-    // return (InvertBack? -1 : 1) * m_turningEncoder.get() * 2 * Math.PI / 418;
+    return m_turningEncoder.get();
   }
 
   /**
@@ -137,7 +123,7 @@ public class SwerveModule {
    *
    * @param desiredState Desired state with speed and angle.
    */
-  public void setDesiredState(SwerveModuleState desiredState, boolean noMovement) {
+  public void setDesiredState(SwerveModuleState desiredState, boolean noMovement, boolean noOpt) {
     if (noMovement) {
       // no Movement
       m_driveMotor.set(0);
@@ -146,8 +132,13 @@ public class SwerveModule {
       // There is movement
 
       // Optimize the reference state to avoid spinning further than 90 degrees
-      SwerveModuleState state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAngleRadians()));
-
+      SwerveModuleState state;
+      if (!noOpt) {
+        state = SwerveModuleState.optimize(desiredState, new Rotation2d(getAngleRadians()));
+      } else {
+        state = desiredState;
+      }
+      
       // Calculate the drive output from the drive PID controller.
       final double driveOutput = (InvertLeft ? -1 : 1) * state.speedMetersPerSecond
           / DriveConstants.kMaxSpeedMetersPerSecond;
@@ -181,8 +172,11 @@ public class SwerveModule {
   // resetEncoders does not remove field oriented drive
   public void resetEncoders() {
     m_driveEncoder.setPosition(0);
-    m_turningEncoder.reset();
+    //m_turningEncoder.reset();  Do not want to reset the Absolute encoder
   }
 
-
+    //Return MA3 Voltage
+    public double getRawVolts(){
+      return m_turningEncoder.getRawVolts();
+    }
 }

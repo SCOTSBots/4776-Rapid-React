@@ -30,51 +30,54 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 @SuppressWarnings("PMD.ExcessiveImports")
 public class DriveSubsystem extends SubsystemBase {
   // Robot swerve modules
-  private final SwerveModule m_frontLeft = new SwerveModule(
+  private final SwerveModuleAbs m_frontLeft = new SwerveModuleAbs(
       DriveConstants.kFrontLeftDriveMotorPort,
       DriveConstants.kFrontLeftTurningMotorPort,
-      DriveConstants.kFrontLeftTurningEncoderPorts,
+      DriveConstants.kFrontLeftTurningAnalogPort,
       DriveConstants.kFrontLeftDriveEncoderReversed,
       DriveConstants.kFrontLeftTurningEncoderReversed,
       false, false,
-      ModuleConstants.kFrontLeftTurningEncoderCounts);
+      DriveConstants.kFrontLeftTurningHome);
 
-  private final SwerveModule m_rearLeft = new SwerveModule(
+  private final SwerveModuleAbs m_rearLeft = new SwerveModuleAbs(
       DriveConstants.kRearLeftDriveMotorPort,
       DriveConstants.kRearLeftTurningMotorPort,
-      DriveConstants.kRearLeftTurningEncoderPorts,
+      DriveConstants.kRearLeftTurningAnalogPort,
       DriveConstants.kRearLeftDriveEncoderReversed,
       DriveConstants.kRearLeftTurningEncoderReversed,
       false, false,
-      ModuleConstants.kRearLeftTurningEncoderCounts);
+      DriveConstants.kRearLeftTurningHome);
 
-  private final SwerveModule m_frontRight = new SwerveModule(
+  private final SwerveModuleAbs m_frontRight = new SwerveModuleAbs(
       DriveConstants.kFrontRightDriveMotorPort,
       DriveConstants.kFrontRightTurningMotorPort,
-      DriveConstants.kFrontRightTurningEncoderPorts,
+      DriveConstants.kFrontRightTurningAnalogPort,
       DriveConstants.kFrontRightDriveEncoderReversed,
       DriveConstants.kFrontRightTurningEncoderReversed,
       false, false,
-      ModuleConstants.kFrontRightTurningEncoderCounts);
+      DriveConstants.kFrontRightTurningHome);
 
-  private final SwerveModule m_rearRight = new SwerveModule(
+  private final SwerveModuleAbs m_rearRight = new SwerveModuleAbs(
       DriveConstants.kRearRightDriveMotorPort,
       DriveConstants.kRearRightTurningMotorPort,
-      DriveConstants.kRearRightTurningEncoderPorts,
+      DriveConstants.kRearRightTurningAnalogPort,
       DriveConstants.kRearRightDriveEncoderReversed,
       DriveConstants.kRearRightTurningEncoderReversed,
       false, false,
-      ModuleConstants.kRearRightTurningEncoderCounts);
+      DriveConstants.kRearRightTurningHome);
 
-  private final SwerveModule[] swerveModules = {
+  private final SwerveModuleAbs[] swerveModules = {
       m_frontLeft,
       m_frontRight,
       m_rearLeft,
       m_rearRight };
 
   // The gyro sensor
-  //private final Gyro m_gyro = new ADXRS450_Gyro();
+  // private final Gyro m_gyro = new ADXRS450_Gyro();
   private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+
+  // Zeroed Module State
+  private SwerveModuleState zeroState = new SwerveModuleState();
   
 
   // Odometry class for tracking robot pose
@@ -84,6 +87,7 @@ public class DriveSubsystem extends SubsystemBase {
   private NetworkTableEntry[] swerveModuleShuffleTargetSpeed = new NetworkTableEntry[4];
   private NetworkTableEntry[] swerveModuleShuffleActualAngle = new NetworkTableEntry[4];
   private NetworkTableEntry[] swerveModuleShuffleActualSpeed = new NetworkTableEntry[4];
+  private NetworkTableEntry[] swerveModuleShuffleTurnVolts = new NetworkTableEntry[4];
 
   private NetworkTableEntry gyroAngle;
 
@@ -149,10 +153,13 @@ public class DriveSubsystem extends SubsystemBase {
       swerveModuleShuffleTargetSpeed[i].setDouble(swerveModuleStates[i].speedMetersPerSecond
           / DriveConstants.kMaxSpeedMetersPerSecond);
 
-      swerveModules[i].setDesiredState(swerveModuleStates[i], noMovement);
+      swerveModules[i].setDesiredState(swerveModuleStates[i], noMovement, false);
 
       swerveModuleShuffleActualAngle[i].setDouble(swerveModules[i].getState().angle.getDegrees());
       swerveModuleShuffleActualSpeed[i].setDouble(swerveModules[i].getState().speedMetersPerSecond);
+
+      swerveModuleShuffleTurnVolts[i].setDouble(swerveModules[i].getRawVolts());
+
     }
 
     
@@ -167,10 +174,10 @@ public class DriveSubsystem extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(
         desiredStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    m_frontLeft.setDesiredState(desiredStates[0], false);
-    m_frontRight.setDesiredState(desiredStates[1], false);
-    m_rearLeft.setDesiredState(desiredStates[2], false);
-    m_rearRight.setDesiredState(desiredStates[3], false);
+    m_frontLeft.setDesiredState(desiredStates[0], false, false);
+    m_frontRight.setDesiredState(desiredStates[1], false, false);
+    m_rearLeft.setDesiredState(desiredStates[2], false, false);
+    m_rearRight.setDesiredState(desiredStates[3], false, false);
   }
 
   /** Resets the drive encoders to currently read a position of 0. */
@@ -204,8 +211,16 @@ public class DriveSubsystem extends SubsystemBase {
     return m_gyro.getRate() * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
 
+  public void homeAllModules(){
+    for (int i = 0; i < 4; i++) {
+      swerveModules[i].setDesiredState(zeroState, false, true);
+    }
+  
+  }
+  
   private void setupShuffleBoard() {
     final ShuffleboardTab swerveTab = Shuffleboard.getTab("Swerve");
+
 
     //Shuffleboard.getTab("SmartDashboard").add(m_gyro);
 
@@ -245,6 +260,10 @@ public class DriveSubsystem extends SubsystemBase {
       swerveModuleShuffleActualSpeed[i] = swerveTab.add("M" + i + " ActSpeed", 0)
           .withSize(3, 2)
           .withPosition(15, i * 2)
+          .getEntry();
+      swerveModuleShuffleTurnVolts[i] = swerveTab.add("M" + i + " TurnV", 0)
+          .withSize(3, 2)
+          .withPosition(18, i * 2)
           .getEntry();
     }
   }

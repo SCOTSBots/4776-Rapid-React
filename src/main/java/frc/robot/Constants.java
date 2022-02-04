@@ -40,6 +40,11 @@ public final class Constants {
     public static final int[] kFrontRightTurningEncoderPorts = new int[] { 6, 7 };
     public static final int[] kRearRightTurningEncoderPorts = new int[] { 8, 9 };
 
+    public static final int kFrontLeftTurningAnalogPort = 2;
+    public static final int kRearLeftTurningAnalogPort = 1;
+    public static final int kFrontRightTurningAnalogPort = 3;
+    public static final int kRearRightTurningAnalogPort = 0;
+
     public static final boolean kFrontLeftTurningEncoderReversed = false;
     public static final boolean kRearLeftTurningEncoderReversed = false;
     public static final boolean kFrontRightTurningEncoderReversed = false;
@@ -49,6 +54,11 @@ public final class Constants {
     public static final boolean kRearLeftDriveEncoderReversed = false;
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kRearRightDriveEncoderReversed = false;
+
+    public static final Rotation2d kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
+    public static final Rotation2d kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
+    public static final Rotation2d kFrontRightTurningHome = new Rotation2d(Math.toRadians(99.8));
+    public static final Rotation2d kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
 
 
     public static final double kTrackWidth = 0.587375;
@@ -88,8 +98,8 @@ public final class Constants {
     public static double kRPMToMetersPerSecond = Math.PI * kWheelDiameter / (60 * kMotorGearsToWheelGears);
 
 
-    public static final double kPModuleTurningController = 1.0;
-    public static final double kDModuleTurningController = 0.0;
+    public static final double kPModuleTurningController = 2.5;
+    public static final double kDModuleTurningController = 0.08;
 
     public static final double kPModuleDriveController = 0.6;
     private static final double kDriveP = 15.0;
