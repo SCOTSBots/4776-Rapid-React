@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -23,10 +25,15 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+
+import frc.robot.commands.*;
+
+import frc.robot.subsystems.*;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -39,9 +46,21 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private boolean fieldRelative = true;
 
+  private final IntakePackage m_intakePackage = new IntakePackage();
+  private final Intake m_intake = new Intake();
+
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
+
+  final JoystickButton unpackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
+  final JoystickButton packButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftBumper.value);
+
+  final JoystickButton stopPackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
+
+  final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
+
+  final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(3);
@@ -108,6 +127,26 @@ public class RobotContainer {
 
     };
     m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
+
+    Runnable ControlIntakePackage = () -> {
+      // Intake Packge control by left manipulator stick
+      double packPower = new_deadzone(m_manipulatorController.getLeftY())/4;      
+
+      m_intakePackage.packControl(packPower);
+    };
+    m_intakePackage.setDefaultCommand(new RunCommand(ControlIntakePackage, m_intakePackage));
+
+
+    packButton.whenPressed(new Pack(m_intakePackage));
+    unpackButton.whenPressed(new UnPack(m_intakePackage));
+
+    stopPackButton.whenPressed(new InstantCommand(m_intakePackage::packOff, m_intakePackage));
+
+    intakeInButton.whenPressed(new InstantCommand(m_intake::intakeIn, m_intake))
+    .whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
+
+    intakeOutButton.whenPressed(new InstantCommand(m_intake::intakeOut, m_intake))
+    .whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
   }
 
   double new_deadzone(double x) {

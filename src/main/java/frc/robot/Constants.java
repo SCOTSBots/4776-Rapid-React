@@ -132,4 +132,12 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
+
+  public static final class IntakeConstants {
+    public static final int intakePackageMotorPort = 8;
+    public static final int intakeMotorPort = 7;
+    public static final double unpackagePower = 0.2;
+    public static final double packagePower = 0.2;
+    public static final double intakePower = 0.5;
+  }
 }
