@@ -54,9 +54,8 @@ public class RobotContainer {
 
   private final IntakePackage m_intakePackage = new IntakePackage();
   private final Intake m_intake = new Intake();
-
   private final Climber m_climber = new Climber();
-
+  private final Intestine m_intestine = new Intestine();
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -64,12 +63,11 @@ public class RobotContainer {
 
   final JoystickButton unpackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
   final JoystickButton packButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftBumper.value);
-
-  final JoystickButton stopPackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
-
+  //final JoystickButton stopPackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
   final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
-
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
+  final JoystickButton intestineInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
+  final JoystickButton intestineOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(3);
@@ -182,13 +180,17 @@ public class RobotContainer {
     packButton.whenPressed(new Pack(m_intakePackage));
     unpackButton.whenPressed(new UnPack(m_intakePackage));
 
-    stopPackButton.whenPressed(new InstantCommand(m_intakePackage::packOff, m_intakePackage));
+    //stopPackButton.whenPressed(new InstantCommand(m_intakePackage::packOff, m_intakePackage));
 
     intakeInButton.whenPressed(new InstantCommand(m_intake::intakeIn, m_intake))
     .whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
 
     intakeOutButton.whenPressed(new InstantCommand(m_intake::intakeOut, m_intake))
     .whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
+
+    intestineInButton.whenPressed(new InstantCommand(m_intestine::intestineIn, m_intestine));
+
+    intestineOutButton.whenPressed(new InstantCommand(m_intestine::intestineOut, m_intestine));
   }
 
   double new_deadzone(double x) {

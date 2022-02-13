@@ -148,4 +148,9 @@ public final class Constants {
     public static final double lowerPower = 0.2;
     public static final double armPower = 0.5;
   }
+
+  public static final class IntestineConstants {
+    public static final int intestineMotorPort = 42; //TODO: Change to actual port number
+    public static final double IntestinePower = 0.2;
+  }
 }
