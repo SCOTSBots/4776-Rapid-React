@@ -63,7 +63,7 @@ public final class Constants {
 
     public static final double kTrackWidth = 0.587375;
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = 0.587375; // actually is 0.4953;
+    public static final double kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase/2, kTrackWidth/2), new Translation2d(kWheelBase/2, -kTrackWidth/2),
@@ -72,7 +72,7 @@ public final class Constants {
     // our starting pose is 5 meters along the long end of the field and in the
     // center of the field along the short end, facing forward.
     public static final boolean kGyroReversed = false;
-	public static double kMaxSpeedMetersPerSecond = 1;
+	public static double kMaxSpeedMetersPerSecond = 3.35; //Was 1 021222
 	
   }
 
@@ -119,9 +119,9 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 3;
-    public static final double kMaxAccelerationMetersPerSecondSquared = 3;
-    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;
+    public static final double kMaxSpeedMetersPerSecond = 2;//was 3
+    public static final double kMaxAccelerationMetersPerSecondSquared = 4;//was 3
+    public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;//was Pi
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
     public static final double kPXController = 1;
@@ -139,5 +139,13 @@ public final class Constants {
     public static final double unpackagePower = 0.2;
     public static final double packagePower = 0.2;
     public static final double intakePower = 0.5;
+  }
+
+  public static final class ClimberConstants {
+    public static final int liftMotorPort = 16;
+    public static final int armMotorPort = 15;
+    public static final double climbPower = 0.5;
+    public static final double lowerPower = 0.2;
+    public static final double armPower = 0.5;
   }
 }

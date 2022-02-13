@@ -91,6 +91,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   private NetworkTableEntry gyroAngle;
 
+  private NetworkTableEntry odoX, odoY, odoRot;
+
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     setupShuffleBoard();
@@ -106,6 +108,15 @@ public class DriveSubsystem extends SubsystemBase {
         m_frontRight.getState(),
         m_rearLeft.getState(),
         m_rearRight.getState());
+
+    odoX.setDouble(this.getPose().getX());
+    odoY.setDouble(this.getPose().getY());
+    odoRot.setDouble(this.getPose().getRotation().getDegrees());
+
+    //System.out.println("OdoX = " + getPose().getX());
+
+    
+
   }
 
   /**
@@ -150,8 +161,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     for (int i = 0; i < 4; i++) {
       swerveModuleShuffleTargetAngle[i].setDouble(swerveModuleStates[i].angle.getDegrees());
-      swerveModuleShuffleTargetSpeed[i].setDouble(swerveModuleStates[i].speedMetersPerSecond
-          / DriveConstants.kMaxSpeedMetersPerSecond);
+      swerveModuleShuffleTargetSpeed[i].setDouble(swerveModuleStates[i].speedMetersPerSecond);
 
       swerveModules[i].setDesiredState(swerveModuleStates[i], noMovement, false);
 
@@ -234,9 +244,9 @@ public class DriveSubsystem extends SubsystemBase {
     // .withSize(4, 8)
     // .withPosition(14, 0);
 
-    Shuffleboard.getTab("Swerve").addNumber("Odometry X Position", () -> this.getPose().getX());
-    Shuffleboard.getTab("Swerve").addNumber("Odometry Y Position", () -> this.getPose().getY());
-    Shuffleboard.getTab("Swerve").addNumber("Odometry Rotation", () -> this.getPose().getRotation().getDegrees());
+    odoX =  swerveTab.add("Odometry X Position", this.getPose().getX()).getEntry();
+    odoY = swerveTab.add("Odometry Y Position", this.getPose().getY()).getEntry();
+    odoRot = swerveTab.add("Odometry Rotation", this.getPose().getRotation().getDegrees()).getEntry();
 
     gyroAngle = swerveTab.add("Gyro Heading",0)
       .withSize(3, 3)

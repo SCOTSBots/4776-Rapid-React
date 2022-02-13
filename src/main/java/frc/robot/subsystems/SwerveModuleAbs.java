@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.DriveConstants;
@@ -31,7 +32,7 @@ public class SwerveModuleAbs {
   private double turningEncoderCounts;
   private int turningMotorChannel;
 
-  private final PIDController m_drivePIDController = new PIDController(ModuleConstants.kPModuleDriveController, 0, 0);
+  private final PIDController m_drivePIDController = new PIDController(0.2, 0.1, 0);
 
   // Using a TrapezoidProfile PIDController to allow for smooth turning
   private final ProfiledPIDController m_turningPIDController = new ProfiledPIDController(
@@ -88,7 +89,7 @@ public class SwerveModuleAbs {
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
     turningPID.enableContinuousInput(-Math.PI, Math.PI);
 
-    Shuffleboard.getTab("SwerveTurning").addNumber("SwerveModouleTurning" + turningMotorChannel, this::getAngleRadians);
+    Shuffleboard.getTab("SwerveTurning").addNumber("SwerveModuleTurning" + turningMotorChannel, this::getAngleRadians);
     // Shuffleboard.getTab("Swerve").addNumber("SwerveModule"+driveMotorChannel,
     // m_driveEncoder::getPosition);
     Shuffleboard.getTab("SwerveDrive").addNumber("SwerveModule" + driveMotorChannel, this::getDrivePosition);
@@ -140,8 +141,11 @@ public class SwerveModuleAbs {
       }
       
       // Calculate the drive output from the drive PID controller.
-      final double driveOutput = (InvertLeft ? -1 : 1) * state.speedMetersPerSecond
-          / DriveConstants.kMaxSpeedMetersPerSecond;
+       final double driveOutput = (InvertLeft ? -1 : 1) * state.speedMetersPerSecond
+           / DriveConstants.kMaxSpeedMetersPerSecond;
+
+      // final double driveOutput = (InvertLeft ? -1 : 1) * m_drivePIDController.calculate(getDriveVelocity(),
+      // state.speedMetersPerSecond);
 
       // Calculate the turning motor output from the turning PID controller.
       // Turning power is always negated because + motor power is clockwise regardless of module
@@ -159,9 +163,9 @@ public class SwerveModuleAbs {
 
       //turningPID.calculate(measurement)
 
-      m_driveMotor.set(driveOutput * 1);
+      m_driveMotor.set(driveOutput);
       // m_turningMotor.set(VictorSPXControlMode., demand);
-      SmartDashboard.putNumber("SwerveModouleTurning" + turningMotorChannel, turnOutput);
+      SmartDashboard.putNumber("SwerveModuleTurning" + turningMotorChannel, turnOutput);
       m_turningMotor.set(turnOutput);
 
       // System.out.println(state.angle.getRadians()+","+getAngleRadians()+","+error);

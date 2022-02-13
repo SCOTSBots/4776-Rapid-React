@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
@@ -27,9 +28,14 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Map.entry;
 
 import frc.robot.commands.*;
 
@@ -48,6 +54,9 @@ public class RobotContainer {
 
   private final IntakePackage m_intakePackage = new IntakePackage();
   private final Intake m_intake = new Intake();
+
+  private final Climber m_climber = new Climber();
+
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -68,12 +77,34 @@ public class RobotContainer {
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
+  private enum CommandsToChoose {
+    Default, Simple;
+  }
+
+  //private final Command DefaultAuto;
+  //private final Command Simple;
+  
+  private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
+  private final Command m_selectCommand = null;
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    // Setup auto command chooser
+    // m_selectCommand = new SelectCommand(Map.ofEntries(
+    //   entry(CommandsToChoose.Default, DefaultAuto),
+    //   entry(CommandsToChoose.Simple, DefaultAuto)
+    //   ), this::select);
+
+    m_chooser.setDefaultOption("Default Auto", CommandsToChoose.Default);
+    m_chooser.addOption("Simple", CommandsToChoose.Simple);
+    
+    Shuffleboard.getTab("Auto").add(m_chooser);
+
   }
 
   /**
@@ -136,6 +167,17 @@ public class RobotContainer {
     };
     m_intakePackage.setDefaultCommand(new RunCommand(ControlIntakePackage, m_intakePackage));
 
+    Runnable ControlClimber = () -> {
+      // Climber control by right manipulator stick
+      double liftPower = - new_deadzone(m_manipulatorController.getRightY())/2;
+      double armPower = new_deadzone(m_manipulatorController.getRightX())/4;      
+  
+      m_climber.runLift(liftPower);
+      m_climber.runArm(armPower);
+    };
+  
+    m_climber.setDefaultCommand(new RunCommand(ControlClimber, m_climber));
+
 
     packButton.whenPressed(new Pack(m_intakePackage));
     unpackButton.whenPressed(new UnPack(m_intakePackage));
@@ -171,17 +213,26 @@ public class RobotContainer {
             .setKinematics(DriveConstants.kDriveKinematics);
 
     // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
+    // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    //     // Start at the origin facing the +X direction
+    //     new Pose2d(0, 0, new Rotation2d(0)),
+    //     // Pass through these two interior waypoints, making an 's' curve path
+    //     List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+    //     // End 3 meters straight ahead of where we started, facing forward
+    //     new Pose2d(3, 0, new Rotation2d(0)),
+    //     config);
+
+        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Drive Forward
+          List.of(new Translation2d(1.0, 1)),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(2, 2, new Rotation2d(Math.toRadians(90))),
+          config);
 
     var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+        2, 0, 0, AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
@@ -190,8 +241,8 @@ public class RobotContainer {
         DriveConstants.kDriveKinematics,
 
         // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
+        new PIDController(2, 0, 0),
+        new PIDController(2, 0, 0),
         thetaController,
         m_robotDrive::setModuleStates,
         m_robotDrive);
