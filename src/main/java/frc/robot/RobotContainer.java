@@ -55,7 +55,7 @@ public class RobotContainer {
   private final IntakePackage m_intakePackage = new IntakePackage();
   private final Intake m_intake = new Intake();
   private final Climber m_climber = new Climber();
-  private final Intestine m_intestine = new Intestine();
+  //private final Intestine m_intestine = new Intestine();
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -171,7 +171,7 @@ public class RobotContainer {
       double armPower = new_deadzone(m_manipulatorController.getRightX())/4;      
   
       m_climber.runLift(liftPower);
-      m_climber.runArm(armPower);
+      m_climber.runArm(0.2 * armPower);
     };
   
     m_climber.setDefaultCommand(new RunCommand(ControlClimber, m_climber));
@@ -188,9 +188,8 @@ public class RobotContainer {
     intakeOutButton.whenPressed(new InstantCommand(m_intake::intakeOut, m_intake))
     .whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
 
-    intestineInButton.whenPressed(new InstantCommand(m_intestine::intestineIn, m_intestine));
-
-    intestineOutButton.whenPressed(new InstantCommand(m_intestine::intestineOut, m_intestine));
+    //intestineInButton.whenPressed(new InstantCommand(m_intestine::intestineIn, m_intestine));
+    //intestineOutButton.whenPressed(new InstantCommand(m_intestine::intestineOut, m_intestine));
   }
 
   double new_deadzone(double x) {

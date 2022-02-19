@@ -6,12 +6,14 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
   private final CANSparkMax liftMotor;
   private final CANSparkMax armMotor;
+  private final CANSparkMax armMotor2;
 
   /** Creates a new Intake. */
   public Climber() {
@@ -20,7 +22,11 @@ public class Climber extends SubsystemBase {
     
     //Configure so that positive motor power moves arm towards front of robot
     armMotor = new CANSparkMax(ClimberConstants.armMotorPort, MotorType.kBrushless);
+    armMotor.setInverted(false);
+    armMotor.setIdleMode(IdleMode.kBrake);
+    armMotor2 = new CANSparkMax(ClimberConstants.armMotor2Port, MotorType.kBrushless);
     armMotor.setInverted(true);
+    armMotor2.setIdleMode(IdleMode.kBrake);
 
   }
 
@@ -31,6 +37,7 @@ public class Climber extends SubsystemBase {
   }
   public void runArm(double power){
     armMotor.set(power);
+    armMotor2.set(power);
   }
 
 }

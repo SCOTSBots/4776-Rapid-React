@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IntestineConstants;
 
 public class Intestine extends SubsystemBase {
   private final CANSparkMax intestineMotor;
@@ -15,7 +16,7 @@ public class Intestine extends SubsystemBase {
   /** Creates a new Intake. */
   public Intestine() {
     //Assume postive motor power pulls balls in
-    intestineMotor = new CANSparkMax(IntakeConstants.intakeMotorPort, MotorType.kBrushless);
+    intestineMotor = new CANSparkMax(IntestineConstants.kIntestineMotorPort, MotorType.kBrushless);
     intestineMotor.setInverted(true);
 
   }
@@ -24,10 +25,10 @@ public class Intestine extends SubsystemBase {
     intestineMotor.set(power);
   }
   public void intestineIn(){
-    intestineMotor.set(IntakeConstants.intakePower);
+    intestineMotor.set(IntestineConstants.kIntestinePower);
   }
   public void intestineOut(){
-    intestineMotor.set(-IntakeConstants.intakePower);
+    intestineMotor.set(-IntestineConstants.kIntestinePower);
   }
   public void intestineOff(){
     intestineMotor.stopMotor();
