@@ -144,13 +144,69 @@ public final class Constants {
   public static final class ClimberConstants {
     public static final int liftMotorPort = 16;
     public static final int armMotorPort = 15;
+    public static final int armMotor2Port = 14;
     public static final double climbPower = 0.5;
     public static final double lowerPower = 0.2;
     public static final double armPower = 0.5;
   }
 
   public static final class IntestineConstants {
-    public static final int intestineMotorPort = 42; //TODO: Change to actual port number
-    public static final double IntestinePower = 0.2;
+    public static final int kIntestineMotorPort = 17; //TODO: Change to actual port number
+    public static final double kIntestinePower = 0.5;
+  }
+
+  public static final class ShooterConstants {
+    public static final int kShooterMotorPort = 32; // TODO: Change to actual port number
+    public static final int kHoodWheelMotorPort = 33; // TODO: Change to actual port number
+    public static final int kTurretMotorPort = 34; // TODO: Change to actual port number
+    public static final int kHoodMotorPort = 35; // TODO: Change to actual port number
+
+    public static final int kHoodMaxCounts = 1000;
+    public static final int kTurretMaxCounts = 1000;
+    public static final int kTurretMinCounts = -1000;
+
+    // Shooter SparkMAX PID coefficients
+    public static final double kShooterP = 0.0015;
+    public static final double kShooterI = 0.0000001;
+    public static final double kShooterD = 0;
+    public static final double kShooterIz = 0;
+    public static final double kShooterFF = 0.000165;
+    public static final double kShooterMaxOutput = 1;
+    public static final double kShooterMinOutput = -1;
+    public static final double kShootermaxRPM = 5300;
+    public static final double kShooterTypRPM = 5200;
+
+
+    // Hood SparkMAX PID coefficients
+    public static final double kHoodP = 0.0015;
+    public static final double kHoodI = 0.0000001;
+    public static final double kHoodD = 0;
+    public static final double kHoodIz = 0;
+    public static final double kHoodFF = 0.000165;
+    public static final double kHoodMaxOutput = 1;
+    public static final double kHoodMinOutput = -1;
+    public static final double kHoodmaxRPM = 4000;
+
+    // Hood Wheel SparkMAX PID coefficients
+    public static final double kHoodWheelP = 0.0015;
+    public static final double kHoodWheelI = 0.0000001;
+    public static final double kHoodWheelD = 0;
+    public static final double kHoodWheelIz = 0;
+    public static final double kHoodWheelFF = 0.000165;
+    public static final double kHoodWheelMaxOutput = 1;
+    public static final double kHoodWheelMinOutput = -1;
+    public static final double kHoodWheelmaxRPM = 5300;
+    public static final double kHoodWheelTypRPM = 4800;
+
+    // Turret SparkMAX PID coefficients
+    public static final double kTurretP = 0.0015;
+    public static final double kTurretI = 0.0000001;
+    public static final double kTurretD = 0;
+    public static final double kTurretIz = 0;
+    public static final double kTurretFF = 0.000165;
+    public static final double kTurretMaxOutput = 1;
+    public static final double kTurretMinOutput = -1;
+    public static final double kTurretmaxRPM = 5300;
+    public static final double kTurretTypRPM = 4800;
   }
 }
