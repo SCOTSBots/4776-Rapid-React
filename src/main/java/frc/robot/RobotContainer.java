@@ -25,12 +25,15 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +41,7 @@ import java.util.Map;
 import static java.util.Map.entry;
 
 import frc.robot.commands.*;
-
+import frc.robot.customClass.TriggerButton;
 import frc.robot.subsystems.*;
 
 /*
@@ -55,7 +58,11 @@ public class RobotContainer {
   private final IntakePackage m_intakePackage = new IntakePackage();
   private final Intake m_intake = new Intake();
   private final Climber m_climber = new Climber();
-  //private final Intestine m_intestine = new Intestine();
+  private final Intestine m_intestine = new Intestine();
+  private final Shooter m_shooter = new Shooter();
+  
+
+  private final StickAssignmentState rightStickIsClimber = new StickAssignmentState(false);
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -68,6 +75,11 @@ public class RobotContainer {
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
   final JoystickButton intestineInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
   final JoystickButton intestineOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
+  final POVButton stopIntakeandIntestineButton = new POVButton(m_manipulatorController, 180);
+
+  final TriggerButton shootTrigger = new TriggerButton(m_manipulatorController, XboxController.Axis.kRightTrigger);
+
+  final JoystickButton rightStickModeButton = new JoystickButton(m_manipulatorController, XboxController.Button.kStart.value);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(3);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(3);
@@ -91,6 +103,10 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+
+    SendableRegistry.setName(m_shooter, "Shooter");
+    SendableRegistry.setName(m_intake, "Intake");
+    SendableRegistry.setName(m_intestine, "Intestine");
 
     // Setup auto command chooser
     // m_selectCommand = new SelectCommand(Map.ofEntries(
@@ -154,6 +170,8 @@ public class RobotContainer {
       SmartDashboard.putBoolean("Field Rel", fieldRelative);
       m_robotDrive.drive(xSpeed, ySpeed, rotation, fieldRelative);
 
+      //Check for manipulator right stick mode change
+
     };
     m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
 
@@ -165,31 +183,40 @@ public class RobotContainer {
     };
     m_intakePackage.setDefaultCommand(new RunCommand(ControlIntakePackage, m_intakePackage));
 
-    Runnable ControlClimber = () -> {
-      // Climber control by right manipulator stick
-      double liftPower = - new_deadzone(m_manipulatorController.getRightY())/2;
-      double armPower = new_deadzone(m_manipulatorController.getRightX())/4;      
+    // **** Moved to a separte declaration
+    // TODO: Delete if code works
+    // Runnable ControlClimber = () -> {
+    //   // Climber control by right manipulator stick
+    //   double liftPower = - new_deadzone(m_manipulatorController.getRightY())/2;
+    //   double armPower = new_deadzone(m_manipulatorController.getRightX())/4;      
   
-      m_climber.runLift(liftPower);
-      m_climber.runArm(0.2 * armPower);
-    };
+    //   m_climber.runLift(liftPower);
+    //   m_climber.runArm(0.2 * armPower);
+    // };
   
     m_climber.setDefaultCommand(new RunCommand(ControlClimber, m_climber));
+    m_shooter.setDefaultCommand(new RunCommand(ControlTurret, m_shooter));
 
-
-    packButton.whenPressed(new Pack(m_intakePackage));
-    unpackButton.whenPressed(new UnPack(m_intakePackage));
+    //packButton.whenPressed(new Pack(m_intakePackage));
+    //unpackButton.whenPressed(new UnPack(m_intakePackage));
 
     //stopPackButton.whenPressed(new InstantCommand(m_intakePackage::packOff, m_intakePackage));
 
-    intakeInButton.whenPressed(new InstantCommand(m_intake::intakeIn, m_intake))
-    .whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
+    intakeInButton.whenPressed(new InstantCommand(m_intake::intakeIn, m_intake));
+    //.whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
 
-    intakeOutButton.whenPressed(new InstantCommand(m_intake::intakeOut, m_intake))
-    .whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
+    intakeOutButton.whenPressed(new InstantCommand(m_intake::intakeOut, m_intake));
+    //.whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
 
-    //intestineInButton.whenPressed(new InstantCommand(m_intestine::intestineIn, m_intestine));
-    //intestineOutButton.whenPressed(new InstantCommand(m_intestine::intestineOut, m_intestine));
+    intestineInButton.whenPressed(new InstantCommand(m_intestine::intestineIn, m_intestine));
+    intestineOutButton.whenPressed(new InstantCommand(m_intestine::intestineOut, m_intestine));
+
+    stopIntakeandIntestineButton.whenPressed(new InstantCommand(m_intestine::intestineOff, m_intestine).
+    andThen(new InstantCommand(m_intake::intakeOff, m_intake)));
+
+    shootTrigger.whenPressed(new InstantCommand(m_shooter::shoot, m_shooter).withInterrupt(()->false));
+
+    rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
   }
 
   double new_deadzone(double x) {
@@ -254,4 +281,43 @@ public class RobotContainer {
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
+
+  //*******************************************************
+  // The following Commands and Runnable allow swapping 
+  // right stick to control climber or shooter.
+  // Using commands to make easy use of the .whenToggled 
+  // Button method.
+  //*******************************************************
+
+  private Runnable ControlClimber = () -> {
+    if (rightStickIsClimber.get()) {
+      // Climber control by right manipulator stick
+      double liftPower = -new_deadzone(m_manipulatorController.getRightY()) / 2;
+      double armPower = new_deadzone(m_manipulatorController.getRightX()) / 4;
+
+      m_climber.runLift(liftPower);
+      m_climber.runArm(0.2 * armPower);
+    } else {
+      m_climber.runArm(0);
+      m_climber.runLift(0);
+    }
+    SmartDashboard.putBoolean("Right Stick Climb", rightStickIsClimber.get());
+  };
+
+  private Runnable ControlTurret = () -> {
+    if (!rightStickIsClimber.get()) {
+      // Climber control by right manipulator stick
+      double hoodPower = -new_deadzone(m_manipulatorController.getRightY()) / 4;
+      double turretPower = new_deadzone(m_manipulatorController.getRightX()) / 4;
+
+      m_shooter.setHoodPower(hoodPower);
+      m_shooter.setTurretPower(turretPower);
+      
+    } else {
+      //Probably need to modify this to hold last position using PID, especially the hood position 
+      m_shooter.setHoodPower(0);
+      m_shooter.setTurretPower(0);
+    }
+  };
+
 }
