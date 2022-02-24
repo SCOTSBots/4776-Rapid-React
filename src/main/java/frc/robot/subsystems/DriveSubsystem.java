@@ -102,8 +102,8 @@ public class DriveSubsystem extends SubsystemBase {
   public void periodic() {
     // Update the odometry in the periodic block
     m_odometry.update(
-        // new Rotation2d(getHeading()),
-        m_gyro.getRotation2d(),
+        new Rotation2d(Math.toRadians(getHeading())),
+        //m_gyro.getRotation2d(),
         m_frontLeft.getState(),
         m_frontRight.getState(),
         m_rearLeft.getState(),
@@ -209,7 +209,8 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return m_gyro.getRotation2d().getDegrees();
+    return m_gyro.getFusedHeading();
+    //return m_gyro.getRotation2d().getDegrees();
   }
 
   /**

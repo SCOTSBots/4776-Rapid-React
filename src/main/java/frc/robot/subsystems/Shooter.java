@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
@@ -12,12 +13,16 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
+import frc.robot.Constants.IntestineConstants;
 import frc.robot.Constants.ShooterConstants;
 
 /** Add your docs here. */
 public class Shooter extends SubsystemBase {
   ControlType VelocityControlMode = ControlType.kSmartVelocity;
+  private Timer m_timer = new Timer();
+
   
+  private CANSparkMax shooterFeederMotor;
   private CANSparkMax shooterMotor;
   private CANSparkMax hoodWheelMotor;
   private CANSparkMax turretMotor;
@@ -42,6 +47,9 @@ public class Shooter extends SubsystemBase {
     int smartMotionSlot = 0;
     
     // Shooter motor configuration
+    shooterFeederMotor = new CANSparkMax(ShooterConstants.kShooterFeederMotorPort, MotorType.kBrushless);
+    shooterFeederMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    
     shooterMotor = new CANSparkMax(ShooterConstants.kShooterMotorPort, MotorType.kBrushless);
     shooterMotor.restoreFactoryDefaults();
     shooterMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
@@ -143,7 +151,7 @@ public class Shooter extends SubsystemBase {
     lastHoodWheelSetRPM = hoodWheelRPM;
   }
 
-  public boolean shooterReady(){
+  public boolean shooterIsReady(){
     double errorLimit = 0.03;
     
     double currentShooter = getShooterSpeed();
@@ -167,12 +175,34 @@ public class Shooter extends SubsystemBase {
     hoodPIDController.setReference(percent * ShooterConstants.kHoodMaxCounts, CANSparkMax.ControlType.kSmartMotion);
   }
 
+  public void setHoodPower(double power){
+    hoodMotor.set(power);
+  }
+
   public void setTurretPosition(double percent) {
     if (percent < 0){
+      // kTurretMinCounts is assumed to be a negative number
       turretPIDController.setReference(-percent * ShooterConstants.kTurretMinCounts, CANSparkMax.ControlType.kSmartMotion);
     } else {
       turretPIDController.setReference(percent * ShooterConstants.kTurretMaxCounts, CANSparkMax.ControlType.kSmartMotion);
     }
+  }
+
+  public void setTurretPower(double power){
+    turretMotor.set(power);
+  }
+
+  public void shoot(){
+    shooterFeederMotor.set(IntestineConstants.kIntestinePower);
+    m_timer.reset();
+  }
+
+  public boolean shotIsDone(){
+    return (m_timer.hasElapsed(ShooterConstants.kSHOT_TIME));
+  }
+
+  public void holdShot(){
+    shooterFeederMotor.set(ShooterConstants.kFeederHoldPower);
   }
 
 }

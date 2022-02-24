@@ -151,15 +151,21 @@ public final class Constants {
   }
 
   public static final class IntestineConstants {
-    public static final int kIntestineMotorPort = 17; //TODO: Change to actual port number
+    public static final int kIntestineMotorPort = 17; 
+    public static final int kShooterFeederMotorPort = 18; 
     public static final double kIntestinePower = 0.5;
   }
 
   public static final class ShooterConstants {
-    public static final int kShooterMotorPort = 32; // TODO: Change to actual port number
-    public static final int kHoodWheelMotorPort = 33; // TODO: Change to actual port number
-    public static final int kTurretMotorPort = 34; // TODO: Change to actual port number
-    public static final int kHoodMotorPort = 35; // TODO: Change to actual port number
+    public static final int kShooterMotorPort = 32;
+    public static final int kHoodWheelMotorPort = 33;
+    public static final int kTurretMotorPort = 34; 
+    public static final int kHoodMotorPort = 35; 
+    public static final int kShooterFeederMotorPort = 18; 
+
+    public static final double kSHOT_TIME = 0.5; //Length of time to run the shooter feeder
+    public static final double kFeederHoldPower = 0; //Use zero for brake mode / Negative for active hold.
+
 
     public static final int kHoodMaxCounts = 1000;
     public static final int kTurretMaxCounts = 1000;
