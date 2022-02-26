@@ -27,7 +27,7 @@ public final class Constants {
 
     public static final int kFrontLeftDriveMotorPort = 4;
     public static final int kRearLeftDriveMotorPort = 3;
-    public static final int kFrontRightDriveMotorPort = 1;
+    public static final int kFrontRightDriveMotorPort = 5;
     public static final int kRearRightDriveMotorPort = 2;
 
     public static final int kFrontLeftTurningMotorPort = 13;
@@ -163,7 +163,7 @@ public final class Constants {
     public static final int kHoodMotorPort = 35; 
     public static final int kShooterFeederMotorPort = 18; 
 
-    public static final double kSHOT_TIME = 0.5; //Length of time to run the shooter feeder
+    public static final double kSHOT_TIME = 1.0; //Length of time to run the shooter feeder
     public static final double kFeederHoldPower = 0; //Use zero for brake mode / Negative for active hold.
 
 

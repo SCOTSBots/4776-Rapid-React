@@ -136,8 +136,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public void enableShooter(){
-    shooterPIDController.setReference(ShooterConstants.kShooterTypRPM, VelocityControlMode);
-    hoodWheelPIDController.setReference(ShooterConstants.kHoodWheelTypRPM, VelocityControlMode);
+    //shooterPIDController.setReference(ShooterConstants.kShooterTypRPM, VelocityControlMode);
+    //hoodWheelPIDController.setReference(ShooterConstants.kHoodWheelTypRPM, VelocityControlMode);
+
+    shooterMotor.setVoltage(-11.5);
 
     lastShooterSetRPM = ShooterConstants.kShooterTypRPM;
     lastHoodWheelSetRPM = ShooterConstants.kHoodWheelTypRPM;
@@ -149,6 +151,11 @@ public class Shooter extends SubsystemBase {
 
     lastShooterSetRPM = shooterRPM;
     lastHoodWheelSetRPM = hoodWheelRPM;
+  }
+
+  public void disableShooter(){
+    shooterMotor.stopMotor();
+    hoodWheelMotor.stopMotor();
   }
 
   public boolean shooterIsReady(){
@@ -193,16 +200,22 @@ public class Shooter extends SubsystemBase {
   }
 
   public void shoot(){
-    shooterFeederMotor.set(IntestineConstants.kIntestinePower);
+    shooterFeederMotor.set(1);
     m_timer.reset();
+    m_timer.start();
   }
 
   public boolean shotIsDone(){
-    return (m_timer.hasElapsed(ShooterConstants.kSHOT_TIME));
+    return (m_timer.get() > ShooterConstants.kSHOT_TIME);
   }
 
   public void holdShot(){
     shooterFeederMotor.set(ShooterConstants.kFeederHoldPower);
+    //shooterFeederMotor.stopMotor();
+  }
+
+  public void getTimer(){
+    System.out.println("Timer = " + m_timer.get());
   }
 
 }

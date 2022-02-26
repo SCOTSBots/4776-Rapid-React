@@ -68,8 +68,8 @@ public class RobotContainer {
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
 
-  final JoystickButton unpackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
-  final JoystickButton packButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftBumper.value);
+  //final JoystickButton unpackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
+  //final JoystickButton packButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftBumper.value);
   //final JoystickButton stopPackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
   final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
@@ -78,6 +78,8 @@ public class RobotContainer {
   final POVButton stopIntakeandIntestineButton = new POVButton(m_manipulatorController, 180);
 
   final TriggerButton shootTrigger = new TriggerButton(m_manipulatorController, XboxController.Axis.kRightTrigger);
+  final JoystickButton enableShooterButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
+  final JoystickButton disableShooterButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftBumper.value);
 
   final JoystickButton rightStickModeButton = new JoystickButton(m_manipulatorController, XboxController.Button.kStart.value);
 
@@ -202,19 +204,23 @@ public class RobotContainer {
 
     //stopPackButton.whenPressed(new InstantCommand(m_intakePackage::packOff, m_intakePackage));
 
-    intakeInButton.whenPressed(new InstantCommand(m_intake::intakeIn, m_intake));
+    intakeInButton.whenPressed(new InstantCommand(m_intake::intakeIn, m_intake)
+    .andThen(new InstantCommand(m_intestine::intestineIn, m_intestine)));
     //.whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
 
-    intakeOutButton.whenPressed(new InstantCommand(m_intake::intakeOut, m_intake));
+    intakeOutButton.whenPressed(new InstantCommand(m_intake::intakeOut, m_intake)
+    .andThen(new InstantCommand(m_intestine::intestineOut, m_intestine)));
     //.whenReleased(new InstantCommand(m_intake::intakeOff, m_intake));
 
-    intestineInButton.whenPressed(new InstantCommand(m_intestine::intestineIn, m_intestine));
-    intestineOutButton.whenPressed(new InstantCommand(m_intestine::intestineOut, m_intestine));
+    //intestineInButton.whenPressed(new InstantCommand(m_intestine::intestineIn, m_intestine));
+    //intestineOutButton.whenPressed(new InstantCommand(m_intestine::intestineOut, m_intestine));
 
     stopIntakeandIntestineButton.whenPressed(new InstantCommand(m_intestine::intestineOff, m_intestine).
     andThen(new InstantCommand(m_intake::intakeOff, m_intake)));
 
-    shootTrigger.whenPressed(new InstantCommand(m_shooter::shoot, m_shooter).withInterrupt(()->false));
+    shootTrigger.whenPressed(new Shoot(m_shooter));
+    enableShooterButton.whenPressed(new InstantCommand(m_shooter::enableShooter,m_shooter));
+    disableShooterButton.whenPressed(new InstantCommand(m_shooter::disableShooter,m_shooter));
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
   }
@@ -308,7 +314,7 @@ public class RobotContainer {
     if (!rightStickIsClimber.get()) {
       // Climber control by right manipulator stick
       double hoodPower = -new_deadzone(m_manipulatorController.getRightY()) / 4;
-      double turretPower = new_deadzone(m_manipulatorController.getRightX()) / 4;
+      double turretPower = new_deadzone(m_manipulatorController.getRightX()) / 1;
 
       m_shooter.setHoodPower(hoodPower);
       m_shooter.setTurretPower(turretPower);
