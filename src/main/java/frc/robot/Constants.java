@@ -21,9 +21,19 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
+  public static enum RobotType {
+    CompBot,
+    PracticeBot
+  }
+
+  public static final RobotType robotType = RobotType.PracticeBot;
+
   public static final class DriveConstants {
-    public static final double drivePercentScale = 0.5;
-    public static final double rotRateModifier = 1.2;
+    // Any constants that are not final can and should be update in GenerateConstants
+    // Non-final constants are initialized with the values of the practice bot below.
+
+    public static final double drivePercentScale = 0.8;
+    public static final double rotRateModifier = 1.5;
 
     public static final int kFrontLeftDriveMotorPort = 4;
     public static final int kRearLeftDriveMotorPort = 3;
@@ -55,25 +65,23 @@ public final class Constants {
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kRearRightDriveEncoderReversed = false;
 
-    public static final Rotation2d kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
-    public static final Rotation2d kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
-    public static final Rotation2d kFrontRightTurningHome = new Rotation2d(Math.toRadians(99.8));
-    public static final Rotation2d kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
+    public static Rotation2d kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
+    public static Rotation2d kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
+    public static Rotation2d kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
+    public static Rotation2d kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
 
-
-    public static final double kTrackWidth = 0.587375;
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
+    public static double kTrackWidth = 0.587375;
     // Distance between front and back wheels on robot
-    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
-        new Translation2d(kWheelBase/2, kTrackWidth/2), new Translation2d(kWheelBase/2, -kTrackWidth/2),
-        new Translation2d(-kWheelBase/2, kTrackWidth/2), new Translation2d(-kWheelBase/2, -kTrackWidth/2));
-    // Creating my odometry object from the kinematics object. Here,
-    // our starting pose is 5 meters along the long end of the field and in the
-    // center of the field along the short end, facing forward.
+    public static double kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
+
+    public static SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+        new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+        new Translation2d(-kWheelBase / 2, kTrackWidth / 2), new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+
     public static final boolean kGyroReversed = false;
-	public static double kMaxSpeedMetersPerSecond = 3.35; //Was 1 021222
-	
+    public static double kMaxSpeedMetersPerSecond = 3.35; // Was 1 021222
+
   }
 
   public static final class ModuleConstants {
@@ -99,7 +107,7 @@ public final class Constants {
 
 
     public static final double kPModuleTurningController = 2.5;
-    public static final double kDModuleTurningController = 0.08;
+    public static final double kDModuleTurningController = 0;
 
     public static final double kPModuleDriveController = 0.6;
     private static final double kDriveP = 15.0;
@@ -163,56 +171,102 @@ public final class Constants {
     public static final int kHoodMotorPort = 35; 
     public static final int kShooterFeederMotorPort = 18; 
 
+    public static final double kShootHighRPM = 4800;
+    public static final double kShootLowRPM = 3000;
     public static final double kSHOT_TIME = 1.0; //Length of time to run the shooter feeder
     public static final double kFeederHoldPower = 0; //Use zero for brake mode / Negative for active hold.
 
 
-    public static final int kHoodMaxCounts = 1000;
+    public static final int kHoodMaxCounts = 14;
     public static final int kTurretMaxCounts = 1000;
     public static final int kTurretMinCounts = -1000;
 
     // Shooter SparkMAX PID coefficients
-    public static final double kShooterP = 0.0015;
-    public static final double kShooterI = 0.0000001;
+    public static final double kShooterP = 0.0005;
+    public static final double kShooterI = 0.00000001;
     public static final double kShooterD = 0;
     public static final double kShooterIz = 0;
-    public static final double kShooterFF = 0.000165;
+    public static final double kShooterFF = 0.0002;
     public static final double kShooterMaxOutput = 1;
     public static final double kShooterMinOutput = -1;
-    public static final double kShootermaxRPM = 5300;
-    public static final double kShooterTypRPM = 5200;
+    public static final double kShootermaxRPM = 4900;
+    public static final double kShooterTypRPM = 4750;
 
 
     // Hood SparkMAX PID coefficients
-    public static final double kHoodP = 0.0015;
-    public static final double kHoodI = 0.0000001;
+    public static final double kHoodP = 0.03;
+    public static final double kHoodI = 0.0001;
     public static final double kHoodD = 0;
     public static final double kHoodIz = 0;
-    public static final double kHoodFF = 0.000165;
-    public static final double kHoodMaxOutput = 1;
-    public static final double kHoodMinOutput = -1;
-    public static final double kHoodmaxRPM = 4000;
+    public static final double kHoodFF = 0.005;
+    public static final double kHoodMaxOutput = 0.5;
+    public static final double kHoodMinOutput = -0.5;
+    public static final double kHoodmaxRPM = 2000;
 
     // Hood Wheel SparkMAX PID coefficients
-    public static final double kHoodWheelP = 0.0015;
-    public static final double kHoodWheelI = 0.0000001;
+    public static final double kHoodWheelP = 0.00011;
+    public static final double kHoodWheelI = 0.0000005;
     public static final double kHoodWheelD = 0;
     public static final double kHoodWheelIz = 0;
-    public static final double kHoodWheelFF = 0.000165;
+    public static final double kHoodWheelFF = 0.000103;
     public static final double kHoodWheelMaxOutput = 1;
     public static final double kHoodWheelMinOutput = -1;
     public static final double kHoodWheelmaxRPM = 5300;
-    public static final double kHoodWheelTypRPM = 4800;
+    public static final double kHoodWheelTypRPM = 5000;
 
     // Turret SparkMAX PID coefficients
-    public static final double kTurretP = 0.0015;
-    public static final double kTurretI = 0.0000001;
+    public static final double kTurretP = 0;
+    public static final double kTurretI = 0;
     public static final double kTurretD = 0;
     public static final double kTurretIz = 0;
-    public static final double kTurretFF = 0.000165;
+    public static final double kTurretFF = 0;
     public static final double kTurretMaxOutput = 1;
     public static final double kTurretMinOutput = -1;
-    public static final double kTurretmaxRPM = 5300;
-    public static final double kTurretTypRPM = 4800;
+    public static final double kTurretmaxRPM = 0;
+    public static final double kTurretTypRPM = 0;
   }
-}
+
+  public static RobotType GenerateConstants(RobotType robot) {
+    switch (robot) {
+        case CompBot: {
+          //TODO: Determine values
+          DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
+          DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
+          DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
+          DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
+
+          // Distance between centers of right and left wheels on robot
+          double kTrackWidth = DriveConstants.kTrackWidth = 0.587375;
+          // Distance between front and back wheels on robot
+          double kWheelBase = DriveConstants.kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
+
+          DriveConstants.kDriveKinematics = new SwerveDriveKinematics(
+              new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+              new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+              new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+
+        }
+          break;
+
+        case PracticeBot: {
+          DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
+          DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
+          DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
+          DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
+
+          // Distance between centers of right and left wheels on robot
+          double kTrackWidth = DriveConstants.kTrackWidth = 0.587375;
+          // Distance between front and back wheels on robot
+          double kWheelBase = DriveConstants.kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
+
+          DriveConstants.kDriveKinematics = new SwerveDriveKinematics(
+              new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+              new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+              new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+
+        }
+          break;
+      }
+      return robot;
+    }
+  }

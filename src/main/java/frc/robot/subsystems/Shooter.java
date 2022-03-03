@@ -21,6 +21,8 @@ public class Shooter extends SubsystemBase {
   ControlType VelocityControlMode = ControlType.kSmartVelocity;
   private Timer m_timer = new Timer();
 
+  private double shooterRPMOpPoint = ShooterConstants.kShootHighRPM;
+  private double hoodRPMOpPoint = 0;
   
   private CANSparkMax shooterFeederMotor;
   private CANSparkMax shooterMotor;
@@ -52,6 +54,7 @@ public class Shooter extends SubsystemBase {
     
     shooterMotor = new CANSparkMax(ShooterConstants.kShooterMotorPort, MotorType.kBrushless);
     shooterMotor.restoreFactoryDefaults();
+    shooterMotor.setInverted(true);
     shooterMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     shooterPIDController = shooterMotor.getPIDController();
     shooterEncoder = shooterMotor.getEncoder();
@@ -68,7 +71,7 @@ public class Shooter extends SubsystemBase {
     shooterPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
     shooterPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
     shooterPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
-    shooterPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
+    shooterPIDController.setSmartMotionAccelStrategy(AccelStrategy.kSCurve, smartMotionSlot);
 
     // Hood motor configuration
     hoodMotor = new CANSparkMax(ShooterConstants.kHoodMotorPort, MotorType.kBrushless);
@@ -136,13 +139,13 @@ public class Shooter extends SubsystemBase {
   }
 
   public void enableShooter(){
-    //shooterPIDController.setReference(ShooterConstants.kShooterTypRPM, VelocityControlMode);
-    //hoodWheelPIDController.setReference(ShooterConstants.kHoodWheelTypRPM, VelocityControlMode);
+    shooterPIDController.setReference(shooterRPMOpPoint, VelocityControlMode);
+    hoodWheelPIDController.setReference(hoodRPMOpPoint, VelocityControlMode);
 
-    shooterMotor.setVoltage(-11.5);
+    //shooterMotor.setVoltage(-11.5);
 
-    lastShooterSetRPM = ShooterConstants.kShooterTypRPM;
-    lastHoodWheelSetRPM = ShooterConstants.kHoodWheelTypRPM;
+    lastShooterSetRPM = shooterRPMOpPoint;
+    lastHoodWheelSetRPM = hoodRPMOpPoint;
   }
 
   public void enableShooter(double shooterRPM, double hoodWheelRPM) {
@@ -156,6 +159,9 @@ public class Shooter extends SubsystemBase {
   public void disableShooter(){
     shooterMotor.stopMotor();
     hoodWheelMotor.stopMotor();
+
+    lastShooterSetRPM = 0;
+    lastHoodWheelSetRPM = 0;
   }
 
   public boolean shooterIsReady(){
@@ -216,6 +222,26 @@ public class Shooter extends SubsystemBase {
 
   public void getTimer(){
     System.out.println("Timer = " + m_timer.get());
+  }
+
+  public double getlastShooterSetRPM(){
+    return lastShooterSetRPM;
+  }
+
+  public double getShooterRPMOpPoint() {
+    return shooterRPMOpPoint;
+  }
+
+  public void setShooterRPMOpPoint(double shooterRPMOpPoint) {
+    this.shooterRPMOpPoint = shooterRPMOpPoint;
+  }
+
+  public double getHoodRPMOpPoint() {
+    return hoodRPMOpPoint;
+  }
+
+  public void setHoodRPMOpPoint(double hoodRPMOpPoint) {
+    this.hoodRPMOpPoint = hoodRPMOpPoint;
   }
 
 }

@@ -16,6 +16,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -50,7 +51,7 @@ import frc.robot.subsystems.*;
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
  * (including subsystems, commands, and button mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer {  
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private boolean fieldRelative = true;
@@ -71,11 +72,16 @@ public class RobotContainer {
   //final JoystickButton unpackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
   //final JoystickButton packButton = new JoystickButton(m_manipulatorController, XboxController.Button.kLeftBumper.value);
   //final JoystickButton stopPackButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
+
   final JoystickButton intakeInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kX.value);
   final JoystickButton intakeOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kB.value);
-  final JoystickButton intestineInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
-  final JoystickButton intestineOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
-  final POVButton stopIntakeandIntestineButton = new POVButton(m_manipulatorController, 180);
+  // Intesting now controlled along with intake
+  //final JoystickButton intestineInButton = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
+  //final JoystickButton intestineOutButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
+  final JoystickButton stopIntakeandIntestineButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
+
+  final POVButton setShooterHighButton = new POVButton(m_manipulatorController, 0);
+  final POVButton setShooterLowButton = new POVButton(m_manipulatorController, 180);
 
   final TriggerButton shootTrigger = new TriggerButton(m_manipulatorController, XboxController.Axis.kRightTrigger);
   final JoystickButton enableShooterButton = new JoystickButton(m_manipulatorController, XboxController.Button.kRightBumper.value);
@@ -103,6 +109,8 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+    SmartDashboard.putString("Robot Type", Constants.robotType.toString());
+    
     // Configure the button bindings
     configureButtonBindings();
 
@@ -318,6 +326,18 @@ public class RobotContainer {
 
       m_shooter.setHoodPower(hoodPower);
       m_shooter.setTurretPower(turretPower);
+
+      double prevShooterRPM = m_shooter.getShooterRPMOpPoint();
+
+      if(setShooterHighButton.get()){
+        m_shooter.setShooterRPMOpPoint(ShooterConstants.kShootHighRPM);
+      } else if (setShooterLowButton.get()){
+        m_shooter.setShooterRPMOpPoint(ShooterConstants.kShootLowRPM);
+      }
+
+      if((m_shooter.getShooterRPMOpPoint() != prevShooterRPM) && (m_shooter.getlastShooterSetRPM() != 0)){
+        m_shooter.enableShooter();
+      }
       
     } else {
       //Probably need to modify this to hold last position using PID, especially the hood position 
