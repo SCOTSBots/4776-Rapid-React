@@ -32,8 +32,8 @@ public final class Constants {
     // Any constants that are not final can and should be update in GenerateConstants
     // Non-final constants are initialized with the values of the practice bot below.
 
-    public static final double drivePercentScale = 0.8;
-    public static final double rotRateModifier = 1.5;
+    public static final double drivePercentScale = 0.7;
+    public static final double rotRateModifier = 1.3;
 
     public static final int kFrontLeftDriveMotorPort = 4;
     public static final int kRearLeftDriveMotorPort = 3;
@@ -65,22 +65,22 @@ public final class Constants {
     public static final boolean kFrontRightDriveEncoderReversed = false;
     public static final boolean kRearRightDriveEncoderReversed = false;
 
-    public static Rotation2d kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
-    public static Rotation2d kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
-    public static Rotation2d kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
-    public static Rotation2d kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
+    public static final Rotation2d kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
+    public static final Rotation2d kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
+    public static final Rotation2d kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
+    public static final Rotation2d kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
 
     // Distance between centers of right and left wheels on robot
-    public static double kTrackWidth = 0.587375;
+    public static final double kTrackWidth = 0.587375;
     // Distance between front and back wheels on robot
-    public static double kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
+    public static final double kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
 
-    public static SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
+    public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2), new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
     public static final boolean kGyroReversed = false;
-    public static double kMaxSpeedMetersPerSecond = 3.35; // Was 1 021222
+    public static final double kMaxSpeedMetersPerSecond = 3.35; // Was 1 021222
 
   }
 
@@ -99,11 +99,11 @@ public final class Constants {
         // Assumes the encoders are on a 1:1 reduction with the module shaft.
         (2 * Math.PI) / (double) kTurningEncoderCPR;
 
-    public static double kMaxRPM = 5700;
-    public static double kWheelDiameter = 0.102;
-    public static double kMotorGearsToWheelGears = 6.67;
-    public static double kRevolutionsToMeters = Math.PI * kWheelDiameter / kMotorGearsToWheelGears;
-    public static double kRPMToMetersPerSecond = Math.PI * kWheelDiameter / (60 * kMotorGearsToWheelGears);
+    public static final double kMaxRPM = 5700;
+    public static final double kWheelDiameter = 0.102;
+    public static final double kMotorGearsToWheelGears = 6.67;
+    public static final double kRevolutionsToMeters = Math.PI * kWheelDiameter / kMotorGearsToWheelGears;
+    public static final double kRPMToMetersPerSecond = Math.PI * kWheelDiameter / (60 * kMotorGearsToWheelGears);
 
 
     public static final double kPModuleTurningController = 2.5;
@@ -172,7 +172,7 @@ public final class Constants {
     public static final int kShooterFeederMotorPort = 18; 
 
     public static final double kShootHighRPM = 4800;
-    public static final double kShootLowRPM = 3000;
+    public static final double kShootLowRPM = 2000;
     public static final double kSHOT_TIME = 1.0; //Length of time to run the shooter feeder
     public static final double kFeederHoldPower = 0; //Use zero for brake mode / Negative for active hold.
 
@@ -182,11 +182,21 @@ public final class Constants {
     public static final int kTurretMinCounts = -1000;
 
     // Shooter SparkMAX PID coefficients
-    public static final double kShooterP = 0.0005;
-    public static final double kShooterI = 0.00000001;
+    // public static final double kShooterP = 0.0005;
+    // public static final double kShooterI = 0.00000001;
+    // public static final double kShooterD = 0;
+    // public static final double kShooterIz = 0;
+    // public static final double kShooterFF = 0.0002;
+    // public static final double kShooterMaxOutput = 1;
+    // public static final double kShooterMinOutput = -1;
+    // public static final double kShootermaxRPM = 4900;
+    // public static final double kShooterTypRPM = 4750;
+
+    public static final double kShooterP = 0;
+    public static final double kShooterI = 0;
     public static final double kShooterD = 0;
     public static final double kShooterIz = 0;
-    public static final double kShooterFF = 0.0002;
+    public static final double kShooterFF = 0;
     public static final double kShooterMaxOutput = 1;
     public static final double kShooterMinOutput = -1;
     public static final double kShootermaxRPM = 4900;
@@ -226,47 +236,47 @@ public final class Constants {
     public static final double kTurretTypRPM = 0;
   }
 
-  public static RobotType GenerateConstants(RobotType robot) {
-    switch (robot) {
-        case CompBot: {
-          //TODO: Determine values
-          DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
-          DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
-          DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
-          DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
+  // public static RobotType GenerateConstants(RobotType robot) {
+  //   switch (robot) {
+  //       case CompBot: {
+  //         //TODO: Determine values
+  //         DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
+  //         DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
+  //         DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
+  //         DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
 
-          // Distance between centers of right and left wheels on robot
-          double kTrackWidth = DriveConstants.kTrackWidth = 0.587375;
-          // Distance between front and back wheels on robot
-          double kWheelBase = DriveConstants.kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
+  //         // Distance between centers of right and left wheels on robot
+  //         double kTrackWidth = DriveConstants.kTrackWidth = 0.587375;
+  //         // Distance between front and back wheels on robot
+  //         double kWheelBase = DriveConstants.kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
 
-          DriveConstants.kDriveKinematics = new SwerveDriveKinematics(
-              new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-              new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-              new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+  //         DriveConstants.kDriveKinematics = new SwerveDriveKinematics(
+  //             new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+  //             new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+  //             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
-        }
-          break;
+  //       }
+  //         break;
 
-        case PracticeBot: {
-          DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
-          DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
-          DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
-          DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
+  //       case PracticeBot: {
+  //         DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
+  //         DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
+  //         DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
+  //         DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
 
-          // Distance between centers of right and left wheels on robot
-          double kTrackWidth = DriveConstants.kTrackWidth = 0.587375;
-          // Distance between front and back wheels on robot
-          double kWheelBase = DriveConstants.kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
+  //         // Distance between centers of right and left wheels on robot
+  //         double kTrackWidth = DriveConstants.kTrackWidth = 0.587375;
+  //         // Distance between front and back wheels on robot
+  //         double kWheelBase = DriveConstants.kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
 
-          DriveConstants.kDriveKinematics = new SwerveDriveKinematics(
-              new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
-              new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
-              new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
+  //         DriveConstants.kDriveKinematics = new SwerveDriveKinematics(
+  //             new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
+  //             new Translation2d(-kWheelBase / 2, kTrackWidth / 2),
+  //             new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
-        }
-          break;
-      }
-      return robot;
-    }
+  //       }
+  //         break;
+  //     }
+  //     return robot;
+  //   }
   }

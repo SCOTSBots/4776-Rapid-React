@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     // Call the robot-specific constants settings
-    Constants.GenerateConstants(Constants.robotType);
+    //Constants.GenerateConstants(Constants.robotType);
     
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.

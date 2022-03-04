@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxPIDController;
@@ -18,7 +20,7 @@ import frc.robot.Constants.ShooterConstants;
 
 /** Add your docs here. */
 public class Shooter extends SubsystemBase {
-  ControlType VelocityControlMode = ControlType.kSmartVelocity;
+  ControlType VelocityControlMode = CANSparkMax.ControlType.kSmartVelocity;
   private Timer m_timer = new Timer();
 
   private double shooterRPMOpPoint = ShooterConstants.kShootHighRPM;
@@ -138,14 +140,25 @@ public class Shooter extends SubsystemBase {
 
   }
 
-  public void enableShooter(){
-    shooterPIDController.setReference(shooterRPMOpPoint, VelocityControlMode);
-    hoodWheelPIDController.setReference(hoodRPMOpPoint, VelocityControlMode);
+  @Override
+  public void periodic(){
+    SmartDashboard.putNumber("Shooter RPM", getShooterSpeed());
+    SmartDashboard.putNumber("Shooter FF", shooterPIDController.getP());
+    SmartDashboard.putNumber("Shooter P", shooterPIDController.getP());
+    SmartDashboard.putNumber("Shooter I", shooterPIDController.getP());
+    SmartDashboard.putNumber("Shooter D", shooterPIDController.getP());
+    
+  }
 
-    //shooterMotor.setVoltage(-11.5);
+  public void enableShooter(){
+    shooterPIDController.setReference(2000, VelocityControlMode);
+    //hoodWheelPIDController.setReference(hoodRPMOpPoint, VelocityControlMode);
+
+    shooterMotor.set(0.5);
 
     lastShooterSetRPM = shooterRPMOpPoint;
     lastHoodWheelSetRPM = hoodRPMOpPoint;
+    System.out.println("Shooter Setpoint =" + shooterRPMOpPoint);
   }
 
   public void enableShooter(double shooterRPM, double hoodWheelRPM) {
