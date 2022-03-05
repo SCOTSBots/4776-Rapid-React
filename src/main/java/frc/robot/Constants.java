@@ -32,8 +32,8 @@ public final class Constants {
     // Any constants that are not final can and should be update in GenerateConstants
     // Non-final constants are initialized with the values of the practice bot below.
 
-    public static final double drivePercentScale = 0.7;
-    public static final double rotRateModifier = 1.3;
+    public static final double drivePercentScale = 0.8;
+    public static final double rotRateModifier = 1.25;
 
     public static final int kFrontLeftDriveMotorPort = 4;
     public static final int kRearLeftDriveMotorPort = 3;
@@ -67,7 +67,7 @@ public final class Constants {
 
     public static final Rotation2d kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
     public static final Rotation2d kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
-    public static final Rotation2d kFrontRightTurningHome = new Rotation2d(Math.toRadians(+87.5));
+    public static final Rotation2d kFrontRightTurningHome = new Rotation2d(Math.toRadians(+37.5));
     public static final Rotation2d kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
 
     // Distance between centers of right and left wheels on robot
