@@ -89,9 +89,9 @@ public class RobotContainer {
 
   final JoystickButton rightStickModeButton = new JoystickButton(m_manipulatorController, XboxController.Button.kStart.value);
 
-  private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(3);
-  private final SlewRateLimiter rotLimiter = new SlewRateLimiter(3);
+  private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
+  private final SlewRateLimiter rotLimiter = new SlewRateLimiter(2);
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 

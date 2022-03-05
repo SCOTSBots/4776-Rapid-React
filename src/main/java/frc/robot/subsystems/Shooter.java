@@ -67,7 +67,7 @@ public class Shooter extends SubsystemBase {
     shooterPIDController.setD(ShooterConstants.kShooterD);
     shooterPIDController.setIZone(ShooterConstants.kShooterIz);
     shooterPIDController.setFF(ShooterConstants.kShooterFF);
-    shooterPIDController.setOutputRange(ShooterConstants.kShooterMaxOutput, ShooterConstants.kShooterMinOutput);
+    shooterPIDController.setOutputRange(ShooterConstants.kShooterMinOutput, ShooterConstants.kShooterMaxOutput);
     
     shooterPIDController.setSmartMotionMaxVelocity(ShooterConstants.kShootermaxRPM, smartMotionSlot);
     shooterPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
@@ -88,7 +88,7 @@ public class Shooter extends SubsystemBase {
     hoodPIDController.setD(ShooterConstants.kHoodD);
     hoodPIDController.setIZone(ShooterConstants.kHoodIz);
     hoodPIDController.setFF(ShooterConstants.kHoodFF);
-    hoodPIDController.setOutputRange(ShooterConstants.kHoodMaxOutput, ShooterConstants.kHoodMinOutput);
+    hoodPIDController.setOutputRange(ShooterConstants.kHoodMinOutput, ShooterConstants.kHoodMaxOutput);
 
     hoodPIDController.setSmartMotionMaxVelocity(ShooterConstants.kHoodmaxRPM, smartMotionSlot);
     hoodPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
@@ -109,7 +109,7 @@ public class Shooter extends SubsystemBase {
     hoodWheelPIDController.setD(ShooterConstants.kHoodWheelD);
     hoodWheelPIDController.setIZone(ShooterConstants.kHoodWheelIz);
     hoodWheelPIDController.setFF(ShooterConstants.kHoodWheelFF);
-    hoodWheelPIDController.setOutputRange(ShooterConstants.kHoodWheelMaxOutput, ShooterConstants.kHoodWheelMinOutput);
+    hoodWheelPIDController.setOutputRange(ShooterConstants.kHoodWheelMinOutput, ShooterConstants.kHoodWheelMaxOutput);
 
     hoodWheelPIDController.setSmartMotionMaxVelocity(ShooterConstants.kHoodWheelmaxRPM, smartMotionSlot);
     hoodWheelPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
@@ -130,7 +130,7 @@ public class Shooter extends SubsystemBase {
     turretPIDController.setD(ShooterConstants.kTurretD);
     turretPIDController.setIZone(ShooterConstants.kTurretIz);
     turretPIDController.setFF(ShooterConstants.kTurretFF);
-    turretPIDController.setOutputRange(ShooterConstants.kTurretMaxOutput, ShooterConstants.kTurretMinOutput);
+    turretPIDController.setOutputRange(ShooterConstants.kTurretMinOutput, ShooterConstants.kTurretMaxOutput);
 
     turretPIDController.setSmartMotionMaxVelocity(ShooterConstants.kTurretmaxRPM, smartMotionSlot);
     turretPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
