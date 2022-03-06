@@ -29,8 +29,10 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -92,6 +94,9 @@ public class RobotContainer {
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(2);
+
+  final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
+
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
@@ -180,7 +185,8 @@ public class RobotContainer {
       SmartDashboard.putBoolean("Field Rel", fieldRelative);
       m_robotDrive.drive(xSpeed, ySpeed, rotation, fieldRelative);
 
-      //Check for manipulator right stick mode change
+      System.out.println("Starting Pose Angle" + m_robotDrive.getPose().getRotation().getDegrees());
+
 
     };
     m_robotDrive.setDefaultCommand(new RunCommand(Control, m_robotDrive));
@@ -231,6 +237,8 @@ public class RobotContainer {
     disableShooterButton.whenPressed(new InstantCommand(m_shooter::disableShooter,m_shooter));
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
+
+    testCommandButton.whenPressed(getAutonomousCommand());
   }
 
   double new_deadzone(double x) {
@@ -270,7 +278,7 @@ public class RobotContainer {
           // Drive Forward
           List.of(new Translation2d(1.0, 1)),
           // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(2, 2, new Rotation2d(Math.toRadians(90))),
+          new Pose2d(1.5, 1.5, new Rotation2d(Math.toRadians(0))),
           config);
 
     var thetaController = new ProfiledPIDController(
@@ -292,9 +300,17 @@ public class RobotContainer {
     // Reset odometry to the starting pose of the trajectory.
     m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
 
+    System.out.println("Starting Pose Angle" + m_robotDrive.getPose().getRotation().getDegrees());
+
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    return swerveControllerCommand
+    .andThen(new PrintCommand("Ending Pose Angle " + m_robotDrive.getPose().getRotation().getDegrees()));
+    // .andThen(() -> m_robotDrive.drive(0, 0, 0, false));
   }
+
+  public Command message = new InstantCommand(() -> {
+        System.out.println("See Me! *******************");
+  });
 
   //*******************************************************
   // The following Commands and Runnable allow swapping 

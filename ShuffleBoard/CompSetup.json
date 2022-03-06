@@ -11,116 +11,6 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "22,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LeftY",
-              "_title": "LeftY"
-            }
-          },
-          "24,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LeftX",
-              "_title": "LeftX"
-            }
-          },
-          "26,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RightX",
-              "_title": "RightX"
-            }
-          },
-          "0,7": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/xSpeed",
-              "_title": "xSpeed"
-            }
-          },
-          "2,7": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ySpeed",
-              "_title": "ySpeed"
-            }
-          },
-          "4,7": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/rotation",
-              "_title": "rotation"
-            }
-          },
-          "14,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SwerveModouleTurning13",
-              "_title": "SwerveModouleTurning13"
-            }
-          },
-          "16,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SwerveModouleTurning6",
-              "_title": "SwerveModouleTurning6"
-            }
-          },
-          "18,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SwerveModouleTurning12",
-              "_title": "SwerveModouleTurning12"
-            }
-          },
-          "20,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SwerveModouleTurning9",
-              "_title": "SwerveModouleTurning9"
-            }
-          },
           "0,0": {
             "size": [
               6,
@@ -149,28 +39,6 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "10,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SwerveModuleTurning12",
-              "_title": "SwerveModuleTurning12"
-            }
-          },
-          "12,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SwerveModuleTurning9",
-              "_title": "SwerveModuleTurning9"
-            }
-          },
           "28,0": {
             "size": [
               2,
@@ -193,43 +61,10 @@
               "_title": "Target Curvature"
             }
           },
-          "10,1": {
+          "0,7": {
             "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Target Position X",
-              "_title": "Target Position X"
-            }
-          },
-          "12,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Target Position Y",
-              "_title": "Target Position Y"
-            }
-          },
-          "14,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Target Rotation Radians",
-              "_title": "Target Rotation Radians"
-            }
-          },
-          "6,0": {
-            "size": [
-              3,
-              3
+              6,
+              2
             ],
             "content": {
               "_type": "Boolean Box",
@@ -237,61 +72,6 @@
               "_title": "Right Stick Climb",
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
-            }
-          },
-          "19,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shooter Setpoint",
-              "_title": "Shooter Setpoint"
-            }
-          },
-          "21,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/D Gain",
-              "_title": "D Gain"
-            }
-          },
-          "23,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/I Zone",
-              "_title": "I Zone"
-            }
-          },
-          "25,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/P Gain",
-              "_title": "P Gain"
-            }
-          },
-          "27,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Min Output",
-              "_title": "Min Output"
             }
           },
           "29,1": {
@@ -303,17 +83,6 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Max Output",
               "_title": "Max Output"
-            }
-          },
-          "16,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/SetPoint",
-              "_title": "SetPoint"
             }
           },
           "32,0": {
@@ -338,9 +107,9 @@
               "_title": "Shooter RPM"
             }
           },
-          "19,3": {
+          "21,0": {
             "size": [
-              8,
+              7,
               7
             ],
             "content": {
@@ -433,18 +202,7 @@
               "_title": "Shooter P"
             }
           },
-          "9,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shooter I",
-              "_title": "Shooter I"
-            }
-          },
-          "11,2": {
+          "6,0": {
             "size": [
               2,
               1
@@ -455,7 +213,84 @@
               "_title": "Shooter D"
             }
           },
-          "13,2": {
+          "8,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Shooter I",
+              "_title": "Shooter I"
+            }
+          },
+          "10,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/LeftY",
+              "_title": "LeftY"
+            }
+          },
+          "12,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/LeftX",
+              "_title": "LeftX"
+            }
+          },
+          "14,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/RightX",
+              "_title": "RightX"
+            }
+          },
+          "16,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/xSpeed",
+              "_title": "xSpeed"
+            }
+          },
+          "18,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ySpeed",
+              "_title": "ySpeed"
+            }
+          },
+          "40,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/rotation",
+              "_title": "rotation"
+            }
+          },
+          "42,0": {
             "size": [
               2,
               1
@@ -466,7 +301,7 @@
               "_title": "SwerveModuleTurning13"
             }
           },
-          "15,2": {
+          "44,0": {
             "size": [
               2,
               1
@@ -475,6 +310,28 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/SwerveModuleTurning6",
               "_title": "SwerveModuleTurning6"
+            }
+          },
+          "46,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveModuleTurning12",
+              "_title": "SwerveModuleTurning12"
+            }
+          },
+          "48,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveModuleTurning9",
+              "_title": "SwerveModuleTurning9"
             }
           }
         }
@@ -931,9 +788,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.333333492279053,
-    "y": -7.333333492279053,
-    "width": 1721.5999755859375,
-    "height": 695.2000122070312
+    "x": -7.0,
+    "y": 1.0,
+    "width": 1377.0,
+    "height": 536.0
   }
 }

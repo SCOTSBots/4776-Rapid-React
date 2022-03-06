@@ -32,7 +32,7 @@ public final class Constants {
     // Any constants that are not final can and should be update in GenerateConstants
     // Non-final constants are initialized with the values of the practice bot below.
 
-    public static final double drivePercentScale = 0.8;
+    public static final double drivePercentScale = 0.7;
     public static final double rotRateModifier = 1.25;
 
     public static final int kFrontLeftDriveMotorPort = 4;
@@ -161,7 +161,7 @@ public final class Constants {
   public static final class IntestineConstants {
     public static final int kIntestineMotorPort = 17; 
     public static final int kShooterFeederMotorPort = 18; 
-    public static final double kIntestinePower = 0.5;
+    public static final double kIntestinePower = 0.9;
   }
 
   public static final class ShooterConstants {
