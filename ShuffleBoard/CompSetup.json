@@ -202,83 +202,6 @@
               "_title": "Shooter P"
             }
           },
-          "6,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shooter D",
-              "_title": "Shooter D"
-            }
-          },
-          "8,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shooter I",
-              "_title": "Shooter I"
-            }
-          },
-          "10,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LeftY",
-              "_title": "LeftY"
-            }
-          },
-          "12,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LeftX",
-              "_title": "LeftX"
-            }
-          },
-          "14,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RightX",
-              "_title": "RightX"
-            }
-          },
-          "16,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/xSpeed",
-              "_title": "xSpeed"
-            }
-          },
-          "18,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/ySpeed",
-              "_title": "ySpeed"
-            }
-          },
           "40,0": {
             "size": [
               2,
@@ -332,6 +255,115 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/SwerveModuleTurning9",
               "_title": "SwerveModuleTurning9"
+            }
+          },
+          "21,7": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Shooter RPM",
+              "_title": "SmartDashboard/Shooter RPM"
+            }
+          },
+          "17,7": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/HoodWheel RPM",
+              "_title": "HoodWheel RPM"
+            }
+          },
+          "25,7": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Shooter at Speed",
+              "_title": "Shooter at Speed",
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "6,0": {
+            "size": [
+              11,
+              9
+            ],
+            "content": {
+              "_type": "Camera Stream",
+              "_source0": "camera_server://USB Camera 0",
+              "_title": "USB Camera 0",
+              "Crosshair/Show crosshair": true,
+              "Crosshair/Crosshair color": "#FFFFFFFF",
+              "Controls/Show controls": true,
+              "Controls/Rotation": "NONE",
+              "compression": -1.0,
+              "fps": 15,
+              "imageWidth": 320,
+              "imageHeight": 200
+            }
+          },
+          "17,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/LeftY",
+              "_title": "LeftY"
+            }
+          },
+          "19,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/LeftX",
+              "_title": "LeftX"
+            }
+          },
+          "17,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/RightX",
+              "_title": "RightX"
+            }
+          },
+          "19,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/xSpeed",
+              "_title": "xSpeed"
+            }
+          },
+          "41,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/ySpeed",
+              "_title": "ySpeed"
             }
           }
         }
@@ -788,9 +820,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.0,
-    "y": 1.0,
-    "width": 1377.0,
-    "height": 536.0
+    "x": -7.199999809265137,
+    "y": 0.800000011920929,
+    "width": 1377.5999755859375,
+    "height": 581.5999755859375
   }
 }

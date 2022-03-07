@@ -23,9 +23,12 @@ public class Shooter extends SubsystemBase {
   ControlType VelocityControlMode = CANSparkMax.ControlType.kSmartVelocity;
   private Timer m_timer = new Timer();
 
+  //Shooter state variables
   private double shooterRPMOpPoint = ShooterConstants.kShootHighRPM;
-  private double hoodRPMOpPoint = 0;
+  private double hoodRPMOpPoint = ShooterConstants.kHoodWheelHighRPM;
+  private boolean shooterIsRunning = false;
   
+  //Motor config
   private CANSparkMax shooterFeederMotor;
   private CANSparkMax shooterMotor;
   private CANSparkMax hoodWheelMotor;
@@ -62,14 +65,14 @@ public class Shooter extends SubsystemBase {
     shooterEncoder = shooterMotor.getEncoder();
 
     // set Shooter PID coefficients
-    shooterPIDController.setP(ShooterConstants.kShooterP);
-    shooterPIDController.setI(ShooterConstants.kShooterI);
-    shooterPIDController.setD(ShooterConstants.kShooterD);
-    shooterPIDController.setIZone(ShooterConstants.kShooterIz);
-    shooterPIDController.setFF(ShooterConstants.kShooterFF);
-    shooterPIDController.setOutputRange(ShooterConstants.kShooterMinOutput, ShooterConstants.kShooterMaxOutput);
+    shooterPIDController.setP(ShooterConstants.Shooter.kP);
+    shooterPIDController.setI(ShooterConstants.Shooter.kI);
+    shooterPIDController.setD(ShooterConstants.Shooter.kD);
+    shooterPIDController.setIZone(ShooterConstants.Shooter.kIz);
+    shooterPIDController.setFF(ShooterConstants.Shooter.kFF);
+    shooterPIDController.setOutputRange(ShooterConstants.Shooter.kMinOutput, ShooterConstants.Shooter.kMaxOutput);
     
-    shooterPIDController.setSmartMotionMaxVelocity(ShooterConstants.kShootermaxRPM, smartMotionSlot);
+    shooterPIDController.setSmartMotionMaxVelocity(ShooterConstants.Shooter.kmaxRPM, smartMotionSlot);
     shooterPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
     shooterPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
     shooterPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
@@ -143,22 +146,20 @@ public class Shooter extends SubsystemBase {
   @Override
   public void periodic(){
     SmartDashboard.putNumber("Shooter RPM", getShooterSpeed());
-    SmartDashboard.putNumber("Shooter FF", shooterPIDController.getP());
-    SmartDashboard.putNumber("Shooter P", shooterPIDController.getP());
-    SmartDashboard.putNumber("Shooter I", shooterPIDController.getP());
-    SmartDashboard.putNumber("Shooter D", shooterPIDController.getP());
+    SmartDashboard.putNumber("HoodWheel RPM", getHoodWheelSpeed());
+    SmartDashboard.putBoolean("Shooter at Speed", shooterIsReady());
     
   }
 
   public void enableShooter(){
-    shooterPIDController.setReference(2000, VelocityControlMode);
-    //hoodWheelPIDController.setReference(hoodRPMOpPoint, VelocityControlMode);
+    shooterPIDController.setReference(shooterRPMOpPoint, VelocityControlMode);
+    hoodWheelPIDController.setReference(hoodRPMOpPoint, VelocityControlMode);
 
-    shooterMotor.set(0.5);
 
     lastShooterSetRPM = shooterRPMOpPoint;
     lastHoodWheelSetRPM = hoodRPMOpPoint;
-    System.out.println("Shooter Setpoint =" + shooterRPMOpPoint);
+    shooterIsRunning = true;
+    //System.out.println("Shooter Setpoint =" + shooterRPMOpPoint);
   }
 
   public void enableShooter(double shooterRPM, double hoodWheelRPM) {
@@ -167,6 +168,7 @@ public class Shooter extends SubsystemBase {
 
     lastShooterSetRPM = shooterRPM;
     lastHoodWheelSetRPM = hoodWheelRPM;
+    shooterIsRunning = true;
   }
 
   public void disableShooter(){
@@ -175,6 +177,7 @@ public class Shooter extends SubsystemBase {
 
     lastShooterSetRPM = 0;
     lastHoodWheelSetRPM = 0;
+    shooterIsRunning = false;
   }
 
   public boolean shooterIsReady(){
@@ -255,6 +258,28 @@ public class Shooter extends SubsystemBase {
 
   public void setHoodRPMOpPoint(double hoodRPMOpPoint) {
     this.hoodRPMOpPoint = hoodRPMOpPoint;
+  }
+
+  public void changeShooterRPM(boolean setHigh) {
+    if(setHigh){
+      shooterRPMOpPoint = ShooterConstants.kShootHighRPM;
+      hoodRPMOpPoint = ShooterConstants.kHoodWheelHighRPM;
+    } else {
+      shooterRPMOpPoint = ShooterConstants.kShootLowRPM;
+      hoodRPMOpPoint = ShooterConstants.kHoodWheelLowRPM;
+    }
+
+    if(shooterIsRunning){
+      enableShooter();
+    }
+  }
+
+  public void setShooterRPMHigh(){
+    changeShooterRPM(true);
+  }
+
+  public void setShooterRPMLow(){
+    changeShooterRPM(false);
   }
 
 }

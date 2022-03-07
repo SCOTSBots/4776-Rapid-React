@@ -127,8 +127,8 @@ public final class Constants {
   }
 
   public static final class AutoConstants {
-    public static final double kMaxSpeedMetersPerSecond = 2;//was 3
-    public static final double kMaxAccelerationMetersPerSecondSquared = 4;//was 3
+    public static final double kMaxSpeedMetersPerSecond = 1.0;//was 3
+    public static final double kMaxAccelerationMetersPerSecondSquared = 2;//was 3
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;//was Pi
     public static final double kMaxAngularSpeedRadiansPerSecondSquared = Math.PI;
 
@@ -161,7 +161,7 @@ public final class Constants {
   public static final class IntestineConstants {
     public static final int kIntestineMotorPort = 17; 
     public static final int kShooterFeederMotorPort = 18; 
-    public static final double kIntestinePower = 0.9;
+    public static final double kIntestinePower = 0.95;
   }
 
   public static final class ShooterConstants {
@@ -172,7 +172,9 @@ public final class Constants {
     public static final int kShooterFeederMotorPort = 18; 
 
     public static final double kShootHighRPM = 4800;
-    public static final double kShootLowRPM = 2000;
+    public static final double kShootLowRPM = 2500;
+    public static final double kHoodWheelHighRPM = -10000;
+    public static final double kHoodWheelLowRPM = -8000;
     public static final double kSHOT_TIME = 1.0; //Length of time to run the shooter feeder
     public static final double kFeederHoldPower = 0; //Use zero for brake mode / Negative for active hold.
 
@@ -182,26 +184,17 @@ public final class Constants {
     public static final int kTurretMinCounts = -1000;
 
     // Shooter SparkMAX PID coefficients
-    // public static final double kShooterP = 0.0005;
-    // public static final double kShooterI = 0.00000001;
-    // public static final double kShooterD = 0;
-    // public static final double kShooterIz = 0;
-    // public static final double kShooterFF = 0.0002;
-    // public static final double kShooterMaxOutput = 1;
-    // public static final double kShooterMinOutput = -1;
-    // public static final double kShootermaxRPM = 4900;
-    // public static final double kShooterTypRPM = 4750;
-
-    public static final double kShooterP = 0;
-    public static final double kShooterI = 0;
-    public static final double kShooterD = 0;
-    public static final double kShooterIz = 0;
-    public static final double kShooterFF = 0;
-    public static final double kShooterMaxOutput = 1;
-    public static final double kShooterMinOutput = -1;
-    public static final double kShootermaxRPM = 4900;
-    public static final double kShooterTypRPM = 4750;
-
+    public static final class Shooter {
+      public static final double kP = 0.0005069;
+      public static final double kI = 0.00000001;
+      public static final double kD = 0;
+      public static final double kIz = 0;
+      public static final double kFF = 0.0002;
+      public static final double kMaxOutput = 1;
+      public static final double kMinOutput = -1;
+      public static final double kmaxRPM = 5500;
+      public static final double kTypRPM = 4750;
+    }
 
     // Hood SparkMAX PID coefficients
     public static final double kHoodP = 0.03;
@@ -215,14 +208,14 @@ public final class Constants {
 
     // Hood Wheel SparkMAX PID coefficients
     public static final double kHoodWheelP = 0.00011;
-    public static final double kHoodWheelI = 0.0000005;
+    public static final double kHoodWheelI = 0.0000001;
     public static final double kHoodWheelD = 0;
     public static final double kHoodWheelIz = 0;
     public static final double kHoodWheelFF = 0.000103;
     public static final double kHoodWheelMaxOutput = 1;
     public static final double kHoodWheelMinOutput = -1;
-    public static final double kHoodWheelmaxRPM = 5300;
-    public static final double kHoodWheelTypRPM = 5000;
+    public static final double kHoodWheelmaxRPM = 10000;
+    public static final double kHoodWheelTypRPM = 8000;
 
     // Turret SparkMAX PID coefficients
     public static final double kTurretP = 0;

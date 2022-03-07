@@ -41,6 +41,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import java.util.List;
 import java.util.Map;
 
+
 import static java.util.Map.entry;
 
 import frc.robot.commands.*;
@@ -63,7 +64,7 @@ public class RobotContainer {
   private final Climber m_climber = new Climber();
   private final Intestine m_intestine = new Intestine();
   private final Shooter m_shooter = new Shooter();
-  
+
 
   private final StickAssignmentState rightStickIsClimber = new StickAssignmentState(false);
 
@@ -199,16 +200,6 @@ public class RobotContainer {
     };
     m_intakePackage.setDefaultCommand(new RunCommand(ControlIntakePackage, m_intakePackage));
 
-    // **** Moved to a separte declaration
-    // TODO: Delete if code works
-    // Runnable ControlClimber = () -> {
-    //   // Climber control by right manipulator stick
-    //   double liftPower = - new_deadzone(m_manipulatorController.getRightY())/2;
-    //   double armPower = new_deadzone(m_manipulatorController.getRightX())/4;      
-  
-    //   m_climber.runLift(liftPower);
-    //   m_climber.runArm(0.2 * armPower);
-    // };
   
     m_climber.setDefaultCommand(new RunCommand(ControlClimber, m_climber));
     m_shooter.setDefaultCommand(new RunCommand(ControlTurret, m_shooter));
@@ -232,13 +223,16 @@ public class RobotContainer {
     stopIntakeandIntestineButton.whenPressed(new InstantCommand(m_intestine::intestineOff, m_intestine).
     andThen(new InstantCommand(m_intake::intakeOff, m_intake)));
 
+    //Shooter controls
     shootTrigger.whenPressed(new Shoot(m_shooter));
     enableShooterButton.whenPressed(new InstantCommand(m_shooter::enableShooter,m_shooter));
     disableShooterButton.whenPressed(new InstantCommand(m_shooter::disableShooter,m_shooter));
+    setShooterHighButton.whenPressed(new InstantCommand(m_shooter::setShooterRPMHigh,m_shooter));
+    setShooterLowButton.whenPressed(new InstantCommand(m_shooter::setShooterRPMLow,m_shooter));
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
 
-    testCommandButton.whenPressed(getAutonomousCommand());
+    //testCommandButton.whenPressed(getAutonomousCommand());
   }
 
   double new_deadzone(double x) {
@@ -276,9 +270,9 @@ public class RobotContainer {
           // Start at the origin facing the +X direction
           new Pose2d(0, 0, new Rotation2d(0)),
           // Drive Forward
-          List.of(new Translation2d(1.0, 1)),
+          List.of(new Translation2d(1.0, 0)),
           // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(1.5, 1.5, new Rotation2d(Math.toRadians(0))),
+          new Pose2d(2.0, 0, new Rotation2d(Math.toRadians(135.0))),
           config);
 
     var thetaController = new ProfiledPIDController(
@@ -338,22 +332,22 @@ public class RobotContainer {
     if (!rightStickIsClimber.get()) {
       // Climber control by right manipulator stick
       double hoodPower = -new_deadzone(m_manipulatorController.getRightY()) / 4;
-      double turretPower = new_deadzone(m_manipulatorController.getRightX()) / 1;
+      double turretPower = new_deadzone(m_manipulatorController.getRightX()) / 1.5;
 
       m_shooter.setHoodPower(hoodPower);
       m_shooter.setTurretPower(turretPower);
 
-      double prevShooterRPM = m_shooter.getShooterRPMOpPoint();
+      // double prevShooterRPM = m_shooter.getShooterRPMOpPoint();
 
-      if(setShooterHighButton.get()){
-        m_shooter.setShooterRPMOpPoint(ShooterConstants.kShootHighRPM);
-      } else if (setShooterLowButton.get()){
-        m_shooter.setShooterRPMOpPoint(ShooterConstants.kShootLowRPM);
-      }
+      // if(setShooterHighButton.get()){
+      //   m_shooter.setShooterRPMOpPoint(ShooterConstants.kShootHighRPM);
+      // } else if (setShooterLowButton.get()){
+      //   m_shooter.setShooterRPMOpPoint(ShooterConstants.kShootLowRPM);
+      // }
 
-      if((m_shooter.getShooterRPMOpPoint() != prevShooterRPM) && (m_shooter.getlastShooterSetRPM() != 0)){
-        m_shooter.enableShooter();
-      }
+      // if((m_shooter.getShooterRPMOpPoint() != prevShooterRPM) && (m_shooter.getlastShooterSetRPM() != 0)){
+      //   m_shooter.enableShooter();
+      // }
       
     } else {
       //Probably need to modify this to hold last position using PID, especially the hood position 
