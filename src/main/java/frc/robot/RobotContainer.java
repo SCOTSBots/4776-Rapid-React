@@ -180,13 +180,13 @@ public class RobotContainer {
       }
 
       // Call the Method
-      SmartDashboard.putNumber("xSpeed", xSpeed);
-      SmartDashboard.putNumber("ySpeed", ySpeed);
-      SmartDashboard.putNumber("rotation", rotation);
-      SmartDashboard.putBoolean("Field Rel", fieldRelative);
+      // SmartDashboard.putNumber("xSpeed", xSpeed);
+      // SmartDashboard.putNumber("ySpeed", ySpeed);
+      // SmartDashboard.putNumber("rotation", rotation);
+      // SmartDashboard.putBoolean("Field Rel", fieldRelative);
       m_robotDrive.drive(xSpeed, ySpeed, rotation, fieldRelative);
 
-      System.out.println("Starting Pose Angle" + m_robotDrive.getPose().getRotation().getDegrees());
+      //System.out.println("Starting Pose Angle" + m_robotDrive.getPose().getRotation().getDegrees());
 
 
     };
@@ -336,18 +336,6 @@ public class RobotContainer {
 
       m_shooter.setHoodPower(hoodPower);
       m_shooter.setTurretPower(turretPower);
-
-      // double prevShooterRPM = m_shooter.getShooterRPMOpPoint();
-
-      // if(setShooterHighButton.get()){
-      //   m_shooter.setShooterRPMOpPoint(ShooterConstants.kShootHighRPM);
-      // } else if (setShooterLowButton.get()){
-      //   m_shooter.setShooterRPMOpPoint(ShooterConstants.kShootLowRPM);
-      // }
-
-      // if((m_shooter.getShooterRPMOpPoint() != prevShooterRPM) && (m_shooter.getlastShooterSetRPM() != 0)){
-      //   m_shooter.enableShooter();
-      // }
       
     } else {
       //Probably need to modify this to hold last position using PID, especially the hood position 
