@@ -149,9 +149,9 @@ public class RobotContainer {
     customAnglePID.enableContinuousInput(-Math.PI, Math.PI);
     Runnable Control = () -> {
 
-      SmartDashboard.putNumber("LeftY", m_driverController.getLeftY());
-      SmartDashboard.putNumber("LeftX", m_driverController.getLeftX());
-      SmartDashboard.putNumber("RightX", m_driverController.getRightX());
+      // SmartDashboard.putNumber("LeftY", m_driverController.getLeftY());
+      // SmartDashboard.putNumber("LeftX", m_driverController.getLeftX());
+      // SmartDashboard.putNumber("RightX", m_driverController.getRightX());
 
       // Swerve xSpeed is the vertical/forward (negative because stick is inverse)
       double xSpeed = DriveConstants.drivePercentScale * DriveConstants.kMaxSpeedMetersPerSecond
@@ -183,7 +183,7 @@ public class RobotContainer {
       // SmartDashboard.putNumber("xSpeed", xSpeed);
       // SmartDashboard.putNumber("ySpeed", ySpeed);
       // SmartDashboard.putNumber("rotation", rotation);
-      // SmartDashboard.putBoolean("Field Rel", fieldRelative);
+      SmartDashboard.putBoolean("Field Rel", fieldRelative);
       m_robotDrive.drive(xSpeed, ySpeed, rotation, fieldRelative);
 
       //System.out.println("Starting Pose Angle" + m_robotDrive.getPose().getRotation().getDegrees());
@@ -194,7 +194,7 @@ public class RobotContainer {
 
     Runnable ControlIntakePackage = () -> {
       // Intake Packge control by left manipulator stick
-      double packPower = new_deadzone(m_manipulatorController.getLeftY())/4;      
+      double packPower = new_deadzone(m_manipulatorController.getLeftY())*0.25;
 
       m_intakePackage.packControl(packPower);
     };

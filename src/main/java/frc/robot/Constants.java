@@ -148,8 +148,8 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int intakePackageMotorPort = 8;
     public static final int intakeMotorPort = 7;
-    public static final double unpackagePower = 0.2;
-    public static final double packagePower = 0.2;
+    public static final double unpackagePower = 0.5;
+    public static final double packagePower = 0.5;
     public static final double intakePower = 0.5;
   }
 
@@ -165,7 +165,7 @@ public final class Constants {
   public static final class IntestineConstants {
     public static final int kIntestineMotorPort = 17; 
     public static final int kShooterFeederMotorPort = 18; 
-    public static final double kIntestinePower = 0.95;
+    public static final double kIntestinePower = -0.95;
   }
 
   public static final class ShooterConstants {
@@ -179,7 +179,7 @@ public final class Constants {
     public static final double kShootLowRPM = 2500;
     public static final double kHoodWheelHighRPM = -10000;
     public static final double kHoodWheelLowRPM = -8000;
-    public static final double kSHOT_TIME = 1.0; //Length of time to run the shooter feeder
+    public static final double kSHOT_TIME = 0.75; //Length of time to run the shooter feeder
     public static final double kFeederHoldPower = 0; //Use zero for brake mode / Negative for active hold.
 
 

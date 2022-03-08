@@ -22,10 +22,10 @@ public class Climber extends SubsystemBase {
     
     //Configure so that positive motor power moves arm towards front of robot
     armMotor = new CANSparkMax(ClimberConstants.armMotorPort, MotorType.kBrushless);
-    armMotor.setInverted(false);
+    armMotor.setInverted(true);
     armMotor.setIdleMode(IdleMode.kBrake);
     armMotor2 = new CANSparkMax(ClimberConstants.armMotor2Port, MotorType.kBrushless);
-    armMotor.setInverted(true);
+    armMotor.setInverted(false);
     armMotor2.setIdleMode(IdleMode.kBrake);
 
   }

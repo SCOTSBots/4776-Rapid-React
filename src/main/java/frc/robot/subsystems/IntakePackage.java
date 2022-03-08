@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.Constants.IntakeConstants;
 
@@ -18,6 +19,7 @@ public class IntakePackage extends SubsystemBase {
   public IntakePackage() {
     //Assume postive motor power unpackages the intake
     intakePackageMotor = new CANSparkMax(IntakeConstants.intakePackageMotorPort, MotorType.kBrushless);
+    intakePackageMotor.setIdleMode(IdleMode.kBrake);
 
   }
 
