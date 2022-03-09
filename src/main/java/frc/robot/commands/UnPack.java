@@ -40,6 +40,6 @@ public class UnPack extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.hasElapsed(1.0);
+    return m_timer.hasElapsed(0.5);
   }
 }

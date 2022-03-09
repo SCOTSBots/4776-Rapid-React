@@ -92,11 +92,15 @@ public class RobotContainer {
 
   final JoystickButton rightStickModeButton = new JoystickButton(m_manipulatorController, XboxController.Button.kStart.value);
 
+  final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
+
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter rotLimiter = new SlewRateLimiter(2);
 
   final JoystickButton testCommandButton = new JoystickButton(m_driverController, XboxController.Button.kA.value);
+
+  private boolean hoodHold = false;
 
 
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
@@ -204,6 +208,9 @@ public class RobotContainer {
     m_climber.setDefaultCommand(new RunCommand(ControlClimber, m_climber));
     m_shooter.setDefaultCommand(new RunCommand(ControlTurret, m_shooter));
 
+    
+    lowSpeedTrigger.whenPressed(new InstantCommand(m_robotDrive::setSlowDrive, m_robotDrive))
+    .whenReleased(new InstantCommand(m_robotDrive::setNormalDrive, m_robotDrive));
     //packButton.whenPressed(new Pack(m_intakePackage));
     //unpackButton.whenPressed(new UnPack(m_intakePackage));
 
@@ -232,7 +239,7 @@ public class RobotContainer {
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
 
-    //testCommandButton.whenPressed(getAutonomousCommand());
+    //testCommandButton.whenPressed(new UnPack(m_intakePackage));
   }
 
   double new_deadzone(double x) {
@@ -320,7 +327,7 @@ public class RobotContainer {
       double armPower = new_deadzone(m_manipulatorController.getRightX()) / 4;
 
       m_climber.runLift(liftPower);
-      m_climber.runArm(0.2 * armPower);
+      m_climber.runArm(0.3 * armPower);
     } else {
       m_climber.runArm(0);
       m_climber.runLift(0);
@@ -331,17 +338,27 @@ public class RobotContainer {
   private Runnable ControlTurret = () -> {
     if (!rightStickIsClimber.get()) {
       // Climber control by right manipulator stick
-      double hoodPower = -new_deadzone(m_manipulatorController.getRightY()) / 4;
+      double hoodPower = -new_deadzone(m_manipulatorController.getRightY()) * 0.15;
       double turretPower = new_deadzone(m_manipulatorController.getRightX()) / 1.5;
 
-      m_shooter.setHoodPower(hoodPower);
+      if (hoodPower != 0) {
+        m_shooter.setHoodPower(hoodPower);
+        hoodHold = false;
+      } else if(!hoodHold){
+        double position = m_shooter.holdHooodPosition();
+        hoodHold = true;
+        System.out.println("Setting hold position @" + position );
+      }
+
       m_shooter.setTurretPower(turretPower);
       
     } else {
       //Probably need to modify this to hold last position using PID, especially the hood position 
-      m_shooter.setHoodPower(0);
+      //m_shooter.holdHooodPosition();  **Should already be in hold mode?
       m_shooter.setTurretPower(0);
     }
+
+    SmartDashboard.putNumber("Hood Position", m_shooter.getHoodPosition() / ShooterConstants.kHoodMaxCounts * 100);
   };
 
 }

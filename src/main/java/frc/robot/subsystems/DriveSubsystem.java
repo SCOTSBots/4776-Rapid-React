@@ -5,8 +5,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+
+import java.nio.channels.Selector;
+import java.sql.Driver;
+
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import frc.robot.Constants.ConfigConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -277,5 +282,15 @@ public class DriveSubsystem extends SubsystemBase {
           .withPosition(18, i * 2)
           .getEntry();
     }
+  }
+
+  public void setNormalDrive(){
+    DriveConstants.drivePercentScale = DriveConstants.driveNormalPercentScale;
+    DriveConstants.rotRateModifier = DriveConstants.driveNormalPercentScale;
+  }
+
+  public void setSlowDrive(){
+    DriveConstants.drivePercentScale = DriveConstants.driveLowPercentScale;
+    DriveConstants.rotRateModifier = DriveConstants.driveLowPercentScale;
   }
 }

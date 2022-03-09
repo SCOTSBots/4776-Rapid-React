@@ -31,6 +31,7 @@ public class Shooter extends SubsystemBase {
   //Motor config
   private CANSparkMax shooterFeederMotor;
   private CANSparkMax shooterMotor;
+  private CANSparkMax shooterSecondaryMotor;
   private CANSparkMax hoodWheelMotor;
   private CANSparkMax turretMotor;
   private CANSparkMax hoodMotor;
@@ -64,6 +65,13 @@ public class Shooter extends SubsystemBase {
     shooterPIDController = shooterMotor.getPIDController();
     shooterEncoder = shooterMotor.getEncoder();
 
+    if (ShooterConstants.hasSecondary) {
+      shooterSecondaryMotor = new CANSparkMax(ShooterConstants.kShooterSecondaryMotorPort, MotorType.kBrushless);
+      shooterSecondaryMotor.restoreFactoryDefaults();
+      shooterSecondaryMotor.setInverted(false);
+      shooterSecondaryMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    }
+
     // set Shooter PID coefficients
     shooterPIDController.setP(ShooterConstants.Shooter.kP);
     shooterPIDController.setI(ShooterConstants.Shooter.kI);
@@ -73,7 +81,7 @@ public class Shooter extends SubsystemBase {
     shooterPIDController.setOutputRange(ShooterConstants.Shooter.kMinOutput, ShooterConstants.Shooter.kMaxOutput);
     
     shooterPIDController.setSmartMotionMaxVelocity(ShooterConstants.Shooter.kmaxRPM, smartMotionSlot);
-    shooterPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
+    shooterPIDController.setSmartMotionMinOutputVelocity(50, smartMotionSlot);
     shooterPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
     shooterPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
     shooterPIDController.setSmartMotionAccelStrategy(AccelStrategy.kSCurve, smartMotionSlot);
@@ -86,15 +94,15 @@ public class Shooter extends SubsystemBase {
     hoodEncoder = hoodMotor.getEncoder();
 
     // set Hood PID coefficients
-    hoodPIDController.setP(ShooterConstants.kHoodP);
-    hoodPIDController.setI(ShooterConstants.kHoodI);
-    hoodPIDController.setD(ShooterConstants.kHoodD);
-    hoodPIDController.setIZone(ShooterConstants.kHoodIz);
-    hoodPIDController.setFF(ShooterConstants.kHoodFF);
-    hoodPIDController.setOutputRange(ShooterConstants.kHoodMinOutput, ShooterConstants.kHoodMaxOutput);
+    hoodPIDController.setP(ShooterConstants.Hood.kP);
+    hoodPIDController.setI(ShooterConstants.Hood.kI);
+    hoodPIDController.setD(ShooterConstants.Hood.kD);
+    hoodPIDController.setIZone(ShooterConstants.Hood.kIz);
+    hoodPIDController.setFF(ShooterConstants.Hood.kFF);
+    hoodPIDController.setOutputRange(ShooterConstants.Hood.kMinOutput, ShooterConstants.Hood.kMaxOutput);
 
-    hoodPIDController.setSmartMotionMaxVelocity(ShooterConstants.kHoodmaxRPM, smartMotionSlot);
-    hoodPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
+    hoodPIDController.setSmartMotionMaxVelocity(ShooterConstants.Hood.kmaxRPM, smartMotionSlot);
+    hoodPIDController.setSmartMotionMinOutputVelocity(50, smartMotionSlot);
     hoodPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
     hoodPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
     hoodPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
@@ -115,7 +123,7 @@ public class Shooter extends SubsystemBase {
     hoodWheelPIDController.setOutputRange(ShooterConstants.kHoodWheelMinOutput, ShooterConstants.kHoodWheelMaxOutput);
 
     hoodWheelPIDController.setSmartMotionMaxVelocity(ShooterConstants.kHoodWheelmaxRPM, smartMotionSlot);
-    hoodWheelPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
+    hoodWheelPIDController.setSmartMotionMinOutputVelocity(50, smartMotionSlot);
     hoodWheelPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
     hoodWheelPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
     hoodWheelPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
@@ -136,7 +144,7 @@ public class Shooter extends SubsystemBase {
     turretPIDController.setOutputRange(ShooterConstants.kTurretMinOutput, ShooterConstants.kTurretMaxOutput);
 
     turretPIDController.setSmartMotionMaxVelocity(ShooterConstants.kTurretmaxRPM, smartMotionSlot);
-    turretPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
+    turretPIDController.setSmartMotionMinOutputVelocity(50, smartMotionSlot);
     turretPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
     turretPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
     turretPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
@@ -204,9 +212,20 @@ public class Shooter extends SubsystemBase {
     hoodPIDController.setReference(percent * ShooterConstants.kHoodMaxCounts, CANSparkMax.ControlType.kSmartMotion);
   }
 
+  public double holdHooodPosition(){
+    double position = getHoodPosition();
+    hoodPIDController.setReference(getHoodPosition(), CANSparkMax.ControlType.kSmartMotion);
+    return position;
+  }
+
+  public double getHoodPosition(){
+    return hoodEncoder.getPosition();
+  }
+
   public void setHoodPower(double power){
     hoodMotor.set(power);
   }
+
 
   public void setTurretPosition(double percent) {
     if (percent < 0){

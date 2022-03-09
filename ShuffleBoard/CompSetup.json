@@ -74,17 +74,6 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "29,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Max Output",
-              "_title": "Max Output"
-            }
-          },
           "32,0": {
             "size": [
               2,
@@ -311,50 +300,6 @@
               "imageHeight": 200
             }
           },
-          "17,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LeftY",
-              "_title": "LeftY"
-            }
-          },
-          "19,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/LeftX",
-              "_title": "LeftX"
-            }
-          },
-          "17,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RightX",
-              "_title": "RightX"
-            }
-          },
-          "19,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/xSpeed",
-              "_title": "xSpeed"
-            }
-          },
           "41,1": {
             "size": [
               2,
@@ -364,6 +309,75 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/ySpeed",
               "_title": "ySpeed"
+            }
+          },
+          "43,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/P Gain",
+              "_title": "P Gain"
+            }
+          },
+          "45,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/D Gain",
+              "_title": "D Gain"
+            }
+          },
+          "47,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/I Zone",
+              "_title": "I Zone"
+            }
+          },
+          "49,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Min Output",
+              "_title": "Min Output"
+            }
+          },
+          "17,0": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Shooter Setpoint",
+              "_title": "Shooter Setpoint"
+            }
+          },
+          "17,2": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+              "_type": "Simple Dial",
+              "_source0": "network_table:///SmartDashboard/Hood Position",
+              "_title": "SmartDashboard/Hood Position",
+              "Range/Min": 0.0,
+              "Range/Max": 100.0,
+              "Visuals/Show value": true
             }
           }
         }
@@ -820,9 +834,9 @@
     }
   ],
   "windowGeometry": {
-    "x": -7.199999809265137,
-    "y": -7.199999809265137,
-    "width": 1550.4000244140625,
-    "height": 830.4000244140625
+    "x": -614.4000244140625,
+    "y": 0.0,
+    "width": 1553.5999755859375,
+    "height": 593.5999755859375
   }
 }

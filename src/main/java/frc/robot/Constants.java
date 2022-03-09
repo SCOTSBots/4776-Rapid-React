@@ -36,8 +36,15 @@ public final class Constants {
     // Any constants that are not final can and should be update in GenerateConstants
     // Non-final constants are initialized with the values of the practice bot below.
 
-    public static final double drivePercentScale = 0.7;
-    public static final double rotRateModifier = 1.25;
+
+    public static final double driveNormalPercentScale = 0.7;
+    public static final double rotNormalRateModifier = 1.25;  
+    public static final double driveLowPercentScale = 0.5;
+    public static final double rotLowRateModifier = 0.75;    
+
+
+    public static double drivePercentScale = driveNormalPercentScale;
+    public static double rotRateModifier = rotNormalRateModifier;
 
     public static final int kFrontLeftDriveMotorPort = 4;
     public static final int kRearLeftDriveMotorPort = 3;
@@ -150,7 +157,7 @@ public final class Constants {
     public static final int intakeMotorPort = 7;
     public static final double unpackagePower = 0.5;
     public static final double packagePower = 0.5;
-    public static final double intakePower = 0.5;
+    public static final double intakePower = 0.75;
   }
 
   public static final class ClimberConstants {
@@ -170,20 +177,25 @@ public final class Constants {
 
   public static final class ShooterConstants {
     public static final int kShooterMotorPort = 32;
+    public static final int kShooterSecondaryMotorPort = 36;
     public static final int kHoodWheelMotorPort = 33;
     public static final int kTurretMotorPort = 34; 
     public static final int kHoodMotorPort = 35; 
     public static final int kShooterFeederMotorPort = 18; 
 
+    public static boolean hasSecondary = false;
+
     public static final double kShootHighRPM = 4800;
-    public static final double kShootLowRPM = 2500;
+    public static final double kShootLowRPM = 800;
+    //public static final double kShootLowRPM = 1600;
     public static final double kHoodWheelHighRPM = -10000;
-    public static final double kHoodWheelLowRPM = -8000;
-    public static final double kSHOT_TIME = 0.75; //Length of time to run the shooter feeder
+    public static final double kHoodWheelLowRPM = 0;
+    //public static final double kHoodWheelLowRPM = -8000;
+    public static final double kSHOT_TIME = 0.3; //Length of time to run the shooter feeder
     public static final double kFeederHoldPower = 0; //Use zero for brake mode / Negative for active hold.
 
 
-    public static final int kHoodMaxCounts = 14;
+    public static final int kHoodMaxCounts = 10;
     public static final int kTurretMaxCounts = 1000;
     public static final int kTurretMinCounts = -1000;
 
@@ -201,14 +213,16 @@ public final class Constants {
     }
 
     // Hood SparkMAX PID coefficients
-    public static final double kHoodP = 0.03;
-    public static final double kHoodI = 0.0001;
-    public static final double kHoodD = 0;
-    public static final double kHoodIz = 0;
-    public static final double kHoodFF = 0.005;
-    public static final double kHoodMaxOutput = 0.5;
-    public static final double kHoodMinOutput = -0.5;
-    public static final double kHoodmaxRPM = 2000;
+    public static final class Hood {
+      public static final double kP = 0.00005;
+      public static final double kI = 0.0000005;
+      public static final double kD = 0;
+      public static final double kIz = 0;
+      public static final double kFF = 0.003;
+      public static final double kMaxOutput = 1.0;
+      public static final double kMinOutput = -1.0;
+      public static final double kmaxRPM = 8000;
+    }
 
     // Hood Wheel SparkMAX PID coefficients
     public static final double kHoodWheelP = 0.00011;
@@ -237,6 +251,7 @@ public final class Constants {
     switch (robot) {
         case CompBot: {
           ConfigConstants.hasCamera = false;
+          ShooterConstants.hasSecondary = true;
 
           //TODO: Determine values
           DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(+165.1));
@@ -259,6 +274,8 @@ public final class Constants {
 
         case PracticeBot: {
           ConfigConstants.hasCamera = true;
+          ShooterConstants.hasSecondary = false;
+
           
           DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
           DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));

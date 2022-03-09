@@ -25,7 +25,7 @@ public class Climber extends SubsystemBase {
     armMotor.setInverted(true);
     armMotor.setIdleMode(IdleMode.kBrake);
     armMotor2 = new CANSparkMax(ClimberConstants.armMotor2Port, MotorType.kBrushless);
-    armMotor.setInverted(false);
+    armMotor2.setInverted(false);
     armMotor2.setIdleMode(IdleMode.kBrake);
 
   }
