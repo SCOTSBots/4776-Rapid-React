@@ -18,6 +18,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import java.security.PublicKey;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -64,8 +65,10 @@ public class SwerveModule {
     this.turningMotorChannel = turningMotorChannel;
     turningEncoderCounts = encoderCounts;
     m_driveMotor = new CANSparkMax(driveMotorChannel, MotorType.kBrushless);
+    m_driveMotor.setIdleMode(IdleMode.kCoast); //Added 3/9
     m_driveMotor.setInverted(is_invertedLeft);
     m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushed);
+    m_driveMotor.setIdleMode(IdleMode.kBrake); //Added 3/9
 
     this.m_driveEncoder = m_driveMotor.getEncoder();
     // m_driveEncoder.setInverted(is_invertedLeft);

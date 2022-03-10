@@ -15,6 +15,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxPIDController.AccelStrategy;
 
+import frc.robot.Constants;
 import frc.robot.Constants.IntestineConstants;
 import frc.robot.Constants.ShooterConstants;
 
@@ -81,9 +82,9 @@ public class Shooter extends SubsystemBase {
     shooterPIDController.setOutputRange(ShooterConstants.Shooter.kMinOutput, ShooterConstants.Shooter.kMaxOutput);
     
     shooterPIDController.setSmartMotionMaxVelocity(ShooterConstants.Shooter.kmaxRPM, smartMotionSlot);
-    shooterPIDController.setSmartMotionMinOutputVelocity(50, smartMotionSlot);
+    shooterPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
     shooterPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
-    shooterPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
+    shooterPIDController.setSmartMotionAllowedClosedLoopError(50, smartMotionSlot);
     shooterPIDController.setSmartMotionAccelStrategy(AccelStrategy.kSCurve, smartMotionSlot);
 
     // Hood motor configuration
@@ -102,9 +103,9 @@ public class Shooter extends SubsystemBase {
     hoodPIDController.setOutputRange(ShooterConstants.Hood.kMinOutput, ShooterConstants.Hood.kMaxOutput);
 
     hoodPIDController.setSmartMotionMaxVelocity(ShooterConstants.Hood.kmaxRPM, smartMotionSlot);
-    hoodPIDController.setSmartMotionMinOutputVelocity(50, smartMotionSlot);
-    hoodPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
-    hoodPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
+    hoodPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
+    hoodPIDController.setSmartMotionMaxAccel(2000, smartMotionSlot);
+    hoodPIDController.setSmartMotionAllowedClosedLoopError(0.1, smartMotionSlot);
     hoodPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
 
     // Hood Wheel motor configuration
@@ -123,9 +124,9 @@ public class Shooter extends SubsystemBase {
     hoodWheelPIDController.setOutputRange(ShooterConstants.kHoodWheelMinOutput, ShooterConstants.kHoodWheelMaxOutput);
 
     hoodWheelPIDController.setSmartMotionMaxVelocity(ShooterConstants.kHoodWheelmaxRPM, smartMotionSlot);
-    hoodWheelPIDController.setSmartMotionMinOutputVelocity(50, smartMotionSlot);
+    hoodWheelPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
     hoodWheelPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
-    hoodWheelPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
+    hoodWheelPIDController.setSmartMotionAllowedClosedLoopError(50, smartMotionSlot);
     hoodWheelPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
 
     // Hood Wheel motor configuration
@@ -144,9 +145,9 @@ public class Shooter extends SubsystemBase {
     turretPIDController.setOutputRange(ShooterConstants.kTurretMinOutput, ShooterConstants.kTurretMaxOutput);
 
     turretPIDController.setSmartMotionMaxVelocity(ShooterConstants.kTurretmaxRPM, smartMotionSlot);
-    turretPIDController.setSmartMotionMinOutputVelocity(50, smartMotionSlot);
+    turretPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
     turretPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
-    turretPIDController.setSmartMotionAllowedClosedLoopError(0, smartMotionSlot);
+    turretPIDController.setSmartMotionAllowedClosedLoopError(50, smartMotionSlot);
     turretPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
 
   }
@@ -156,6 +157,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter RPM", getShooterSpeed());
     SmartDashboard.putNumber("HoodWheel RPM", getHoodWheelSpeed());
     SmartDashboard.putBoolean("Shooter at Speed", shooterIsReady());
+    SmartDashboard.putNumber("Turret Position", turretEncoder.getPosition());
     
   }
 
@@ -214,7 +216,7 @@ public class Shooter extends SubsystemBase {
 
   public double holdHooodPosition(){
     double position = getHoodPosition();
-    hoodPIDController.setReference(getHoodPosition(), CANSparkMax.ControlType.kSmartMotion);
+    hoodPIDController.setReference(position, CANSparkMax.ControlType.kSmartMotion);
     return position;
   }
 
@@ -299,6 +301,25 @@ public class Shooter extends SubsystemBase {
 
   public void setShooterRPMLow(){
     changeShooterRPM(false);
+  }
+
+  public void setShooterConfig(Constants.ShooterConfiguration config){
+    shooterRPMOpPoint = config.shooterRPM;
+    hoodRPMOpPoint = config.hoodWheelRPM;
+    
+    hoodPIDController.setReference(config.hoodPosition, CANSparkMax.ControlType.kSmartMotion);
+    //hoodPIDController.setReference(11, CANSparkMax.ControlType.kSmartMotion);
+    System.out.println("Attempting to set hood.");
+
+    if(shooterIsRunning){
+      enableShooter();
+    }
+
+   
+  }
+  
+  public void setShooterConfigLow(){
+    setShooterConfig(Constants.ShooterConstants.shootLow);
   }
 
 }

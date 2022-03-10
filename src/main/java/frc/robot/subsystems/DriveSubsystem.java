@@ -162,7 +162,7 @@ public class DriveSubsystem extends SubsystemBase {
     // System.out.println("State: "+swerveModuleStates[0].angle.getRadians()+",
     // drive: "+xSpeed+" or "+ySpeed+" when at "+m_frontLeft.getAngleRadians());
 
-    boolean noMovement = false && xSpeed == 0 && ySpeed == 0 && rot == 0;
+    boolean noMovement = xSpeed == 0 && ySpeed == 0 && rot == 0;  //Renable on 3/9
 
     for (int i = 0; i < 4; i++) {
       swerveModuleShuffleTargetAngle[i].setDouble(swerveModuleStates[i].angle.getDegrees());

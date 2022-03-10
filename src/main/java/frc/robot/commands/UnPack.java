@@ -22,6 +22,7 @@ public class UnPack extends CommandBase {
   @Override
   public void initialize() {
     m_timer.reset();
+    m_timer.start();
     m_intake.unpack();
   }
 
@@ -40,6 +41,6 @@ public class UnPack extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_timer.hasElapsed(0.5);
+    return m_timer.hasElapsed(0.8);
   }
 }

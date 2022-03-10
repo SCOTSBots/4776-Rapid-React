@@ -29,12 +29,14 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -65,7 +67,6 @@ public class RobotContainer {
   private final Intestine m_intestine = new Intestine();
   private final Shooter m_shooter = new Shooter();
 
-
   private final StickAssignmentState rightStickIsClimber = new StickAssignmentState(false);
 
   // The driver's controller
@@ -84,6 +85,7 @@ public class RobotContainer {
   final JoystickButton stopIntakeandIntestineButton = new JoystickButton(m_manipulatorController, XboxController.Button.kA.value);
 
   final POVButton setShooterHighButton = new POVButton(m_manipulatorController, 0);
+  final POVButton setShooterMidButton = new POVButton(m_manipulatorController, 270);
   final POVButton setShooterLowButton = new POVButton(m_manipulatorController, 180);
 
   final TriggerButton shootTrigger = new TriggerButton(m_manipulatorController, XboxController.Axis.kRightTrigger);
@@ -102,18 +104,17 @@ public class RobotContainer {
 
   private boolean hoodHold = false;
 
-
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
   private enum CommandsToChoose {
-    Default, Simple;
+    ShootandRun, GrabShootShoot;
   }
 
-  //private final Command DefaultAuto;
-  //private final Command Simple;
+  public Command shootAndRun;
+  public Command grabShootShoot;
   
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
-  private final Command m_selectCommand = null;
+  private Command m_selectCommand = null;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -128,14 +129,18 @@ public class RobotContainer {
     SendableRegistry.setName(m_intake, "Intake");
     SendableRegistry.setName(m_intestine, "Intestine");
 
-    // Setup auto command chooser
-    // m_selectCommand = new SelectCommand(Map.ofEntries(
-    //   entry(CommandsToChoose.Default, DefaultAuto),
-    //   entry(CommandsToChoose.Simple, DefaultAuto)
-    //   ), this::select);
+    
+    //Generate Auto Command Sequences
+    generateAutoRoutines();
 
-    m_chooser.setDefaultOption("Default Auto", CommandsToChoose.Default);
-    m_chooser.addOption("Simple", CommandsToChoose.Simple);
+    //Setup auto command chooser
+    m_selectCommand = new SelectCommand(Map.ofEntries(
+      entry(CommandsToChoose.ShootandRun, shootAndRun),
+      entry(CommandsToChoose.GrabShootShoot, grabShootShoot)
+      ), m_chooser::getSelected);
+
+    m_chooser.setDefaultOption("Shoot and Run", CommandsToChoose.ShootandRun);
+    m_chooser.addOption("Grab Ball and Shoot Two", CommandsToChoose.GrabShootShoot);
     
     Shuffleboard.getTab("Auto").add(m_chooser);
 
@@ -239,7 +244,9 @@ public class RobotContainer {
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
 
-    //testCommandButton.whenPressed(new UnPack(m_intakePackage));
+    // testCommandButton.whenPressed(new InstantCommand(()->{
+    //   m_shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
+    // }, m_shooter));
   }
 
   double new_deadzone(double x) {
@@ -256,57 +263,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.kDriveKinematics);
-
-    // An example trajectory to follow. All units in meters.
-    // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-    //     // Start at the origin facing the +X direction
-    //     new Pose2d(0, 0, new Rotation2d(0)),
-    //     // Pass through these two interior waypoints, making an 's' curve path
-    //     List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-    //     // End 3 meters straight ahead of where we started, facing forward
-    //     new Pose2d(3, 0, new Rotation2d(0)),
-    //     config);
-
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-          new Pose2d(0, 0, new Rotation2d(0)),
-          // Drive Forward
-          List.of(new Translation2d(1.0, 0)),
-          // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(2.0, 0, new Rotation2d(Math.toRadians(135.0))),
-          config);
-
-    var thetaController = new ProfiledPIDController(
-        2, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
-
-        // Position controllers
-        new PIDController(2, 0, 0),
-        new PIDController(2, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
-
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-
-    System.out.println("Starting Pose Angle" + m_robotDrive.getPose().getRotation().getDegrees());
-
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand
-    .andThen(new PrintCommand("Ending Pose Angle " + m_robotDrive.getPose().getRotation().getDegrees()));
-    // .andThen(() -> m_robotDrive.drive(0, 0, 0, false));
+    return m_selectCommand;
   }
 
   public Command message = new InstantCommand(() -> {
@@ -344,10 +301,11 @@ public class RobotContainer {
       if (hoodPower != 0) {
         m_shooter.setHoodPower(hoodPower);
         hoodHold = false;
+        System.out.println("Powering hood.");
       } else if(!hoodHold){
         double position = m_shooter.holdHooodPosition();
         hoodHold = true;
-        System.out.println("Setting hold position @" + position );
+        System.out.println("Setting hold position @ " + position);
       }
 
       m_shooter.setTurretPower(turretPower);
@@ -360,5 +318,179 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("Hood Position", m_shooter.getHoodPosition() / ShooterConstants.kHoodMaxCounts * 100);
   };
+
+
+  //Generate auto routines
+  public void generateAutoRoutines(){
+    shootAndRun = new ShootandRun(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine);
+    grabShootShoot = new GrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine);
+  }
+
+  //Auton Routines
+  public class GrabShootShoot extends SequentialCommandGroup {
+    /**
+     * Creates a new ComplexAuto.
+     *
+
+     */
+    public GrabShootShoot(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake, Intestine intestine) {
+      // Create config for trajectory
+      TrajectoryConfig config = new TrajectoryConfig(
+          AutoConstants.kMaxSpeedMetersPerSecond,
+          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+              // Add kinematics to ensure max speed is actually obeyed
+              .setKinematics(DriveConstants.kDriveKinematics);
+
+      Trajectory driveToBallTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Drive Forward
+          List.of(new Translation2d(1.0, 0)),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
+          config);
+
+          var thetaController = new ProfiledPIDController(
+            2, 0, 0, AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+          SwerveControllerCommand driveToBall = new SwerveControllerCommand(
+          driveToBallTrajectory,
+          m_robotDrive::getPose, // Functional interface to feed supplier
+          DriveConstants.kDriveKinematics,
+
+          // Position controllers
+          new PIDController(2, 0, 0),
+          new PIDController(2, 0, 0),
+          thetaController,
+          m_robotDrive::setModuleStates,
+          m_robotDrive);
+
+
+      Trajectory turnAroundTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
+          // Drive Forward
+          List.of(new Translation2d(1.60, 0)),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(1.70, 0, new Rotation2d(Math.toRadians(135.0))),
+          config);
+
+      SwerveControllerCommand turnAround = new SwerveControllerCommand(
+          turnAroundTrajectory,
+          m_robotDrive::getPose, // Functional interface to feed supplier
+          DriveConstants.kDriveKinematics,
+
+          // Position controllers
+          new PIDController(2, 0, 0),
+          new PIDController(2, 0, 0),
+          thetaController,
+          m_robotDrive::setModuleStates,
+          m_robotDrive);
+
+      // Reset odometry to the starting pose of the trajectory.
+      drive.resetOdometry(driveToBallTrajectory.getInitialPose());
+      
+      addCommands(
+          // Confiigure and spinup shooter
+          new InstantCommand(()->{
+            shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
+            shooter.enableShooter();
+          }, shooter),
+  
+          // Unpack and start the intake
+          new ParallelCommandGroup(
+           new UnPack(intakePackage),
+           new InstantCommand(intake::intakeIn, intake),
+           new InstantCommand(intestine::intestineIn, intestine)
+          ),
+  
+          // Drive to the ball and turn to shoot
+          driveToBall,
+          turnAround
+              .andThen(() -> m_robotDrive.drive(0, 0, 0, false)),
+
+          // Shoot shoot
+          new Shoot(shooter),
+          new Shoot(shooter),
+
+          // Shut it down
+          new InstantCommand(shooter::disableShooter, shooter),
+          new InstantCommand(intestine::intestineOff, intestine),
+          new InstantCommand(intake::intakeOff, intake));
+    }
+  }
+
+  public class ShootandRun extends SequentialCommandGroup {
+    /**
+     * Creates a new ComplexAuto.
+     *
+
+     */
+    public ShootandRun(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake, Intestine intestine) {
+      // Create config for trajectory
+      TrajectoryConfig config = new TrajectoryConfig(
+          AutoConstants.kMaxSpeedMetersPerSecond,
+          AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+              // Add kinematics to ensure max speed is actually obeyed
+              .setKinematics(DriveConstants.kDriveKinematics);
+
+      Trajectory driveToBallTrajectory = TrajectoryGenerator.generateTrajectory(
+          // Start at the origin facing the +X direction
+          new Pose2d(0, 0, new Rotation2d(0)),
+          // Drive Forward
+          List.of(new Translation2d(1.0, 0)),
+          // End 3 meters straight ahead of where we started, facing forward
+          new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
+          config);
+
+      var thetaController = new ProfiledPIDController(
+          2, 0, 0, AutoConstants.kThetaControllerConstraints);
+      thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+      SwerveControllerCommand driveToBall = new SwerveControllerCommand(
+          driveToBallTrajectory,
+          m_robotDrive::getPose, // Functional interface to feed supplier
+          DriveConstants.kDriveKinematics,
+
+          // Position controllers
+          new PIDController(2, 0, 0),
+          new PIDController(2, 0, 0),
+          thetaController,
+          m_robotDrive::setModuleStates,
+          m_robotDrive);
+
+      // Reset odometry to the starting pose of the trajectory.
+      drive.resetOdometry(driveToBallTrajectory.getInitialPose());
+      
+      addCommands(
+          // Confiigure and spinup shooter
+          new InstantCommand(()->{
+            shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
+            shooter.enableShooter();
+          }, shooter),
+  
+          // Unpack and start the intake
+          new ParallelCommandGroup(
+           new UnPack(intakePackage),
+           new InstantCommand(intestine::intestineIn, intestine)
+          ),
+  
+          // Shoot
+          new WaitCommand(2),
+          new Shoot(shooter),
+
+          // Shut it down
+          new InstantCommand(shooter::disableShooter, shooter),
+          new InstantCommand(intestine::intestineOff, intestine),
+          new InstantCommand(intake::intakeOff, intake),
+
+          // Drive to the ball
+          driveToBall
+              .andThen(() -> drive.drive(0, 0, 0, false))
+              );
+
+    }
+  }
 
 }

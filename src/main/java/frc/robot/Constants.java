@@ -26,6 +26,16 @@ public final class Constants {
     PracticeBot
   }
 
+  public static final class ShooterConfiguration{
+    public final double shooterRPM, hoodWheelRPM, hoodPosition;
+
+    ShooterConfiguration(double shooterRPM, double hoodWheelRPM, double hoodPosition){
+      this.shooterRPM = shooterRPM;
+      this.hoodWheelRPM = hoodWheelRPM;
+      this.hoodPosition = hoodPosition;
+    }
+  }
+
   public static final RobotType robotType = RobotType.CompBot;
 
   public static final class ConfigConstants{
@@ -185,6 +195,12 @@ public final class Constants {
 
     public static boolean hasSecondary = false;
 
+    public static final ShooterConfiguration shootHigh = new ShooterConfiguration(4800, -10000, 0);
+    public static final ShooterConfiguration shootMid = new ShooterConfiguration(1600, -8000, 0);
+    public static final ShooterConfiguration shootLow = new ShooterConfiguration(800, -4000, 8);
+
+    public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(800, -4000, 8);
+
     public static final double kShootHighRPM = 4800;
     public static final double kShootLowRPM = 800;
     //public static final double kShootLowRPM = 1600;
@@ -207,20 +223,20 @@ public final class Constants {
       public static final double kIz = 0;
       public static final double kFF = 0.0002;
       public static final double kMaxOutput = 1;
-      public static final double kMinOutput = -1;
+      public static final double kMinOutput = -0.5;
       public static final double kmaxRPM = 5500;
       public static final double kTypRPM = 4750;
     }
 
     // Hood SparkMAX PID coefficients
     public static final class Hood {
-      public static final double kP = 0.00005;
-      public static final double kI = 0.0000005;
+      public static final double kP = 0.00015;
+      public static final double kI = 0.0000001;
       public static final double kD = 0;
       public static final double kIz = 0;
-      public static final double kFF = 0.003;
-      public static final double kMaxOutput = 1.0;
-      public static final double kMinOutput = -1.0;
+      public static final double kFF = 0;
+      public static final double kMaxOutput = 0.5;
+      public static final double kMinOutput = -0.5;
       public static final double kmaxRPM = 8000;
     }
 
@@ -236,8 +252,8 @@ public final class Constants {
     public static final double kHoodWheelTypRPM = 8000;
 
     // Turret SparkMAX PID coefficients
-    public static final double kTurretP = 0;
-    public static final double kTurretI = 0;
+    public static final double kTurretP = 0.00015;
+    public static final double kTurretI = 0.0000001;
     public static final double kTurretD = 0;
     public static final double kTurretIz = 0;
     public static final double kTurretFF = 0;
@@ -297,4 +313,6 @@ public final class Constants {
       }
       return robot;
     }
+
+
   }
