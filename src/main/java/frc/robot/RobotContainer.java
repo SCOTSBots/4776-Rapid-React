@@ -245,8 +245,12 @@ public class RobotContainer {
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
 
     // testCommandButton.whenPressed(new InstantCommand(()->{
-    //   m_shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
-    // }, m_shooter));
+    //   m_robotDrive.turnByAngle(179.9);
+    // }, m_robotDrive));
+
+    testCommandButton.whenPressed(new InstantCommand(()->{
+      m_shooter.setTurretAbsPosition(0.0);
+    }, m_shooter).andThen(new WaitCommand(5)));
   }
 
   double new_deadzone(double x) {
@@ -322,8 +326,8 @@ public class RobotContainer {
 
   //Generate auto routines
   public void generateAutoRoutines(){
-    shootAndRun = new ShootandRun(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine);
-    grabShootShoot = new GrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine);
+    shootAndRun = new ShootandRun(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
+    grabShootShoot = new GrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
   }
 
   //Auton Routines
@@ -333,7 +337,7 @@ public class RobotContainer {
      *
 
      */
-    public GrabShootShoot(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake, Intestine intestine) {
+    public GrabShootShoot(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake, Intestine intestine, Climber climber) {
       // Create config for trajectory
       TrajectoryConfig config = new TrajectoryConfig(
           AutoConstants.kMaxSpeedMetersPerSecond,
@@ -427,7 +431,7 @@ public class RobotContainer {
      *
 
      */
-    public ShootandRun(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake, Intestine intestine) {
+    public ShootandRun(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake, Intestine intestine, Climber climber) {
       // Create config for trajectory
       TrajectoryConfig config = new TrajectoryConfig(
           AutoConstants.kMaxSpeedMetersPerSecond,
@@ -464,20 +468,30 @@ public class RobotContainer {
       drive.resetOdometry(driveToBallTrajectory.getInitialPose());
       
       addCommands(
-          // Confiigure and spinup shooter
+          // Confiigure and spinup shooter and move arm
           new InstantCommand(()->{
             shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
             shooter.enableShooter();
-          }, shooter),
+            climber.runArm(0.5);
+          }, shooter, climber),
+          new WaitCommand(0.5),
+          new InstantCommand(()->{
+            climber.runArm(0);
+          }, climber),
   
           // Unpack and start the intake
           new ParallelCommandGroup(
            new UnPack(intakePackage),
            new InstantCommand(intestine::intestineIn, intestine)
           ),
+
+          // Align turret
+          new InstantCommand(()->{
+            shooter.setTurretAbsPosition(70.0);;
+          }, shooter),
   
           // Shoot
-          new WaitCommand(2),
+          new WaitCommand(1.5),
           new Shoot(shooter),
 
           // Shut it down

@@ -200,6 +200,7 @@ public final class Constants {
     public static final ShooterConfiguration shootLow = new ShooterConfiguration(800, -4000, 8);
 
     public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(800, -4000, 8);
+    public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(4500, -8000, 2);
 
     public static final double kShootHighRPM = 4800;
     public static final double kShootLowRPM = 800;
@@ -252,14 +253,14 @@ public final class Constants {
     public static final double kHoodWheelTypRPM = 8000;
 
     // Turret SparkMAX PID coefficients
-    public static final double kTurretP = 0.00015;
-    public static final double kTurretI = 0.0000001;
+    public static final double kTurretP = 0.0001;
+    public static final double kTurretI = 0.0;
     public static final double kTurretD = 0;
     public static final double kTurretIz = 0;
     public static final double kTurretFF = 0;
     public static final double kTurretMaxOutput = 1;
     public static final double kTurretMinOutput = -1;
-    public static final double kTurretmaxRPM = 0;
+    public static final double kTurretmaxRPM = 8000;
     public static final double kTurretTypRPM = 0;
   }
 
@@ -269,7 +270,7 @@ public final class Constants {
           ConfigConstants.hasCamera = false;
           ShooterConstants.hasSecondary = true;
 
-          //TODO: Determine values
+          //Swerve Module Alignment
           DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(+165.1));
           DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(0));
           DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+77.7));

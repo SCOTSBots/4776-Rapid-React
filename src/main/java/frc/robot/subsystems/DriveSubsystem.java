@@ -9,11 +9,14 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import java.nio.channels.Selector;
 import java.sql.Driver;
 
+import edu.wpi.first.wpilibj.Timer;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import frc.robot.Constants;
 import frc.robot.Constants.ConfigConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.interfaces.Gyro;
@@ -293,4 +296,31 @@ public class DriveSubsystem extends SubsystemBase {
     DriveConstants.drivePercentScale = DriveConstants.driveLowPercentScale;
     DriveConstants.rotRateModifier = DriveConstants.driveLowPercentScale;
   }
+
+  public void turnByAngle(double turnByDegrees){
+    double goal = Math.toRadians(-m_gyro.getFusedHeading() + turnByDegrees);
+    Timer timer = new Timer();
+    double timeout = 3.0;
+
+    var thetaController = new ProfiledPIDController(2.0, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+
+    thetaController.setTolerance(Math.toRadians(1));
+    thetaController.setGoal(goal);
+
+    timer.reset();
+    timer.start();
+    double rotation = 0;
+
+    while (!thetaController.atGoal() && !timer.hasElapsed(timeout)) {
+      System.out.println("Target: " + goal + " / Current: " + Math.toRadians(-m_gyro.getFusedHeading()) + " / Time: " + timer.get());
+      rotation = thetaController.calculate(Math.toRadians(-m_gyro.getFusedHeading()));
+      drive(0, 0, rotation, false);
+
+    }
+
+    drive(0, 0, 0, false);
+
+  }
+
 }
