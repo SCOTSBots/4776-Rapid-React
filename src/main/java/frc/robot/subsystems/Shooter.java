@@ -147,7 +147,7 @@ public class Shooter extends SubsystemBase {
     turretPIDController.setSmartMotionMaxVelocity(ShooterConstants.kTurretmaxRPM, smartMotionSlot);
     turretPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
     turretPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
-    turretPIDController.setSmartMotionAllowedClosedLoopError(50, smartMotionSlot);
+    turretPIDController.setSmartMotionAllowedClosedLoopError(1, smartMotionSlot);
     turretPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
 
   }
@@ -229,13 +229,17 @@ public class Shooter extends SubsystemBase {
   }
 
 
-  public void setTurretPosition(double percent) {
+  public void setTurretRelPosition(double percent) {
     if (percent < 0){
       // kTurretMinCounts is assumed to be a negative number
       turretPIDController.setReference(-percent * ShooterConstants.kTurretMinCounts, CANSparkMax.ControlType.kSmartMotion);
     } else {
       turretPIDController.setReference(percent * ShooterConstants.kTurretMaxCounts, CANSparkMax.ControlType.kSmartMotion);
     }
+  }
+
+  public void setTurretAbsPosition(double target){
+    turretPIDController.setReference(target, CANSparkMax.ControlType.kSmartMotion);
   }
 
   public void setTurretPower(double power){

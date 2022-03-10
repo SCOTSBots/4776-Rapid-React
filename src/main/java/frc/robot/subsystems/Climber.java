@@ -19,6 +19,7 @@ public class Climber extends SubsystemBase {
   public Climber() {
     //Configure so that postive motor power raises robot
     liftMotor = new CANSparkMax(ClimberConstants.liftMotorPort, MotorType.kBrushless);
+    liftMotor.setIdleMode(IdleMode.kBrake);
     
     //Configure so that positive motor power moves arm towards front of robot
     armMotor = new CANSparkMax(ClimberConstants.armMotorPort, MotorType.kBrushless);
