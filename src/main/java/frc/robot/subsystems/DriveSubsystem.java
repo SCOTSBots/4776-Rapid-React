@@ -302,7 +302,7 @@ public class DriveSubsystem extends SubsystemBase {
     Timer timer = new Timer();
     double timeout = 3.0;
 
-    var thetaController = new ProfiledPIDController(2.0, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+    var thetaController = new ProfiledPIDController(2.5, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     thetaController.setTolerance(Math.toRadians(1));

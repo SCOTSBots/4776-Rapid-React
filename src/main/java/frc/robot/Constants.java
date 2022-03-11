@@ -268,7 +268,7 @@ public final class Constants {
     switch (robot) {
         case CompBot: {
           ConfigConstants.hasCamera = false;
-          ShooterConstants.hasSecondary = true;
+          ShooterConstants.hasSecondary = false;
 
           //Swerve Module Alignment
           DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(+165.1));

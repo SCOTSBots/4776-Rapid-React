@@ -248,9 +248,9 @@ public class RobotContainer {
     //   m_robotDrive.turnByAngle(179.9);
     // }, m_robotDrive));
 
-    testCommandButton.whenPressed(new InstantCommand(()->{
-      m_shooter.setTurretAbsPosition(0.0);
-    }, m_shooter).andThen(new WaitCommand(5)));
+    // testCommandButton.whenPressed(new InstantCommand(()->{
+    //   m_shooter.setTurretAbsPosition(0.0);
+    // }, m_shooter).andThen(new WaitCommand(5)));
   }
 
   double new_deadzone(double x) {
@@ -312,7 +312,7 @@ public class RobotContainer {
         System.out.println("Setting hold position @ " + position);
       }
 
-      m_shooter.setTurretPower(turretPower);
+      //m_shooter.setTurretPower(turretPower);
       
     } else {
       //Probably need to modify this to hold last position using PID, especially the hood position 
@@ -472,12 +472,12 @@ public class RobotContainer {
           new InstantCommand(()->{
             shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
             shooter.enableShooter();
-            climber.runArm(0.5);
-          }, shooter, climber),
-          new WaitCommand(0.5),
-          new InstantCommand(()->{
-            climber.runArm(0);
-          }, climber),
+            //climber.runArm(0.5);
+          }, shooter),
+          //new WaitCommand(0.5),
+          // new InstantCommand(()->{
+          //   climber.runArm(0);
+          // }, climber),
   
           // Unpack and start the intake
           new ParallelCommandGroup(
@@ -486,12 +486,12 @@ public class RobotContainer {
           ),
 
           // Align turret
-          new InstantCommand(()->{
-            shooter.setTurretAbsPosition(70.0);;
-          }, shooter),
+          // new InstantCommand(()->{
+          //   shooter.setTurretAbsPosition(70.0);;
+          // }, shooter),
   
           // Shoot
-          new WaitCommand(1.5),
+          new WaitCommand(2),
           new Shoot(shooter),
 
           // Shut it down

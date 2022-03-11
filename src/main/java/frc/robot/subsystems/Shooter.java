@@ -129,26 +129,26 @@ public class Shooter extends SubsystemBase {
     hoodWheelPIDController.setSmartMotionAllowedClosedLoopError(50, smartMotionSlot);
     hoodWheelPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
 
-    // Hood Wheel motor configuration
-    turretMotor = new CANSparkMax(ShooterConstants.kTurretMotorPort, MotorType.kBrushless);
-    turretMotor.restoreFactoryDefaults();
-    turretMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    turretPIDController = turretMotor.getPIDController();
-    turretEncoder = turretMotor.getEncoder();
+    // // Hood Wheel motor configuration
+    // turretMotor = new CANSparkMax(ShooterConstants.kTurretMotorPort, MotorType.kBrushless);
+    // turretMotor.restoreFactoryDefaults();
+    // turretMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+    // turretPIDController = turretMotor.getPIDController();
+    // turretEncoder = turretMotor.getEncoder();
 
-    // set Hood Wheel PID coefficients
-    turretPIDController.setP(ShooterConstants.kTurretP);
-    turretPIDController.setI(ShooterConstants.kTurretI);
-    turretPIDController.setD(ShooterConstants.kTurretD);
-    turretPIDController.setIZone(ShooterConstants.kTurretIz);
-    turretPIDController.setFF(ShooterConstants.kTurretFF);
-    turretPIDController.setOutputRange(ShooterConstants.kTurretMinOutput, ShooterConstants.kTurretMaxOutput);
+    // // set Hood Wheel PID coefficients
+    // turretPIDController.setP(ShooterConstants.kTurretP);
+    // turretPIDController.setI(ShooterConstants.kTurretI);
+    // turretPIDController.setD(ShooterConstants.kTurretD);
+    // turretPIDController.setIZone(ShooterConstants.kTurretIz);
+    // turretPIDController.setFF(ShooterConstants.kTurretFF);
+    // turretPIDController.setOutputRange(ShooterConstants.kTurretMinOutput, ShooterConstants.kTurretMaxOutput);
 
-    turretPIDController.setSmartMotionMaxVelocity(ShooterConstants.kTurretmaxRPM, smartMotionSlot);
-    turretPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
-    turretPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
-    turretPIDController.setSmartMotionAllowedClosedLoopError(1, smartMotionSlot);
-    turretPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
+    // turretPIDController.setSmartMotionMaxVelocity(ShooterConstants.kTurretmaxRPM, smartMotionSlot);
+    // turretPIDController.setSmartMotionMinOutputVelocity(0, smartMotionSlot);
+    // turretPIDController.setSmartMotionMaxAccel(3000, smartMotionSlot);
+    // turretPIDController.setSmartMotionAllowedClosedLoopError(1, smartMotionSlot);
+    // turretPIDController.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, smartMotionSlot);
 
   }
 
@@ -157,7 +157,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter RPM", getShooterSpeed());
     SmartDashboard.putNumber("HoodWheel RPM", getHoodWheelSpeed());
     SmartDashboard.putBoolean("Shooter at Speed", shooterIsReady());
-    SmartDashboard.putNumber("Turret Position", turretEncoder.getPosition());
+    //SmartDashboard.putNumber("Turret Position", turretEncoder.getPosition());
     
   }
 
