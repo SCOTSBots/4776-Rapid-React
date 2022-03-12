@@ -237,10 +237,17 @@ public class RobotContainer {
 
     //Shooter controls
     shootTrigger.whenPressed(new Shoot(m_shooter));
-    enableShooterButton.whenPressed(new InstantCommand(m_shooter::enableShooter,m_shooter));
-    disableShooterButton.whenPressed(new InstantCommand(m_shooter::disableShooter,m_shooter));
-    setShooterHighButton.whenPressed(new InstantCommand(m_shooter::setShooterRPMHigh,m_shooter));
-    setShooterLowButton.whenPressed(new InstantCommand(m_shooter::setShooterRPMLow,m_shooter));
+    enableShooterButton.whenPressed(new InstantCommand(m_shooter::enableShooter, m_shooter));
+    disableShooterButton.whenPressed(new InstantCommand(m_shooter::disableShooter, m_shooter));
+    setShooterHighButton.whenPressed(new InstantCommand(() -> {
+      m_shooter.setShooterConfig(ShooterConstants.shootHigh);
+    }, m_shooter));
+    setShooterMidButton.whenPressed(new InstantCommand(() -> {
+      m_shooter.setShooterConfig(ShooterConstants.shootMid);
+    }, m_shooter));
+    setShooterLowButton.whenPressed(new InstantCommand(() -> {
+      m_shooter.setShooterConfig(ShooterConstants.shootAutoClose);
+    }, m_shooter));
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
 
@@ -317,7 +324,7 @@ public class RobotContainer {
     } else {
       //Probably need to modify this to hold last position using PID, especially the hood position 
       //m_shooter.holdHooodPosition();  **Should already be in hold mode?
-      m_shooter.setTurretPower(0);
+      //m_shooter.setTurretPower(0);
     }
 
     SmartDashboard.putNumber("Hood Position", m_shooter.getHoodPosition() / ShooterConstants.kHoodMaxCounts * 100);
@@ -371,26 +378,26 @@ public class RobotContainer {
           m_robotDrive);
 
 
-      Trajectory turnAroundTrajectory = TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-          new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
-          // Drive Forward
-          List.of(new Translation2d(1.60, 0)),
-          // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(1.70, 0, new Rotation2d(Math.toRadians(135.0))),
-          config);
+      // Trajectory turnAroundTrajectory = TrajectoryGenerator.generateTrajectory(
+      //     // Start at the origin facing the +X direction
+      //     new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
+      //     // Drive Forward
+      //     List.of(new Translation2d(1.60, 0)),
+      //     // End 3 meters straight ahead of where we started, facing forward
+      //     new Pose2d(1.70, 0, new Rotation2d(Math.toRadians(135.0))),
+      //     config);
 
-      SwerveControllerCommand turnAround = new SwerveControllerCommand(
-          turnAroundTrajectory,
-          m_robotDrive::getPose, // Functional interface to feed supplier
-          DriveConstants.kDriveKinematics,
+      // SwerveControllerCommand turnAround = new SwerveControllerCommand(
+      //     turnAroundTrajectory,
+      //     m_robotDrive::getPose, // Functional interface to feed supplier
+      //     DriveConstants.kDriveKinematics,
 
-          // Position controllers
-          new PIDController(2, 0, 0),
-          new PIDController(2, 0, 0),
-          thetaController,
-          m_robotDrive::setModuleStates,
-          m_robotDrive);
+      //     // Position controllers
+      //     new PIDController(2, 0, 0),
+      //     new PIDController(2, 0, 0),
+      //     thetaController,
+      //     m_robotDrive::setModuleStates,
+      //     m_robotDrive);
 
       // Reset odometry to the starting pose of the trajectory.
       drive.resetOdometry(driveToBallTrajectory.getInitialPose());
@@ -398,7 +405,7 @@ public class RobotContainer {
       addCommands(
           // Confiigure and spinup shooter
           new InstantCommand(()->{
-            shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
+            shooter.setShooterConfig(Constants.ShooterConstants.shootHigh);
             shooter.enableShooter();
           }, shooter),
   
@@ -411,11 +418,13 @@ public class RobotContainer {
   
           // Drive to the ball and turn to shoot
           driveToBall,
-          turnAround
-              .andThen(() -> m_robotDrive.drive(0, 0, 0, false)),
+          new InstantCommand(()->{
+            drive.turnByAngle(179.99);
+          }, drive),
 
           // Shoot shoot
           new Shoot(shooter),
+          new WaitCommand(1),
           new Shoot(shooter),
 
           // Shut it down
@@ -437,15 +446,15 @@ public class RobotContainer {
           AutoConstants.kMaxSpeedMetersPerSecond,
           AutoConstants.kMaxAccelerationMetersPerSecondSquared)
               // Add kinematics to ensure max speed is actually obeyed
-              .setKinematics(DriveConstants.kDriveKinematics);
+              .setKinematics(DriveConstants.kDriveKinematics).setReversed(true);
 
       Trajectory driveToBallTrajectory = TrajectoryGenerator.generateTrajectory(
           // Start at the origin facing the +X direction
           new Pose2d(0, 0, new Rotation2d(0)),
           // Drive Forward
-          List.of(new Translation2d(1.0, 0)),
+          List.of(new Translation2d(-1.0, 0)),
           // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
+          new Pose2d(-2.0, 0, new Rotation2d(Math.toRadians(0))),
           config);
 
       var thetaController = new ProfiledPIDController(

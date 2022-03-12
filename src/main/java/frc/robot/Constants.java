@@ -195,11 +195,11 @@ public final class Constants {
 
     public static boolean hasSecondary = false;
 
-    public static final ShooterConfiguration shootHigh = new ShooterConfiguration(4800, -10000, 0);
+    public static final ShooterConfiguration shootHigh = new ShooterConfiguration(4800, -10000, 4.5);
     public static final ShooterConfiguration shootMid = new ShooterConfiguration(1600, -8000, 0);
     public static final ShooterConfiguration shootLow = new ShooterConfiguration(800, -4000, 8);
 
-    public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(800, -4000, 8);
+    public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(1000, -4000, 8);
     public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(4500, -8000, 2);
 
     public static final double kShootHighRPM = 4800;
@@ -267,7 +267,7 @@ public final class Constants {
   public static RobotType GenerateConstants(RobotType robot) {
     switch (robot) {
         case CompBot: {
-          ConfigConstants.hasCamera = false;
+          ConfigConstants.hasCamera = true;
           ShooterConstants.hasSecondary = false;
 
           //Swerve Module Alignment
@@ -277,9 +277,9 @@ public final class Constants {
           DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(+80.8));
 
           // Distance between centers of right and left wheels on robot
-          double kTrackWidth = DriveConstants.kTrackWidth = 0.587375;
+          double kTrackWidth = DriveConstants.kTrackWidth = 0.584;
           // Distance between front and back wheels on robot
-          double kWheelBase = DriveConstants.kWheelBase = 0.47; // actually is 0.4953 and was using 0.587375 021222 ;
+          double kWheelBase = DriveConstants.kWheelBase = 0.56; // actually is 0.4953 and was using 0.587375 021222 ;
 
           DriveConstants.kDriveKinematics = new SwerveDriveKinematics(
               new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),

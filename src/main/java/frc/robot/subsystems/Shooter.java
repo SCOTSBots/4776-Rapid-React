@@ -66,12 +66,12 @@ public class Shooter extends SubsystemBase {
     shooterPIDController = shooterMotor.getPIDController();
     shooterEncoder = shooterMotor.getEncoder();
 
-    if (ShooterConstants.hasSecondary) {
-      shooterSecondaryMotor = new CANSparkMax(ShooterConstants.kShooterSecondaryMotorPort, MotorType.kBrushless);
-      shooterSecondaryMotor.restoreFactoryDefaults();
-      shooterSecondaryMotor.setInverted(false);
-      shooterSecondaryMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
-    }
+    // if (ShooterConstants.hasSecondary) {
+    //   shooterSecondaryMotor = new CANSparkMax(ShooterConstants.kShooterSecondaryMotorPort, MotorType.kBrushless);
+    //   shooterSecondaryMotor.restoreFactoryDefaults();
+    //   shooterSecondaryMotor.setInverted(false);
+    //   shooterSecondaryMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    // }
 
     // set Shooter PID coefficients
     shooterPIDController.setP(ShooterConstants.Shooter.kP);
