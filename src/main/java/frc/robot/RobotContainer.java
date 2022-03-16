@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -69,6 +72,13 @@ public class RobotContainer {
 
   private final StickAssignmentState rightStickIsClimber = new StickAssignmentState(false);
 
+  // Init Limelight
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  NetworkTableEntry tx = table.getEntry("tx");
+  NetworkTableEntry ty = table.getEntry("ty");
+  NetworkTableEntry ta = table.getEntry("ta");
+  
+
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
@@ -95,6 +105,8 @@ public class RobotContainer {
   final JoystickButton rightStickModeButton = new JoystickButton(m_manipulatorController, XboxController.Button.kStart.value);
 
   final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
+
+  final TriggerButton autoAimTrigger = new TriggerButton(m_driverController, XboxController.Axis.kLeftTrigger);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
@@ -143,6 +155,18 @@ public class RobotContainer {
     m_chooser.addOption("Grab Ball and Shoot Two", CommandsToChoose.GrabShootShoot);
     
     Shuffleboard.getTab("Auto").add(m_chooser);
+    
+    
+    // Read the Limelight values periodically
+    double x = tx.getDouble(0.0);
+    double y = ty.getDouble(0.0);
+    double area = ta.getDouble(0.0);
+
+    // Post the Limelight values to SmartDashboard periodically
+    SmartDashboard.putNumber("LimelightX", x);
+    SmartDashboard.putNumber("LimelightY", y);
+    SmartDashboard.putNumber("LimelightArea", area);
+    
 
   }
 
@@ -248,6 +272,8 @@ public class RobotContainer {
     setShooterLowButton.whenPressed(new InstantCommand(() -> {
       m_shooter.setShooterConfig(ShooterConstants.shootAutoClose);
     }, m_shooter));
+
+    autoAimTrigger.whenPressed()
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
 
@@ -358,7 +384,7 @@ public class RobotContainer {
           // Drive Forward
           List.of(new Translation2d(1.0, 0)),
           // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
+          new Pose2d(2.0, 0, new Rotation2d(Math.toRadians(0))),
           config);
 
           var thetaController = new ProfiledPIDController(
@@ -418,6 +444,7 @@ public class RobotContainer {
   
           // Drive to the ball and turn to shoot
           driveToBall,
+          new WaitCommand(2),
           new InstantCommand(()->{
             drive.turnByAngle(179.99);
           }, drive),
@@ -489,10 +516,11 @@ public class RobotContainer {
           // }, climber),
   
           // Unpack and start the intake
-          new ParallelCommandGroup(
-           new UnPack(intakePackage),
-           new InstantCommand(intestine::intestineIn, intestine)
-          ),
+          // new ParallelCommandGroup(
+          //  new UnPack(intakePackage),
+          //  new InstantCommand(intestine::intestineIn, intestine)
+          // ),
+          new InstantCommand(intestine::intestineIn, intestine),
 
           // Align turret
           // new InstantCommand(()->{
