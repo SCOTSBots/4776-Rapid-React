@@ -106,7 +106,7 @@ public class RobotContainer {
 
   final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
 
-  final TriggerButton autoAimTrigger = new TriggerButton(m_driverController, XboxController.Axis.kLeftTrigger);
+ // final TriggerButton autoAimTrigger = new TriggerButton(m_driverController, XboxController.Axis.kLeftTrigger);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
