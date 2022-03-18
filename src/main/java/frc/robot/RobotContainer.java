@@ -273,7 +273,7 @@ public class RobotContainer {
       m_shooter.setShooterConfig(ShooterConstants.shootAutoClose);
     }, m_shooter));
 
-    autoAimTrigger.whenPressed()
+   // autoAimTrigger.whenPressed()
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
 

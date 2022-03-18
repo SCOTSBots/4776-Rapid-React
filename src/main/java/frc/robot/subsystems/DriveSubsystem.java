@@ -306,7 +306,8 @@ public class DriveSubsystem extends SubsystemBase {
     DriveConstants.drivePercentScale = DriveConstants.driveLowPercentScale;
     DriveConstants.rotRateModifier = DriveConstants.driveLowPercentScale;
   }
-
+  
+  /** //TODO: Work on finishing Limelight code w/ help
   public void autoAim(){
     NetworkTableInstance.getDefault().getTable("limelight").getEntry("<tx>").getDouble(0);
 
@@ -323,6 +324,7 @@ public class DriveSubsystem extends SubsystemBase {
         left_command += steering_adjust;
         right_command -= steering_adjust;
   }
+  */
 
   public void turnByAngle(double turnByDegrees){
     double goal = Math.toRadians(-m_gyro.getFusedHeading() + turnByDegrees);
