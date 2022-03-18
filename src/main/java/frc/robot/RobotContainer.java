@@ -273,6 +273,7 @@ public class RobotContainer {
       m_shooter.setShooterConfig(ShooterConstants.shootAutoClose);
     }, m_shooter));
 
+   // TODO: Finish Limelight code w/ help
    // autoAimTrigger.whenPressed()
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
