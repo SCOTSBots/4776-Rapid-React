@@ -87,6 +87,16 @@ public class DriveSubsystem extends SubsystemBase {
   // Zeroed Module State
   private SwerveModuleState zeroState = new SwerveModuleState();
   
+  // Init Limelight
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  NetworkTableEntry tx = table.getEntry("tx");
+  NetworkTableEntry ty = table.getEntry("ty");
+  NetworkTableEntry ta = table.getEntry("ta");
+
+  // Auto Aim values TODO: Needs to be tuned to our robot
+  float Kp = -0.1f;
+  float min_command = 0.05f;
+
 
   // Odometry class for tracking robot pose
   SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(DriveConstants.kDriveKinematics, m_gyro.getRotation2d());
@@ -296,13 +306,32 @@ public class DriveSubsystem extends SubsystemBase {
     DriveConstants.drivePercentScale = DriveConstants.driveLowPercentScale;
     DriveConstants.rotRateModifier = DriveConstants.driveLowPercentScale;
   }
+  
+  /** //TODO: Work on finishing Limelight code w/ help
+  public void autoAim(){
+    NetworkTableInstance.getDefault().getTable("limelight").getEntry("<tx>").getDouble(0);
+
+    float heading_error = -tx;
+        float steering_adjust = 0.0f;
+        if (tx > 1.0)
+        {
+                steering_adjust = Kp*heading_error - min_command;
+        }
+        else if (tx < 1.0)
+        {
+                steering_adjust = Kp*heading_error + min_command;
+        }
+        left_command += steering_adjust;
+        right_command -= steering_adjust;
+  }
+  */
 
   public void turnByAngle(double turnByDegrees){
     double goal = Math.toRadians(-m_gyro.getFusedHeading() + turnByDegrees);
     Timer timer = new Timer();
     double timeout = 3.0;
 
-    var thetaController = new ProfiledPIDController(2.0, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
+    var thetaController = new ProfiledPIDController(2.5, 0, 0, Constants.AutoConstants.kThetaControllerConstraints);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
     thetaController.setTolerance(Math.toRadians(1));

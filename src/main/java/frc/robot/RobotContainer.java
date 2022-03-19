@@ -10,6 +10,9 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.*;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -69,6 +72,13 @@ public class RobotContainer {
 
   private final StickAssignmentState rightStickIsClimber = new StickAssignmentState(false);
 
+  // Init Limelight
+  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  NetworkTableEntry tx = table.getEntry("tx");
+  NetworkTableEntry ty = table.getEntry("ty");
+  NetworkTableEntry ta = table.getEntry("ta");
+  
+
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
@@ -95,6 +105,8 @@ public class RobotContainer {
   final JoystickButton rightStickModeButton = new JoystickButton(m_manipulatorController, XboxController.Button.kStart.value);
 
   final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
+
+ // final TriggerButton autoAimTrigger = new TriggerButton(m_driverController, XboxController.Axis.kLeftTrigger);
 
   private final SlewRateLimiter xSpeedLimiter = new SlewRateLimiter(2);
   private final SlewRateLimiter ySpeedLimiter = new SlewRateLimiter(2);
@@ -143,6 +155,18 @@ public class RobotContainer {
     m_chooser.addOption("Grab Ball and Shoot Two", CommandsToChoose.GrabShootShoot);
     
     Shuffleboard.getTab("Auto").add(m_chooser);
+    
+    
+    // Read the Limelight values periodically
+    double x = tx.getDouble(0.0);
+    double y = ty.getDouble(0.0);
+    double area = ta.getDouble(0.0);
+
+    // Post the Limelight values to SmartDashboard periodically
+    SmartDashboard.putNumber("LimelightX", x);
+    SmartDashboard.putNumber("LimelightY", y);
+    SmartDashboard.putNumber("LimelightArea", area);
+    
 
   }
 
@@ -237,10 +261,20 @@ public class RobotContainer {
 
     //Shooter controls
     shootTrigger.whenPressed(new Shoot(m_shooter));
-    enableShooterButton.whenPressed(new InstantCommand(m_shooter::enableShooter,m_shooter));
-    disableShooterButton.whenPressed(new InstantCommand(m_shooter::disableShooter,m_shooter));
-    setShooterHighButton.whenPressed(new InstantCommand(m_shooter::setShooterRPMHigh,m_shooter));
-    setShooterLowButton.whenPressed(new InstantCommand(m_shooter::setShooterRPMLow,m_shooter));
+    enableShooterButton.whenPressed(new InstantCommand(m_shooter::enableShooter, m_shooter));
+    disableShooterButton.whenPressed(new InstantCommand(m_shooter::disableShooter, m_shooter));
+    setShooterHighButton.whenPressed(new InstantCommand(() -> {
+      m_shooter.setShooterConfig(ShooterConstants.shootHigh);
+    }, m_shooter));
+    setShooterMidButton.whenPressed(new InstantCommand(() -> {
+      m_shooter.setShooterConfig(ShooterConstants.shootMid);
+    }, m_shooter));
+    setShooterLowButton.whenPressed(new InstantCommand(() -> {
+      m_shooter.setShooterConfig(ShooterConstants.shootAutoClose);
+    }, m_shooter));
+
+   // TODO: Finish Limelight code w/ help
+   // autoAimTrigger.whenPressed()
 
     rightStickModeButton.toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle,rightStickIsClimber::toggle));
 
@@ -248,9 +282,9 @@ public class RobotContainer {
     //   m_robotDrive.turnByAngle(179.9);
     // }, m_robotDrive));
 
-    testCommandButton.whenPressed(new InstantCommand(()->{
-      m_shooter.setTurretAbsPosition(0.0);
-    }, m_shooter).andThen(new WaitCommand(5)));
+    // testCommandButton.whenPressed(new InstantCommand(()->{
+    //   m_shooter.setTurretAbsPosition(0.0);
+    // }, m_shooter).andThen(new WaitCommand(5)));
   }
 
   double new_deadzone(double x) {
@@ -312,12 +346,12 @@ public class RobotContainer {
         System.out.println("Setting hold position @ " + position);
       }
 
-      m_shooter.setTurretPower(turretPower);
+      //m_shooter.setTurretPower(turretPower);
       
     } else {
       //Probably need to modify this to hold last position using PID, especially the hood position 
       //m_shooter.holdHooodPosition();  **Should already be in hold mode?
-      m_shooter.setTurretPower(0);
+      //m_shooter.setTurretPower(0);
     }
 
     SmartDashboard.putNumber("Hood Position", m_shooter.getHoodPosition() / ShooterConstants.kHoodMaxCounts * 100);
@@ -351,7 +385,7 @@ public class RobotContainer {
           // Drive Forward
           List.of(new Translation2d(1.0, 0)),
           // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
+          new Pose2d(2.0, 0, new Rotation2d(Math.toRadians(0))),
           config);
 
           var thetaController = new ProfiledPIDController(
@@ -371,26 +405,26 @@ public class RobotContainer {
           m_robotDrive);
 
 
-      Trajectory turnAroundTrajectory = TrajectoryGenerator.generateTrajectory(
-          // Start at the origin facing the +X direction
-          new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
-          // Drive Forward
-          List.of(new Translation2d(1.60, 0)),
-          // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(1.70, 0, new Rotation2d(Math.toRadians(135.0))),
-          config);
+      // Trajectory turnAroundTrajectory = TrajectoryGenerator.generateTrajectory(
+      //     // Start at the origin facing the +X direction
+      //     new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
+      //     // Drive Forward
+      //     List.of(new Translation2d(1.60, 0)),
+      //     // End 3 meters straight ahead of where we started, facing forward
+      //     new Pose2d(1.70, 0, new Rotation2d(Math.toRadians(135.0))),
+      //     config);
 
-      SwerveControllerCommand turnAround = new SwerveControllerCommand(
-          turnAroundTrajectory,
-          m_robotDrive::getPose, // Functional interface to feed supplier
-          DriveConstants.kDriveKinematics,
+      // SwerveControllerCommand turnAround = new SwerveControllerCommand(
+      //     turnAroundTrajectory,
+      //     m_robotDrive::getPose, // Functional interface to feed supplier
+      //     DriveConstants.kDriveKinematics,
 
-          // Position controllers
-          new PIDController(2, 0, 0),
-          new PIDController(2, 0, 0),
-          thetaController,
-          m_robotDrive::setModuleStates,
-          m_robotDrive);
+      //     // Position controllers
+      //     new PIDController(2, 0, 0),
+      //     new PIDController(2, 0, 0),
+      //     thetaController,
+      //     m_robotDrive::setModuleStates,
+      //     m_robotDrive);
 
       // Reset odometry to the starting pose of the trajectory.
       drive.resetOdometry(driveToBallTrajectory.getInitialPose());
@@ -398,7 +432,7 @@ public class RobotContainer {
       addCommands(
           // Confiigure and spinup shooter
           new InstantCommand(()->{
-            shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
+            shooter.setShooterConfig(Constants.ShooterConstants.shootHigh);
             shooter.enableShooter();
           }, shooter),
   
@@ -411,11 +445,14 @@ public class RobotContainer {
   
           // Drive to the ball and turn to shoot
           driveToBall,
-          turnAround
-              .andThen(() -> m_robotDrive.drive(0, 0, 0, false)),
+          new WaitCommand(2),
+          new InstantCommand(()->{
+            drive.turnByAngle(179.99);
+          }, drive),
 
           // Shoot shoot
           new Shoot(shooter),
+          new WaitCommand(1),
           new Shoot(shooter),
 
           // Shut it down
@@ -437,15 +474,15 @@ public class RobotContainer {
           AutoConstants.kMaxSpeedMetersPerSecond,
           AutoConstants.kMaxAccelerationMetersPerSecondSquared)
               // Add kinematics to ensure max speed is actually obeyed
-              .setKinematics(DriveConstants.kDriveKinematics);
+              .setKinematics(DriveConstants.kDriveKinematics).setReversed(true);
 
       Trajectory driveToBallTrajectory = TrajectoryGenerator.generateTrajectory(
           // Start at the origin facing the +X direction
           new Pose2d(0, 0, new Rotation2d(0)),
           // Drive Forward
-          List.of(new Translation2d(1.0, 0)),
+          List.of(new Translation2d(-1.0, 0)),
           // End 3 meters straight ahead of where we started, facing forward
-          new Pose2d(1.5, 0, new Rotation2d(Math.toRadians(0))),
+          new Pose2d(-2.0, 0, new Rotation2d(Math.toRadians(0))),
           config);
 
       var thetaController = new ProfiledPIDController(
@@ -472,26 +509,27 @@ public class RobotContainer {
           new InstantCommand(()->{
             shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
             shooter.enableShooter();
-            climber.runArm(0.5);
-          }, shooter, climber),
-          new WaitCommand(0.5),
-          new InstantCommand(()->{
-            climber.runArm(0);
-          }, climber),
+            //climber.runArm(0.5);
+          }, shooter),
+          //new WaitCommand(0.5),
+          // new InstantCommand(()->{
+          //   climber.runArm(0);
+          // }, climber),
   
           // Unpack and start the intake
-          new ParallelCommandGroup(
-           new UnPack(intakePackage),
-           new InstantCommand(intestine::intestineIn, intestine)
-          ),
+          // new ParallelCommandGroup(
+          //  new UnPack(intakePackage),
+          //  new InstantCommand(intestine::intestineIn, intestine)
+          // ),
+          new InstantCommand(intestine::intestineIn, intestine),
 
           // Align turret
-          new InstantCommand(()->{
-            shooter.setTurretAbsPosition(70.0);;
-          }, shooter),
+          // new InstantCommand(()->{
+          //   shooter.setTurretAbsPosition(70.0);;
+          // }, shooter),
   
           // Shoot
-          new WaitCommand(1.5),
+          new WaitCommand(2),
           new Shoot(shooter),
 
           // Shut it down
