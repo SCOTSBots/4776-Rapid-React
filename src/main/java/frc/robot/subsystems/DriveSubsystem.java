@@ -12,6 +12,7 @@ import java.sql.Driver;
 import edu.wpi.first.wpilibj.Timer;
 import com.kauailabs.navx.frc.AHRS;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.SerialPort;
 import frc.robot.Constants;
 import frc.robot.Constants.ConfigConstants;
 import frc.robot.Constants.DriveConstants;
@@ -82,7 +83,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   // private final Gyro m_gyro = new ADXRS450_Gyro();
-  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  private final AHRS m_gyro = new AHRS(SerialPort.Port.kUSB);
 
   // Zeroed Module State
   private SwerveModuleState zeroState = new SwerveModuleState();

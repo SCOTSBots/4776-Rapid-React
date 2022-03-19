@@ -58,11 +58,11 @@ public final class Constants {
 
     public static final int kFrontLeftDriveMotorPort = 4;
     public static final int kRearLeftDriveMotorPort = 3;
-    public static final int kFrontRightDriveMotorPort = 5;
+    public static final int kFrontRightDriveMotorPort = 31;
     public static final int kRearRightDriveMotorPort = 2;
 
     public static final int kFrontLeftTurningMotorPort = 13;
-    public static final int kRearLeftTurningMotorPort = 12;
+    public static final int kRearLeftTurningMotorPort = 5;
     public static final int kFrontRightTurningMotorPort = 6;
     public static final int kRearRightTurningMotorPort = 9;
 
@@ -163,35 +163,35 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int intakePackageMotorPort = 8;
-    public static final int intakeMotorPort = 7;
+    public static final int intakePackageMotorPort = 14;
+    public static final int intakeMotorPort = 10;
     public static final double unpackagePower = 0.5;
     public static final double packagePower = 0.5;
     public static final double intakePower = 0.75;
   }
 
   public static final class ClimberConstants {
-    public static final int liftMotorPort = 16;
-    public static final int armMotorPort = 15;
-    public static final int armMotor2Port = 14;
+    public static final int liftMotorPort = 12;
+    public static final int armMotorPort = 17;
+    public static final int armMotor2Port = 16;
     public static final double climbPower = 0.5;
     public static final double lowerPower = 0.2;
     public static final double armPower = 0.5;
   }
 
   public static final class IntestineConstants {
-    public static final int kIntestineMotorPort = 17; 
-    public static final int kShooterFeederMotorPort = 18; 
+    public static final int kIntestineMotorPort = 11; 
+    public static final int kShooterFeederMotorPort = 30; 
     public static final double kIntestinePower = -0.95;
   }
 
   public static final class ShooterConstants {
-    public static final int kShooterMotorPort = 32;
+    public static final int kShooterMotorPort = 19;
     public static final int kShooterSecondaryMotorPort = 36;
-    public static final int kHoodWheelMotorPort = 33;
+    public static final int kHoodWheelMotorPort = 7;
     public static final int kTurretMotorPort = 34; 
-    public static final int kHoodMotorPort = 35; 
-    public static final int kShooterFeederMotorPort = 18; 
+    public static final int kHoodMotorPort = 18; 
+    public static final int kShooterFeederMotorPort = 30; 
 
     public static boolean hasSecondary = false;
 
