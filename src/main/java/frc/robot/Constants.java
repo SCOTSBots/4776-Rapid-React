@@ -39,6 +39,7 @@ public final class Constants {
   public static final RobotType robotType = RobotType.CompBot;
 
   public static final class ConfigConstants{
+    public static boolean fullShuffleBoardOutput = false;
     public static boolean hasCamera = true;
   }
 
@@ -56,7 +57,7 @@ public final class Constants {
     public static double drivePercentScale = driveNormalPercentScale;
     public static double rotRateModifier = rotNormalRateModifier;
 
-    public static final int kFrontLeftDriveMotorPort = 4;
+    public static final int kFrontLeftDriveMotorPort = 44;
     public static final int kRearLeftDriveMotorPort = 3;
     public static final int kFrontRightDriveMotorPort = 31;
     public static final int kRearRightDriveMotorPort = 2;

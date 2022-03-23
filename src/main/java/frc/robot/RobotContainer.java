@@ -73,11 +73,21 @@ public class RobotContainer {
   private final StickAssignmentState rightStickIsClimber = new StickAssignmentState(false);
 
   // Init Limelight
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  NetworkTableEntry tx = table.getEntry("tx");
-  NetworkTableEntry ty = table.getEntry("ty");
-  NetworkTableEntry ta = table.getEntry("ta");
+  // NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  // NetworkTableEntry txShuffle = table.getEntry("tx");
+  // NetworkTableEntry tyShuffle = table.getEntry("ty");
+  // NetworkTableEntry taShuffle = table.getEntry("ta");
+
+  // Read the Limelight values periodically
+  // double x = txShuffle.getDouble(0.0);
+  // double y = tyShuffle.getDouble(0.0);
+  // double area = taShuffle.getDouble(0.0);
   
+  /** Creates a new LimelightSubsystem. */
+  // public void LimelightSubsystem() {
+  //   setupLimelightShuffleBoard();
+  // }
+
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -157,18 +167,21 @@ public class RobotContainer {
     Shuffleboard.getTab("Auto").add(m_chooser);
     
     
-    // Read the Limelight values periodically
-    double x = tx.getDouble(0.0);
-    double y = ty.getDouble(0.0);
-    double area = ta.getDouble(0.0);
-
-    // Post the Limelight values to SmartDashboard periodically
-    SmartDashboard.putNumber("LimelightX", x);
-    SmartDashboard.putNumber("LimelightY", y);
-    SmartDashboard.putNumber("LimelightArea", area);
+    // // Post the Limelight values to SmartDashboard periodically
+    // SmartDashboard.putNumber("LimelightX", x);
+    // SmartDashboard.putNumber("LimelightY", y);
+    // SmartDashboard.putNumber("LimelightArea", area);
     
 
   }
+
+  // private void setupLimelightShuffleBoard() {
+  //   final ShuffleboardTab limelightTab = Shuffleboard.getTab("Limelight");
+
+  //   txShuffle = limelightTab.add("LimelightX", x).getEntry();
+  //   tyShuffle = limelightTab.add("LimelightY", y).getEntry();
+  //   taShuffle = limelightTab.add("LimelightArea", area).getEntry();
+  // }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be

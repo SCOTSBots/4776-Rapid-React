@@ -83,7 +83,8 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   // private final Gyro m_gyro = new ADXRS450_Gyro();
-  private final AHRS m_gyro = new AHRS(SerialPort.Port.kUSB);
+  //private final AHRS m_gyro = new AHRS(SerialPort.Port.kUSB1);
+  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
   // Zeroed Module State
   private SwerveModuleState zeroState = new SwerveModuleState();
@@ -178,18 +179,20 @@ public class DriveSubsystem extends SubsystemBase {
 
     boolean noMovement = xSpeed == 0 && ySpeed == 0 && rot == 0;  //Renable on 3/9
 
-    for (int i = 0; i < 4; i++) {
-      swerveModuleShuffleTargetAngle[i].setDouble(swerveModuleStates[i].angle.getDegrees());
-      swerveModuleShuffleTargetSpeed[i].setDouble(swerveModuleStates[i].speedMetersPerSecond);
+    
+      for (int i = 0; i < 4; i++) {
+        swerveModuleShuffleTargetAngle[i].setDouble(swerveModuleStates[i].angle.getDegrees());
+        swerveModuleShuffleTargetSpeed[i].setDouble(swerveModuleStates[i].speedMetersPerSecond);
 
-      swerveModules[i].setDesiredState(swerveModuleStates[i], noMovement, false);
+        swerveModules[i].setDesiredState(swerveModuleStates[i], noMovement, false);
 
-      swerveModuleShuffleActualAngle[i].setDouble(swerveModules[i].getState().angle.getDegrees());
-      swerveModuleShuffleActualSpeed[i].setDouble(swerveModules[i].getState().speedMetersPerSecond);
+        swerveModuleShuffleActualAngle[i].setDouble(swerveModules[i].getState().angle.getDegrees());
+        swerveModuleShuffleActualSpeed[i].setDouble(swerveModules[i].getState().speedMetersPerSecond);
 
-      swerveModuleShuffleTurnVolts[i].setDouble(swerveModules[i].getRawVolts());
-      //sdlkjbgdsa;kbjsag;kbjhgfsa
-    }
+        swerveModuleShuffleTurnVolts[i].setDouble(swerveModules[i].getRawVolts());
+
+      }
+    
 
     
 

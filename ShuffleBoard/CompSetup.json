@@ -224,7 +224,7 @@
               "_title": "SmartDashboard/Shooter RPM"
             }
           },
-          "17,7": {
+          "17,6": {
             "size": [
               4,
               2
@@ -356,6 +356,50 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Turret Position",
               "_title": "Turret Position"
+            }
+          },
+          "50,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/LimelightArea",
+              "_title": "LimelightArea"
+            }
+          },
+          "31,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/LimelightX",
+              "_title": "LimelightX"
+            }
+          },
+          "28,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/LimelightY",
+              "_title": "LimelightY"
+            }
+          },
+          "30,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/SwerveModuleTurning5",
+              "_title": "SwerveModuleTurning5"
             }
           }
         }
@@ -743,6 +787,15 @@
                   "_type": "PID Controller",
                   "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[30]",
                   "_title": "PIDController[30]"
+                },
+                {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/navX-Sensor[2]",
+                  "_title": "LiveWindow/Ungrouped/navX-Sensor[2]",
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
                 }
               ]
             }
@@ -813,8 +866,8 @@
   ],
   "windowGeometry": {
     "x": -7.0,
-    "y": 5.0,
+    "y": 1.0,
     "width": 1380.0,
-    "height": 573.0
+    "height": 549.0
   }
 }
