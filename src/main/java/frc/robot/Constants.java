@@ -196,12 +196,13 @@ public final class Constants {
 
     public static boolean hasSecondary = false;
 
-    public static final ShooterConfiguration shootHigh = new ShooterConfiguration(4800, -10000, 4.5);
+    public static final ShooterConfiguration shootHigh = new ShooterConfiguration(4800, -10000, .45);
     public static final ShooterConfiguration shootMid = new ShooterConfiguration(1600, -8000, 0);
-    public static final ShooterConfiguration shootLow = new ShooterConfiguration(800, -4000, 8);
+    public static final ShooterConfiguration shootLow = new ShooterConfiguration(800, -4000, 0.8);
 
-    public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(900, -4000, 9);
-    public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(4500, -8000, 2);
+    public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(850, -4000, 0.8);
+    public static final ShooterConfiguration shootAutoHighClose = new ShooterConfiguration(3400, -9000, 0);
+    public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(4700, -10000, 0.4);
 
     public static final double kShootHighRPM = 4800;
     public static final double kShootLowRPM = 800;
@@ -213,7 +214,7 @@ public final class Constants {
     public static final double kFeederHoldPower = 0; //Use zero for brake mode / Negative for active hold.
 
 
-    public static final int kHoodMaxCounts = 10;
+    public static final int kHoodMaxCounts = 90;
     public static final int kTurretMaxCounts = 1000;
     public static final int kTurretMinCounts = -1000;
 

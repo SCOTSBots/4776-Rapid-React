@@ -33,4 +33,11 @@ public class Intestine extends SubsystemBase {
   public void intestineOff(){
     intestineMotor.stopMotor();
   }
+
+  public void intestineSmartOff(boolean otherRunning){
+    if(!otherRunning){
+      intestineOff();
+    }
+  }
+
 }

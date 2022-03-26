@@ -27,6 +27,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj.shuffleboard.WidgetType;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
@@ -83,8 +84,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   // private final Gyro m_gyro = new ADXRS450_Gyro();
-  //private final AHRS m_gyro = new AHRS(SerialPort.Port.kUSB1);
-  private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
+  private final AHRS m_gyro = new AHRS(SerialPort.Port.kUSB1);
+  
+  //private final AHRS m_gyro = new AHRS(SPI.Port.kMXP);
 
   // Zeroed Module State
   private SwerveModuleState zeroState = new SwerveModuleState();
@@ -115,6 +117,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    m_gyro.enableLogging(true);
     setupShuffleBoard();
   }
 
@@ -133,6 +136,8 @@ public class DriveSubsystem extends SubsystemBase {
     odoY.setDouble(this.getPose().getY());
     odoRot.setDouble(this.getPose().getRotation().getDegrees());
 
+    //gyroAngle.setDouble(-m_gyro.getFusedHeading());
+    SmartDashboard.putNumber("Gyro Heading", -m_gyro.getFusedHeading());
     //System.out.println("OdoX = " + getPose().getX());
 
     
@@ -253,6 +258,7 @@ public class DriveSubsystem extends SubsystemBase {
   
   private void setupShuffleBoard() {
     final ShuffleboardTab swerveTab = Shuffleboard.getTab("Swerve");
+    //ShuffleboardTab smartDash = Shuffleboard.getTab("SmartDashboard");
 
 
     //Shuffleboard.getTab("SmartDashboard").add(m_gyro);
@@ -271,9 +277,11 @@ public class DriveSubsystem extends SubsystemBase {
     odoY = swerveTab.add("Odometry Y Position", this.getPose().getY()).getEntry();
     odoRot = swerveTab.add("Odometry Rotation", this.getPose().getRotation().getDegrees()).getEntry();
 
-    gyroAngle = swerveTab.add("Gyro Heading",0)
-      .withSize(3, 3)
-      .withPosition(0, 3)
+    
+    gyroAngle = swerveTab.add("Gyro Heading", 0)
+      .withSize(5,5)
+      .withPosition(10, 10)
+      .withWidget("Gyro This")
       .getEntry();
 
 

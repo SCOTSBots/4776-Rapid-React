@@ -11,21 +11,6 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "0,0": {
-            "size": [
-              6,
-              5
-            ],
-            "content": {
-              "_type": "Gyro",
-              "_source0": "network_table:///LiveWindow/Ungrouped/navX-Sensor[4]",
-              "_title": "Gyro Heading",
-              "Visuals/Major tick spacing": 45.0,
-              "Visuals/Starting angle": 180.0,
-              "Visuals/Show tick mark ring": true,
-              "Visuals/Counter clockwise": false
-            }
-          },
           "0,5": {
             "size": [
               6,
@@ -401,6 +386,61 @@
               "_source0": "network_table:///SmartDashboard/SwerveModuleTurning5",
               "_title": "SwerveModuleTurning5"
             }
+          },
+          "52,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/navX Updates Per Sec",
+              "_title": "navX Updates Per Sec"
+            }
+          },
+          "54,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/navX Port Resets",
+              "_title": "navX Port Resets"
+            }
+          },
+          "51,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/navX Stream Responses",
+              "_title": "navX Stream Responses"
+            }
+          },
+          "0,0": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Gyro Heading",
+              "_title": "Gyro Heading"
+            }
+          },
+          "0,2": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Hood Raw Encoder",
+              "_title": "Hood Raw Encoder"
+            }
           }
         }
       }
@@ -441,15 +481,6 @@
                   "_type": "PID Controller",
                   "_source0": "network_table:///LiveWindow/Ungrouped/PIDController[8]",
                   "_title": "PIDController[8]"
-                },
-                {
-                  "_type": "Gyro",
-                  "_source0": "network_table:///LiveWindow/Ungrouped/navX-Sensor[4]",
-                  "_title": "navX-Sensor[4]",
-                  "Visuals/Major tick spacing": 45.0,
-                  "Visuals/Starting angle": 180.0,
-                  "Visuals/Show tick mark ring": true,
-                  "Visuals/Counter clockwise": false
                 },
                 {
                   "_type": "PID Controller",
@@ -868,6 +899,6 @@
     "x": -7.0,
     "y": 1.0,
     "width": 1380.0,
-    "height": 549.0
+    "height": 544.0
   }
 }
