@@ -53,6 +53,8 @@ import static java.util.Map.entry;
 //import frc.robot.commands.*;
 import frc.robot.commands.ShootandRunLOW;
 import frc.robot.commands.ShootandRunHIGH;
+import frc.robot.commands.GrabShootShoot;
+import frc.robot.commands.WallGrabShootShoot;
 import frc.robot.customClass.TriggerButton;
 import frc.robot.subsystems.*;
 
@@ -94,6 +96,8 @@ public class RobotContainer {
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_manipulatorController = new XboxController(OIConstants.kManipulatorControllerPort);
+
+  POVButton resetGyro = new POVButton(m_driverController, 0);
 
   // final JoystickButton unpackButton = new
   // JoystickButton(m_manipulatorController,
@@ -144,12 +148,13 @@ public class RobotContainer {
   PIDController customAnglePID = new PIDController(0.6, 0, 0);
 
   private enum CommandsToChoose {
-    ShootandRunLOW, ShootandRunHIGH, GrabShootShoot;
+    ShootandRunLOW, ShootandRunHIGH, GrabShootShoot, WallGrabShootShoot
   }
 
   public Command shootAndRunLOW;
   public Command shootAndRunHIGH;
   public Command grabShootShoot;
+  public Command wallGrabShootShoot;
 
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
   private Command m_selectCommand = null;
@@ -174,11 +179,13 @@ public class RobotContainer {
     m_selectCommand = new SelectCommand(Map.ofEntries(
         entry(CommandsToChoose.ShootandRunLOW, shootAndRunLOW),
         entry(CommandsToChoose.ShootandRunHIGH, shootAndRunHIGH),
-        entry(CommandsToChoose.GrabShootShoot, grabShootShoot)), m_chooser::getSelected);
+        entry(CommandsToChoose.GrabShootShoot, grabShootShoot),
+        entry(CommandsToChoose.WallGrabShootShoot, wallGrabShootShoot)), m_chooser::getSelected);
 
     m_chooser.setDefaultOption("Shoot and Run Low", CommandsToChoose.ShootandRunLOW);
     m_chooser.addOption("Shoot and Run High", CommandsToChoose.ShootandRunHIGH);
     m_chooser.addOption("Grab Ball and Shoot Two", CommandsToChoose.GrabShootShoot);
+    m_chooser.addOption("Wall Grab Ball and Shoot Two", CommandsToChoose.WallGrabShootShoot);
 
     Shuffleboard.getTab("Auto").add(m_chooser)
     .withPosition(0, 0)
@@ -237,9 +244,10 @@ public class RobotContainer {
       }
 
       // Reset Gyro
-      if (m_driverController.getPOV() == 0) {
-        m_robotDrive.zeroHeading();
-      }
+      // if (m_driverController.getPOV() == 0) {
+      //   m_robotDrive.zeroHeading();
+      //   System.out.println("Zeroing");
+      // }
 
       // Call the Method
       // SmartDashboard.putNumber("xSpeed", xSpeed);
@@ -329,9 +337,11 @@ public class RobotContainer {
     rightStickModeButton
         .toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle, rightStickIsClimber::toggle));
 
-    // testCommandButton.whenPressed(new InstantCommand(()->{
-    // m_robotDrive.turnByAngle(179.9);
-    // }, m_robotDrive));
+    resetGyro.whenPressed(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+
+    testCommandButton.whenPressed(new InstantCommand(()->{
+    m_robotDrive.turnByAngle(179.9);
+    }, m_robotDrive));
 
     // testCommandButton.whenPressed(new InstantCommand(()->{
     // m_shooter.setTurretAbsPosition(0.0);
@@ -413,249 +423,9 @@ public class RobotContainer {
   public void generateAutoRoutines() {
     shootAndRunLOW = new ShootandRunLOW(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
     shootAndRunHIGH = new ShootandRunHIGH(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
-    grabShootShoot = new ShootandRunHIGH(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
+    grabShootShoot = new GrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
+    wallGrabShootShoot = new WallGrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
   }
-
-  // // Auton Routines
-  // public class GrabShootShoot extends SequentialCommandGroup {
-  //   /**
-  //    * Creates a new ComplexAuto.
-  //    *
-  //    * 
-  //    */
-  //   public GrabShootShoot(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake,
-  //       Intestine intestine, Climber climber) {
-  //     // Create config for trajectory
-  //     TrajectoryConfig config = new TrajectoryConfig(
-  //         AutoConstants.kMaxSpeedMetersPerSecond,
-  //         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-  //             // Add kinematics to ensure max speed is actually obeyed
-  //             .setKinematics(DriveConstants.kDriveKinematics);
-
-  //     Trajectory driveToBallTrajectory = TrajectoryGenerator.generateTrajectory(
-  //         // Start at the origin facing the +X direction
-  //         new Pose2d(0, 0, new Rotation2d(0)),
-  //         // Drive Forward
-  //         List.of(new Translation2d(1.0, 0)),
-  //         // End 3 meters straight ahead of where we started, facing forward
-  //         new Pose2d(2.0, 0, new Rotation2d(Math.toRadians(0))),
-  //         config);
-
-  //     var thetaController = new ProfiledPIDController(
-  //         2, 0, 0, AutoConstants.kThetaControllerConstraints);
-  //     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-  //     SwerveControllerCommand driveToBall = new SwerveControllerCommand(
-  //         driveToBallTrajectory,
-  //         m_robotDrive::getPose, // Functional interface to feed supplier
-  //         DriveConstants.kDriveKinematics,
-
-  //         // Position controllers
-  //         new PIDController(2, 0, 0),
-  //         new PIDController(2, 0, 0),
-  //         thetaController,
-  //         m_robotDrive::setModuleStates,
-  //         m_robotDrive);
-
-  
-  //     // Reset odometry to the starting pose of the trajectory.
-  //     drive.resetOdometry(driveToBallTrajectory.getInitialPose());
-
-  //     addCommands(
-  //         // Confiigure and spinup shooter
-  //         new InstantCommand(() -> {
-  //           shooter.setShooterConfig(Constants.ShooterConstants.shootHigh);
-  //           shooter.enableShooter();
-  //         }, shooter),
-
-  //         // Unpack and start the intake
-  //         new ParallelCommandGroup(
-  //             new UnPack(intakePackage),
-  //             new InstantCommand(intake::intakeIn, intake),
-  //             new InstantCommand(intestine::intestineIn, intestine)),
-
-  //         // Drive to the ball and turn to shoot
-  //         driveToBall,
-  //         new WaitCommand(2),
-  //         new InstantCommand(() -> {
-  //           drive.turnByAngle(179.99);
-  //         }, drive),
-
-  //         // Shoot shoot
-  //         new Shoot(shooter),
-  //         new WaitCommand(1),
-  //         new Shoot(shooter),
-
-  //         // Shut it down
-  //         new InstantCommand(shooter::disableShooter, shooter),
-  //         new InstantCommand(intestine::intestineOff, intestine),
-  //         new InstantCommand(intake::intakeOff, intake));
-  //   }
-  // }
-
-  // public class ShootandRunLOW extends SequentialCommandGroup {
-  //   /**
-  //    * Creates a new ComplexAuto.
-  //    *
-  //    * 
-  //    */
-  //   public ShootandRunLOW(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake,
-  //       Intestine intestine, Climber climber) {
-  //     // Create config for trajectory
-  //     TrajectoryConfig config = new TrajectoryConfig(
-  //         AutoConstants.kMaxSpeedMetersPerSecond,
-  //         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-  //             // Add kinematics to ensure max speed is actually obeyed
-  //             .setKinematics(DriveConstants.kDriveKinematics).setReversed(true);
-
-  //     Trajectory driveToBallTrajectory = TrajectoryGenerator.generateTrajectory(
-  //         // Start at the origin facing the +X direction
-  //         new Pose2d(0, 0, new Rotation2d(0)),
-  //         // Drive Forward
-  //         List.of(new Translation2d(-1.0, 0)),
-  //         // End 3 meters straight ahead of where we started, facing forward
-  //         new Pose2d(-2.0, 0, new Rotation2d(Math.toRadians(0))),
-  //         config);
-
-  //     var thetaController = new ProfiledPIDController(
-  //         2, 0, 0, AutoConstants.kThetaControllerConstraints);
-  //     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-  //     SwerveControllerCommand driveToBall = new SwerveControllerCommand(
-  //         driveToBallTrajectory,
-  //         m_robotDrive::getPose, // Functional interface to feed supplier
-  //         DriveConstants.kDriveKinematics,
-
-  //         // Position controllers
-  //         new PIDController(2, 0, 0),
-  //         new PIDController(2, 0, 0),
-  //         thetaController,
-  //         m_robotDrive::setModuleStates,
-  //         m_robotDrive);
-
-  //     // Reset odometry to the starting pose of the trajectory.
-  //     drive.resetOdometry(driveToBallTrajectory.getInitialPose());
-
-  //     addCommands(
-  //         // Confiigure and spinup shooter and move arm
-  //         new InstantCommand(() -> {
-  //           shooter.setShooterConfig(Constants.ShooterConstants.shootAutoClose);
-  //           shooter.enableShooter();
-  //         }, shooter),
-  //         // new WaitCommand(0.5),
-  //         // new InstantCommand(()->{
-  //         // climber.runArm(0);
-  //         // }, climber),
-
-  //         // Unpack and start the intake
-  //         // new ParallelCommandGroup(
-  //         // new UnPack(intakePackage),
-  //         // new InstantCommand(intestine::intestineIn, intestine)
-  //         // ),
-  //         new InstantCommand(intestine::intestineIn, intestine),
-
-  //         // Align turret
-  //         // new InstantCommand(()->{
-  //         // shooter.setTurretAbsPosition(70.0);;
-  //         // }, shooter),
-
-  //         // Shoot
-  //         new WaitCommand(2),
-  //         new Shoot(shooter),
-
-  //         // Shut it down
-  //         new InstantCommand(shooter::disableShooter, shooter),
-  //         new InstantCommand(intestine::intestineOff, intestine),
-  //         new InstantCommand(intake::intakeOff, intake),
-
-  //         // Drive to the ball
-  //         driveToBall
-  //             .andThen(() -> drive.drive(0, 0, 0, false)));
-
-  //   }
-  // }
-
-  // public class ShootandRunHIGH extends SequentialCommandGroup {
-  //   /**
-  //    * Creates a new ComplexAuto.
-  //    *
-  //    * 
-  //    */
-  //   public ShootandRunHIGH(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake,
-  //       Intestine intestine, Climber climber) {
-  //     // Create config for trajectory
-  //     TrajectoryConfig config = new TrajectoryConfig(
-  //         AutoConstants.kMaxSpeedMetersPerSecond,
-  //         AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-  //             // Add kinematics to ensure max speed is actually obeyed
-  //             .setKinematics(DriveConstants.kDriveKinematics).setReversed(true);
-
-  //     Trajectory driveToBallTrajectory = TrajectoryGenerator.generateTrajectory(
-  //         // Start at the origin facing the +X direction
-  //         new Pose2d(0, 0, new Rotation2d(0)),
-  //         // Drive Forward
-  //         List.of(new Translation2d(-1.0, 0)),
-  //         // End 3 meters straight ahead of where we started, facing forward
-  //         new Pose2d(-2.0, 0, new Rotation2d(Math.toRadians(0))),
-  //         config);
-
-  //     var thetaController = new ProfiledPIDController(
-  //         2, 0, 0, AutoConstants.kThetaControllerConstraints);
-  //     thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-  //     SwerveControllerCommand driveToBall = new SwerveControllerCommand(
-  //         driveToBallTrajectory,
-  //         m_robotDrive::getPose, // Functional interface to feed supplier
-  //         DriveConstants.kDriveKinematics,
-
-  //         // Position controllers
-  //         new PIDController(2, 0, 0),
-  //         new PIDController(2, 0, 0),
-  //         thetaController,
-  //         m_robotDrive::setModuleStates,
-  //         m_robotDrive);
-
-  //     // Reset odometry to the starting pose of the trajectory.
-  //     drive.resetOdometry(driveToBallTrajectory.getInitialPose());
-
-  //     addCommands(
-  //         // Confiigure and spinup shooter and move arm
-  //         new InstantCommand(() -> {
-  //           shooter.setShooterConfig(Constants.ShooterConstants.shootAutoHighClose);
-  //           shooter.enableShooter();
-  //         }, shooter),
-  //         // new WaitCommand(0.5),
-  //         // new InstantCommand(()->{
-  //         // climber.runArm(0);
-  //         // }, climber),
-
-  //         // Unpack and start the intake
-  //         // new ParallelCommandGroup(
-  //         // new UnPack(intakePackage),
-  //         // new InstantCommand(intestine::intestineIn, intestine)
-  //         // ),
-  //         new InstantCommand(intestine::intestineIn, intestine),
-
-  //         // Align turret
-  //         // new InstantCommand(()->{
-  //         // shooter.setTurretAbsPosition(70.0);;
-  //         // }, shooter),
-
-  //         // Shoot
-  //         new WaitCommand(2),
-  //         new Shoot(shooter),
-
-  //         // Shut it down
-  //         new InstantCommand(shooter::disableShooter, shooter),
-  //         new InstantCommand(intestine::intestineOff, intestine),
-  //         new InstantCommand(intake::intakeOff, intake),
-
-  //         // Drive to the ball
-  //         driveToBall
-  //             .andThen(() -> drive.drive(0, 0, 0, false)));
-
-  //   }
-  // }
 
 
 }

@@ -118,6 +118,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
     m_gyro.enableLogging(true);
+    //m_gyro.enableBoardlevelYawReset(true);
     setupShuffleBoard();
   }
 
@@ -137,7 +138,9 @@ public class DriveSubsystem extends SubsystemBase {
     odoRot.setDouble(this.getPose().getRotation().getDegrees());
 
     //gyroAngle.setDouble(-m_gyro.getFusedHeading());
-    SmartDashboard.putNumber("Gyro Heading", -m_gyro.getFusedHeading());
+    SmartDashboard.putNumber("Gyro getAngle", -m_gyro.getAngle());
+    SmartDashboard.putNumber("Gyro getRot", m_gyro.getRotation2d().getDegrees());
+    SmartDashboard.putNumber("Gyro Fused", -m_gyro.getFusedHeading());
     //System.out.println("OdoX = " + getPose().getX());
 
     
@@ -197,9 +200,6 @@ public class DriveSubsystem extends SubsystemBase {
         swerveModuleShuffleTurnVolts[i].setDouble(swerveModules[i].getRawVolts());
 
       }
-    
-
-    
 
   }
 
@@ -228,6 +228,7 @@ public class DriveSubsystem extends SubsystemBase {
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     m_gyro.reset();
+    System.out.println("Zeroing");
   }
 
   /**
@@ -236,7 +237,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return the robot's heading in degrees, from -180 to 180
    */
   public double getHeading() {
-    return -m_gyro.getFusedHeading();
+    return -m_gyro.getAngle();
     //return m_gyro.getRotation2d().getDegrees();
   }
 
@@ -339,7 +340,7 @@ public class DriveSubsystem extends SubsystemBase {
   */
 
   public void turnByAngle(double turnByDegrees){
-    double goal = Math.toRadians(-m_gyro.getFusedHeading() + turnByDegrees);
+    double goal = Math.toRadians(-m_gyro.getAngle() + turnByDegrees);
     Timer timer = new Timer();
     double timeout = 3.0;
 
@@ -354,8 +355,8 @@ public class DriveSubsystem extends SubsystemBase {
     double rotation = 0;
 
     while (!thetaController.atGoal() && !timer.hasElapsed(timeout)) {
-      System.out.println("Target: " + goal + " / Current: " + Math.toRadians(-m_gyro.getFusedHeading()) + " / Time: " + timer.get());
-      rotation = thetaController.calculate(Math.toRadians(-m_gyro.getFusedHeading()));
+      System.out.println("Target: " + goal + " / Current: " + Math.toRadians(-m_gyro.getAngle()) + " / Time: " + timer.get());
+      rotation = thetaController.calculate(Math.toRadians(-m_gyro.getAngle()));
       drive(0, 0, rotation, false);
 
     }

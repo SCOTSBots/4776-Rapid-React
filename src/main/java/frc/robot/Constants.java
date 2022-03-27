@@ -101,7 +101,7 @@ public final class Constants {
         new Translation2d(kWheelBase / 2, kTrackWidth / 2), new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
         new Translation2d(-kWheelBase / 2, kTrackWidth / 2), new Translation2d(-kWheelBase / 2, -kTrackWidth / 2));
 
-    public static final boolean kGyroReversed = false;
+    public static final boolean kGyroReversed = true;
     public static final double kMaxSpeedMetersPerSecond = 3.35; // Was 1 021222
 
   }
@@ -205,7 +205,7 @@ public final class Constants {
     public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(4700, -10000, 0.4);
 
     public static final double kShootHighRPM = 4800;
-    public static final double kShootLowRPM = 800;
+    public static final double kShootLowRPM = 950;
     //public static final double kShootLowRPM = 1600;
     public static final double kHoodWheelHighRPM = -10000;
     public static final double kHoodWheelLowRPM = 0;
@@ -269,7 +269,7 @@ public final class Constants {
   public static RobotType GenerateConstants(RobotType robot) {
     switch (robot) {
         case CompBot: {
-          ConfigConstants.hasCamera = false;
+          ConfigConstants.hasCamera = true;
           ShooterConstants.hasSecondary = false;
 
           //Swerve Module Alignment

@@ -25,12 +25,12 @@ import frc.robot.subsystems.*;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class GrabShootShoot extends SequentialCommandGroup {
-  public GrabShootShoot(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake,
+public class WallGrabShootShoot extends SequentialCommandGroup {
+  public WallGrabShootShoot(DriveSubsystem drive, Shooter shooter, IntakePackage intakePackage, Intake intake,
       Intestine intestine, Climber climber) {
     /** Creates a new GrabShootShoot. */
 
-    final double DISTANCE = 2.0;
+    final double DISTANCE = 1.25;
 
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
@@ -43,19 +43,19 @@ public class GrabShootShoot extends SequentialCommandGroup {
         // Start at the origin facing the +X direction
         new Pose2d(0, 0, new Rotation2d(0)),
         // Drive Forward
-        List.of(new Translation2d(DISTANCE/2, 0)),
+        List.of(new Translation2d(DISTANCE*0.8, 0)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(DISTANCE, 0, new Rotation2d(Math.toRadians(0))),
+        new Pose2d(DISTANCE, -0.7, new Rotation2d(Math.toRadians(-90))),
         config);
 
 
     Trajectory driveToShootTrajectory = TrajectoryGenerator.generateTrajectory(
         // Start at the origin facing the +X direction
-        new Pose2d(DISTANCE, 0, new Rotation2d(180)),
+        new Pose2d(DISTANCE, -0.7, new Rotation2d(-90)),
         // Drive Forward
-        List.of(new Translation2d(DISTANCE/2, 0)),
+        List.of(new Translation2d(DISTANCE/2, -1.25)),
         // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(0, 0, new Rotation2d(Math.toRadians(180))),
+        new Pose2d(0, -0.75, new Rotation2d(Math.toRadians(-200.0))),
         config);
 
     var thetaController = new ProfiledPIDController(
@@ -105,10 +105,7 @@ public class GrabShootShoot extends SequentialCommandGroup {
 
         // Drive to the ball and turn to shoot
         driveToBall.andThen(() -> drive.drive(0, 0, 0, false)),
-        new WaitCommand(1),
-        new InstantCommand(() -> {
-          drive.turnByAngle(179.99);
-        }, drive),
+        new WaitCommand(0.5),
         driveToShoot.andThen(() -> drive.drive(0, 0, 0, false)),
 
         // Shoot shoot

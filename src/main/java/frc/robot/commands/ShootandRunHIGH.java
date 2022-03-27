@@ -90,6 +90,7 @@ public class ShootandRunHIGH extends SequentialCommandGroup {
                                 new InstantCommand(shooter::disableShooter, shooter),
                                 new InstantCommand(intestine::intestineOff, intestine),
                                 new InstantCommand(intake::intakeOff, intake),
+                                new InstantCommand(shooter::stopHood, shooter),
 
                                 // Drive to the ball
                                 driveToBall.andThen(() -> drive.drive(0, 0, 0, false)));

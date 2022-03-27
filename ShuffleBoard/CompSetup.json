@@ -246,10 +246,10 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": 15,
-              "imageWidth": 320,
-              "imageHeight": 200
+              "compression": 26.0,
+              "fps": 30,
+              "imageWidth": 340,
+              "imageHeight": 180
             }
           },
           "41,1": {
@@ -440,6 +440,39 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Hood Raw Encoder",
               "_title": "Hood Raw Encoder"
+            }
+          },
+          "3,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Gyro getRot",
+              "_title": "Gyro getRot"
+            }
+          },
+          "56,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Gyro Fused",
+              "_title": "Gyro Fused"
+            }
+          },
+          "3,1": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Gyro getAngle",
+              "_title": "Gyro getAngle"
             }
           }
         }
@@ -899,6 +932,6 @@
     "x": -7.0,
     "y": 1.0,
     "width": 1380.0,
-    "height": 544.0
+    "height": 610.0
   }
 }
