@@ -420,39 +420,6 @@
               "_title": "navX Stream Responses"
             }
           },
-          "0,0": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Gyro Heading",
-              "_title": "Gyro Heading"
-            }
-          },
-          "0,2": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Hood Raw Encoder",
-              "_title": "Hood Raw Encoder"
-            }
-          },
-          "3,0": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Gyro getRot",
-              "_title": "Gyro getRot"
-            }
-          },
           "56,0": {
             "size": [
               2,
@@ -464,15 +431,15 @@
               "_title": "Gyro Fused"
             }
           },
-          "3,1": {
+          "0,0": {
             "size": [
-              3,
+              2,
               1
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Gyro getAngle",
-              "_title": "Gyro getAngle"
+              "_source0": "network_table:///SmartDashboard/Hood Raw Encoder",
+              "_title": "Hood Raw Encoder"
             }
           }
         }
@@ -932,6 +899,6 @@
     "x": -7.0,
     "y": 1.0,
     "width": 1380.0,
-    "height": 610.0
+    "height": 544.0
   }
 }

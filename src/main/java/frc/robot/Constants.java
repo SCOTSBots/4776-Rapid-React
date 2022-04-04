@@ -201,8 +201,9 @@ public final class Constants {
     public static final ShooterConfiguration shootLow = new ShooterConfiguration(800, -4000, 0.8);
 
     public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(850, -4000, 0.8);
-    public static final ShooterConfiguration shootAutoHighClose = new ShooterConfiguration(3400, -9000, 0);
-    public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(4700, -10000, 0.4);
+    public static final ShooterConfiguration shootAutoHighClose = new ShooterConfiguration(1600, -9000, 0);
+    public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(3000, -9000, 0.4);
+    public static final ShooterConfiguration shootLongShot = new ShooterConfiguration(4700, -10000, 0.5);
 
     public static final double kShootHighRPM = 4800;
     public static final double kShootLowRPM = 950;
@@ -269,7 +270,7 @@ public final class Constants {
   public static RobotType GenerateConstants(RobotType robot) {
     switch (robot) {
         case CompBot: {
-          ConfigConstants.hasCamera = true;
+          ConfigConstants.hasCamera = false;
           ShooterConstants.hasSecondary = false;
 
           //Swerve Module Alignment
@@ -292,7 +293,7 @@ public final class Constants {
           break;
 
         case PracticeBot: {
-          ConfigConstants.hasCamera = true;
+          ConfigConstants.hasCamera = false;
           ShooterConstants.hasSecondary = false;
 
           

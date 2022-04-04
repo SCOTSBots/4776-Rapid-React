@@ -120,6 +120,7 @@ public class RobotContainer {
   final POVButton setShooterHighButton = new POVButton(m_manipulatorController, 0);
   final POVButton setShooterMidButton = new POVButton(m_manipulatorController, 270);
   final POVButton setShooterLowButton = new POVButton(m_manipulatorController, 180);
+  final POVButton setShooterLongshot = new POVButton(m_manipulatorController, 90);
 
   final TriggerButton resetHood = new TriggerButton(m_manipulatorController, XboxController.Axis.kLeftTrigger);
 
@@ -323,6 +324,11 @@ public class RobotContainer {
     }, m_shooter))
     .whenReleased(new InstantCommand(m_shooter::stopHood, m_shooter));
 
+    setShooterLongshot.whenPressed(new InstantCommand(() -> {
+      m_shooter.setShooterConfig(ShooterConstants.shootLongShot);
+    }, m_shooter))
+    .whenReleased(new InstantCommand(m_shooter::stopHood, m_shooter));
+
     resetHood.whileHeld(new InstantCommand(() -> {
       m_shooter.setHoodPower(-0.5);
     }, m_shooter))
@@ -365,10 +371,6 @@ public class RobotContainer {
     return m_selectCommand;
   }
 
-  public Command message = new InstantCommand(() -> {
-    System.out.println("See Me! *******************");
-  });
-
   // *******************************************************
   // The following Commands and Runnable allow swapping
   // right stick to control climber or shooter.
@@ -395,16 +397,16 @@ public class RobotContainer {
     if (!rightStickIsClimber.get()) {
       // Climber control by right manipulator stick
       double hoodPower = -new_deadzone(m_manipulatorController.getRightY()) * 0.15;
-      double turretPower = new_deadzone(m_manipulatorController.getRightX()) / 1.5;
+      //double turretPower = new_deadzone(m_manipulatorController.getRightX()) / 1.5;
 
       if (hoodPower != 0) {
         m_shooter.setHoodPower(hoodPower);
         hoodHold = false;
-        System.out.println("Powering hood.");
+        //System.out.println("Powering hood.");
       } else if (!hoodHold) {
         double position = m_shooter.holdHooodPosition();
         hoodHold = true;
-        System.out.println("Setting hold position @ " + position);
+        //System.out.println("Setting hold position @ " + position);
       }
 
       // m_shooter.setTurretPower(turretPower);
@@ -427,5 +429,6 @@ public class RobotContainer {
     wallGrabShootShoot = new WallGrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
   }
 
+  
 
 }

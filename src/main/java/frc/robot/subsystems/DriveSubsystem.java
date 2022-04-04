@@ -138,9 +138,9 @@ public class DriveSubsystem extends SubsystemBase {
     odoRot.setDouble(this.getPose().getRotation().getDegrees());
 
     //gyroAngle.setDouble(-m_gyro.getFusedHeading());
-    SmartDashboard.putNumber("Gyro getAngle", -m_gyro.getAngle());
-    SmartDashboard.putNumber("Gyro getRot", m_gyro.getRotation2d().getDegrees());
-    SmartDashboard.putNumber("Gyro Fused", -m_gyro.getFusedHeading());
+    //SmartDashboard.putNumber("Gyro getAngle", -m_gyro.getAngle());
+    //SmartDashboard.putNumber("Gyro getRot", m_gyro.getRotation2d().getDegrees());
+    //SmartDashboard.putNumber("Gyro Fused", -m_gyro.getFusedHeading());
     //System.out.println("OdoX = " + getPose().getX());
 
     
@@ -163,6 +163,10 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     m_odometry.resetPosition(pose, m_gyro.getRotation2d());
+  }
+
+  public void zeroOdometry(){
+    
   }
 
   /**
