@@ -429,6 +429,9 @@ public class RobotContainer {
     wallGrabShootShoot = new WallGrabShootShoot(m_robotDrive, m_shooter, m_intakePackage, m_intake, m_intestine, m_climber);
   }
 
+  public void zeroOdo(){
+    m_robotDrive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
+  }
   
 
 }

@@ -90,8 +90,6 @@ public class WallGrabShootShoot extends SequentialCommandGroup {
     // Reset odometry to the starting pose of the trajectory.
     drive.resetOdometry(driveToBallTrajectory.getInitialPose());
 
-    drive.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)));
-
     addCommands(
         // Confiigure and spinup shooter
         new InstantCommand(() -> {
