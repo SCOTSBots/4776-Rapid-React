@@ -160,6 +160,7 @@ public class RobotContainer {
   private final SendableChooser<CommandsToChoose> m_chooser = new SendableChooser<>();
   private Command m_selectCommand = null;
 
+  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -265,7 +266,12 @@ public class RobotContainer {
 
     Runnable ControlIntakePackage = () -> {
       // Intake Packge control by left manipulator stick
-      double packPower = new_deadzone(m_manipulatorController.getLeftY()) * 0.25;
+      double packPower = new_deadzone(m_manipulatorController.getLeftY());
+      if(packPower < 0){
+        packPower = packPower * 0.5;
+      } else {
+        packPower = packPower * 0.25;
+      }
 
       m_intakePackage.packControl(packPower);
     };
@@ -379,6 +385,8 @@ public class RobotContainer {
   // *******************************************************
 
   private Runnable ControlClimber = () -> {
+    double climberCurrent = 0;
+
     if (rightStickIsClimber.get()) {
       // Climber control by right manipulator stick
       double liftPower = -new_deadzone(m_manipulatorController.getRightY()) / 2;
@@ -386,11 +394,13 @@ public class RobotContainer {
 
       m_climber.runLift(liftPower);
       m_climber.runArm(0.3 * armPower);
+      climberCurrent = m_climber.getClimberCurrent();
     } else {
       m_climber.runArm(0);
       m_climber.runLift(0);
     }
     SmartDashboard.putBoolean("Right Stick Climb", rightStickIsClimber.get());
+    SmartDashboard.putNumber("Climber Current", climberCurrent);
   };
 
   private Runnable ControlTurret = () -> {
