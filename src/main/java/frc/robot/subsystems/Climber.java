@@ -41,4 +41,8 @@ public class Climber extends SubsystemBase {
     armMotor2.set(power);
   }
 
+  public double getClimberCurrent(){
+    return liftMotor.getOutputCurrent();
+  }
+
 }
