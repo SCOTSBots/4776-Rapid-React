@@ -369,4 +369,11 @@ public class DriveSubsystem extends SubsystemBase {
 
   }
 
+  public void coastModuleTurn(){
+    m_frontLeft.setDesiredState(new SwerveModuleState(), true, false);
+    m_frontRight.setDesiredState(new SwerveModuleState(), true, false);
+    m_rearLeft.setDesiredState(new SwerveModuleState(), true, false);
+    m_rearRight.setDesiredState(new SwerveModuleState(), true, false);
+  }
+
 }

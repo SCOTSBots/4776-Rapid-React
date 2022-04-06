@@ -351,13 +351,14 @@ public class RobotContainer {
 
     resetGyro.whenPressed(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
 
-    testCommandButton.whenPressed(new InstantCommand(()->{
-    m_robotDrive.turnByAngle(179.9);
-    }, m_robotDrive));
-
     // testCommandButton.whenPressed(new InstantCommand(()->{
-    // m_shooter.setTurretAbsPosition(0.0);
-    // }, m_shooter).andThen(new WaitCommand(5)));
+    // m_robotDrive.turnByAngle(179.9);
+    // }, m_robotDrive));
+
+    testCommandButton.whileHeld(new InstantCommand(()->{
+      m_robotDrive.coastModuleTurn();
+      }, m_robotDrive));
+
   }
 
   double new_deadzone(double x) {
