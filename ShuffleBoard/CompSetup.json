@@ -441,6 +441,17 @@
               "_source0": "network_table:///SmartDashboard/Hood Raw Encoder",
               "_title": "Hood Raw Encoder"
             }
+          },
+          "2,0": {
+            "size": [
+              4,
+              4
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Climber Current",
+              "_title": "Climber Current"
+            }
           }
         }
       }
@@ -823,6 +834,15 @@
                   "_type": "Gyro",
                   "_source0": "network_table:///LiveWindow/Ungrouped/navX-Sensor[2]",
                   "_title": "LiveWindow/Ungrouped/navX-Sensor[2]",
+                  "Visuals/Major tick spacing": 45.0,
+                  "Visuals/Starting angle": 180.0,
+                  "Visuals/Show tick mark ring": true,
+                  "Visuals/Counter clockwise": false
+                },
+                {
+                  "_type": "Gyro",
+                  "_source0": "network_table:///LiveWindow/Ungrouped/navX-Sensor[3]",
+                  "_title": "navX-Sensor[3]",
                   "Visuals/Major tick spacing": 45.0,
                   "Visuals/Starting angle": 180.0,
                   "Visuals/Show tick mark ring": true,

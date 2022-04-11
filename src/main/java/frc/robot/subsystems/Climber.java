@@ -12,6 +12,7 @@ import frc.robot.Constants.ClimberConstants;
 
 public class Climber extends SubsystemBase {
   private final CANSparkMax liftMotor;
+  private final CANSparkMax liftMotor2;
   private final CANSparkMax armMotor;
   private final CANSparkMax armMotor2;
 
@@ -20,6 +21,8 @@ public class Climber extends SubsystemBase {
     //Configure so that postive motor power raises robot
     liftMotor = new CANSparkMax(ClimberConstants.liftMotorPort, MotorType.kBrushless);
     liftMotor.setIdleMode(IdleMode.kBrake);
+    liftMotor2 = new CANSparkMax(ClimberConstants.liftMotorPort2, MotorType.kBrushless);
+    liftMotor2.setIdleMode(IdleMode.kBrake);
     //liftMotor.setSmartCurrentLimit(40);
     
     //Configure so that positive motor power moves arm towards front of robot
@@ -32,12 +35,22 @@ public class Climber extends SubsystemBase {
 
   }
 
+  public void runLift(double power) {
+    liftMotor.set(power);
+    liftMotor2.set(-power);
+  }
 
-
-  public void runLift(double power){
+  public void runLift1( double power)
+  {
     liftMotor.set(power);
   }
-  public void runArm(double power){
+  public void runLift2( double power)
+  {
+    liftMotor2.set(-power);
+  }
+
+
+  public void runArm(double power) {
     armMotor.set(power);
     armMotor2.set(power);
   }

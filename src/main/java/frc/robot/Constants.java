@@ -173,6 +173,7 @@ public final class Constants {
 
   public static final class ClimberConstants {
     public static final int liftMotorPort = 12;
+    public static final int liftMotorPort2 = 25;
     public static final int armMotorPort = 17;
     public static final int armMotor2Port = 16;
     public static final double climbPower = 0.5;
@@ -196,13 +197,16 @@ public final class Constants {
 
     public static boolean hasSecondary = false;
 
-    public static final ShooterConfiguration shootHigh = new ShooterConfiguration(4800, -10000, .45);
+    //*** NOT USING THESE */
+    public static final ShooterConfiguration shootHigh = new ShooterConfiguration(5100, -10000, .45);//was 4800
     public static final ShooterConfiguration shootMid = new ShooterConfiguration(1600, -8000, 0);
     public static final ShooterConfiguration shootLow = new ShooterConfiguration(800, -4000, 0.8);
+    //*********************/
 
-    public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(850, -4000, 0.8);
-    public static final ShooterConfiguration shootAutoHighClose = new ShooterConfiguration(1600, -9000, 0);
-    public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(3000, -9000, 0.4);
+
+    public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(750, -4000, 0.8);
+    public static final ShooterConfiguration shootAutoHighClose = new ShooterConfiguration(2450, -9000, 0);
+    public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(3800, -9000, 0.4);
     public static final ShooterConfiguration shootLongShot = new ShooterConfiguration(4700, -10000, 0.5);
 
     public static final double kShootHighRPM = 4800;
@@ -275,7 +279,7 @@ public final class Constants {
 
           //Swerve Module Alignment
           DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(+165.1));
-          DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(0));
+          DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-96.7));
           DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+77.7));
           DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(+80.8));
 

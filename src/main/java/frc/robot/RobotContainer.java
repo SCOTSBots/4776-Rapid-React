@@ -266,14 +266,17 @@ public class RobotContainer {
 
     Runnable ControlIntakePackage = () -> {
       // Intake Packge control by left manipulator stick
-      double packPower = new_deadzone(m_manipulatorController.getLeftY());
-      if(packPower < 0){
-        packPower = packPower * 0.5;
-      } else {
-        packPower = packPower * 0.25;
-      }
+      if (!rightStickIsClimber.get()) {
+        double packPower = new_deadzone(m_manipulatorController.getLeftY());
 
-      m_intakePackage.packControl(packPower);
+        if (packPower < 0) {
+          packPower = packPower * 0.5;
+        } else {
+          packPower = packPower * 0.25;
+        }
+
+        m_intakePackage.packControl(packPower);
+      }
     };
     m_intakePackage.setDefaultCommand(new RunCommand(ControlIntakePackage, m_intakePackage));
 
@@ -336,11 +339,15 @@ public class RobotContainer {
     .whenReleased(new InstantCommand(m_shooter::stopHood, m_shooter));
 
     resetHood.whileHeld(new InstantCommand(() -> {
-      m_shooter.setHoodPower(-0.5);
+      if (!rightStickIsClimber.get()) {
+        m_shooter.setHoodPower(-0.5);
+      }
     }, m_shooter))
         .whenReleased(new InstantCommand(() -> {
-          m_shooter.setHoodPower(0);
-          m_shooter.resetHoodEncoder();
+          if (!rightStickIsClimber.get()) {
+            m_shooter.setHoodPower(0);
+            m_shooter.resetHoodEncoder();
+          }
         }, m_shooter));
 
     // TODO: Finish Limelight code w/ help
@@ -355,9 +362,9 @@ public class RobotContainer {
     // m_robotDrive.turnByAngle(179.9);
     // }, m_robotDrive));
 
-    testCommandButton.whileHeld(new InstantCommand(()->{
-      m_robotDrive.coastModuleTurn();
-      }, m_robotDrive));
+    // testCommandButton.whileHeld(new InstantCommand(()->{
+    //   m_robotDrive.coastModuleTurn();
+    //   }, m_robotDrive));
 
   }
 
@@ -390,10 +397,21 @@ public class RobotContainer {
 
     if (rightStickIsClimber.get()) {
       // Climber control by right manipulator stick
-      double liftPower = -new_deadzone(m_manipulatorController.getRightY()) / 2;
-      double armPower = new_deadzone(m_manipulatorController.getRightX()) / 4;
+      double liftPower1, liftPower2;
+      if (m_manipulatorController.getLeftTriggerAxis() < 0.1) {
+        liftPower2 = -new_deadzone(m_manipulatorController.getRightY()) / 2;
+        liftPower1 = liftPower2;
+      } else {
+        liftPower2 = -new_deadzone(m_manipulatorController.getRightY()) / 2;
+        liftPower1 = -new_deadzone(m_manipulatorController.getLeftY()) / 2;
 
-      m_climber.runLift(liftPower);
+      }
+      ;
+
+      double armPower = -new_deadzone(m_manipulatorController.getRightX()) / 4;
+
+      m_climber.runLift1(liftPower1);
+      m_climber.runLift2(liftPower2);
       m_climber.runArm(0.3 * armPower);
       climberCurrent = m_climber.getClimberCurrent();
     } else {
