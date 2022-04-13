@@ -21,6 +21,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootNothing;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,6 +33,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -117,10 +119,14 @@ public class RobotContainer {
   final JoystickButton stopIntakeandIntestineButton = new JoystickButton(m_manipulatorController,
       XboxController.Button.kA.value);
 
-  final POVButton setShooterHighButton = new POVButton(m_manipulatorController, 0);
-  final POVButton setShooterMidButton = new POVButton(m_manipulatorController, 270);
-  final POVButton setShooterLowButton = new POVButton(m_manipulatorController, 180);
-  final POVButton setShooterLongshot = new POVButton(m_manipulatorController, 90);
+  //final POVButton setShooterHighButton = new POVButton(m_manipulatorController, 0);
+  final POVButton setShooterHighFar = new POVButton(m_manipulatorController, 0);
+  final POVButton setShooterHighClose = new POVButton(m_manipulatorController, 180);
+  //final POVButton setShooterLongshot = new POVButton(m_manipulatorController, 90);
+  final JoystickButton setShooterLowGoal = new JoystickButton(m_manipulatorController, XboxController.Button.kY.value);
+
+  final POVButton incShooterPowerButton = new POVButton(m_manipulatorController, 90);
+  final POVButton decShooterPowerButton = new POVButton(m_manipulatorController, 270);
 
   final TriggerButton resetHood = new TriggerButton(m_manipulatorController, XboxController.Axis.kLeftTrigger);
 
@@ -134,6 +140,8 @@ public class RobotContainer {
       XboxController.Button.kStart.value);
 
   final TriggerButton lowSpeedTrigger = new TriggerButton(m_driverController, XboxController.Axis.kRightTrigger);
+
+  final JoystickButton brakeButton = new JoystickButton(m_driverController, XboxController.Button.kX.value);
 
   // final TriggerButton autoAimTrigger = new TriggerButton(m_driverController,
   // XboxController.Axis.kLeftTrigger);
@@ -310,7 +318,8 @@ public class RobotContainer {
     .andThen(new InstantCommand(m_intake::intakeOff, m_intake)));
 
     // Shooter controls
-    shootTrigger.whenPressed(new Shoot(m_shooter));
+    shootTrigger.whenPressed(new ConditionalCommand(new ShootNothing(m_shooter), new Shoot(m_shooter), rightStickIsClimber::get));
+
     enableShooterButton.whenPressed(new InstantCommand(m_shooter::enableShooter, m_shooter)
     .andThen(new InstantCommand(m_intestine::intestineIn, m_intestine)));
     disableShooterButton.whenPressed(new InstantCommand(m_shooter::disableShooter, m_shooter)
@@ -318,25 +327,33 @@ public class RobotContainer {
       m_intestine.intestineSmartOff(m_intake.getIsRunning());
     }, m_intestine)));
     
-    setShooterHighButton.whenPressed(new InstantCommand(() -> {
+    // setShooterHighButton.whenPressed(new InstantCommand(() -> {
+    //   m_shooter.setShooterConfig(ShooterConstants.shootAutoOutside);
+    // }, m_shooter))
+    // .whenReleased(new InstantCommand(m_shooter::stopHood, m_shooter));
+    
+    setShooterHighFar.whenPressed(new InstantCommand(() -> {
       m_shooter.setShooterConfig(ShooterConstants.shootAutoOutside);
     }, m_shooter))
     .whenReleased(new InstantCommand(m_shooter::stopHood, m_shooter));
     
-    setShooterMidButton.whenPressed(new InstantCommand(() -> {
+    setShooterHighClose.whenPressed(new InstantCommand(() -> {
       m_shooter.setShooterConfig(ShooterConstants.shootAutoHighClose);
     }, m_shooter))
     .whenReleased(new InstantCommand(m_shooter::stopHood, m_shooter));
-    
-    setShooterLowButton.whenPressed(new InstantCommand(() -> {
+
+    setShooterLowGoal.whenPressed(new InstantCommand(() -> {
       m_shooter.setShooterConfig(ShooterConstants.shootAutoClose);
     }, m_shooter))
     .whenReleased(new InstantCommand(m_shooter::stopHood, m_shooter));
 
-    setShooterLongshot.whenPressed(new InstantCommand(() -> {
-      m_shooter.setShooterConfig(ShooterConstants.shootLongShot);
-    }, m_shooter))
-    .whenReleased(new InstantCommand(m_shooter::stopHood, m_shooter));
+    incShooterPowerButton.whenPressed(m_shooter::incShooterSpeed, m_shooter);
+    decShooterPowerButton.whenPressed(m_shooter::decShooterSpeed, m_shooter);
+
+    // setShooterLongshot.whenPressed(new InstantCommand(() -> {
+    //   m_shooter.setShooterConfig(ShooterConstants.shootLongShot);
+    // }, m_shooter))
+    // .whenReleased(new InstantCommand(m_shooter::stopHood, m_shooter));
 
     resetHood.whileHeld(new InstantCommand(() -> {
       if (!rightStickIsClimber.get()) {
@@ -357,6 +374,8 @@ public class RobotContainer {
         .toggleWhenPressed(new StartEndCommand(rightStickIsClimber::toggle, rightStickIsClimber::toggle));
 
     resetGyro.whenPressed(new InstantCommand(m_robotDrive::zeroHeading, m_robotDrive));
+
+    brakeButton.whileHeld(new InstantCommand(m_robotDrive::setXModuleState, m_robotDrive));
 
     // testCommandButton.whenPressed(new InstantCommand(()->{
     // m_robotDrive.turnByAngle(179.9);
@@ -397,22 +416,25 @@ public class RobotContainer {
 
     if (rightStickIsClimber.get()) {
       // Climber control by right manipulator stick
-      double liftPower1, liftPower2;
+      double liftPowerLeft, liftPowerRight;
       if (m_manipulatorController.getLeftTriggerAxis() < 0.1) {
-        liftPower2 = -new_deadzone(m_manipulatorController.getRightY()) / 2;
-        liftPower1 = liftPower2;
+        liftPowerRight = -new_deadzone(m_manipulatorController.getRightY()) / 2;
+        liftPowerLeft = liftPowerRight;
       } else {
-        liftPower2 = -new_deadzone(m_manipulatorController.getRightY()) / 2;
-        liftPower1 = -new_deadzone(m_manipulatorController.getLeftY()) / 2;
-
+        liftPowerRight = -new_deadzone(m_manipulatorController.getRightY()) / 2;
+        liftPowerLeft = -new_deadzone(m_manipulatorController.getLeftY()) / 2;
       }
-      ;
 
-      double armPower = -new_deadzone(m_manipulatorController.getRightX()) / 4;
+      double armPower;
+      if(m_manipulatorController.getRightTriggerAxis() < 0.2){
+        armPower = -new_deadzone(m_manipulatorController.getRightX()) * 0.3;
+      } else {
+        armPower = m_manipulatorController.getRightTriggerAxis() * 0.3;
+      }
 
-      m_climber.runLift1(liftPower1);
-      m_climber.runLift2(liftPower2);
-      m_climber.runArm(0.3 * armPower);
+      m_climber.runLeftLift(liftPowerLeft);
+      m_climber.runRightLift(liftPowerRight);
+      m_climber.runArm(armPower);
       climberCurrent = m_climber.getClimberCurrent();
     } else {
       m_climber.runArm(0);

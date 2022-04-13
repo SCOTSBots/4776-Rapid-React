@@ -139,7 +139,10 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter RPM", getShooterSpeed());
     SmartDashboard.putNumber("HoodWheel RPM", getHoodWheelSpeed());
     SmartDashboard.putBoolean("Shooter at Speed", shooterIsReady());
-    SmartDashboard.putNumber("Hood Raw Encoder", hoodEncoder.getPosition());
+    SmartDashboard.putNumber("Shooter Setpoint", shooterRPMOpPoint);
+    SmartDashboard.putNumber("HW Setpoint", hoodRPMOpPoint);
+    
+    //SmartDashboard.putNumber("Hood Raw Encoder", hoodEncoder.getPosition());
     // SmartDashboard.putNumber("Turret Position", turretEncoder.getPosition());
 
   }
@@ -302,7 +305,7 @@ public class Shooter extends SubsystemBase {
 
     setHoodPosition(config.hoodPosition);
     // hoodPIDController.setReference(11, CANSparkMax.ControlType.kSmartMotion);
-    System.out.println("Attempting to set hood.");
+    //System.out.println("Attempting to set hood.");
 
     if (shooterIsRunning) {
       enableShooter();
@@ -310,9 +313,9 @@ public class Shooter extends SubsystemBase {
 
   }
 
-  public void setShooterConfigLow() {
-    setShooterConfig(Constants.ShooterConstants.shootLow);
-  }
+  // public void setShooterConfigLow() {
+  //   setShooterConfig(Constants.ShooterConstants.shootLow);
+  // }
 
   public void resetHoodEncoder() {
     hoodEncoder.setPosition(0);
@@ -324,6 +327,24 @@ public class Shooter extends SubsystemBase {
 
   public boolean getShooterIsRunning() {
     return shooterIsRunning;
+  }
+
+  public void incShooterSpeed(){
+    shooterRPMOpPoint = shooterRPMOpPoint + 50;
+    hoodRPMOpPoint = hoodRPMOpPoint - 50;
+
+    if (shooterIsRunning) {
+      enableShooter();
+    }
+  }
+
+  public void decShooterSpeed(){
+    shooterRPMOpPoint = shooterRPMOpPoint - 50;
+    hoodRPMOpPoint = hoodRPMOpPoint + 50;
+
+    if (shooterIsRunning) {
+      enableShooter();
+    }
   }
 
 }

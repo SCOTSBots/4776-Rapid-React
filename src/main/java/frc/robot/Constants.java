@@ -172,10 +172,11 @@ public final class Constants {
   }
 
   public static final class ClimberConstants {
-    public static final int liftMotorPort = 12;
-    public static final int liftMotorPort2 = 25;
-    public static final int armMotorPort = 17;
-    public static final int armMotor2Port = 16;
+    public static final int liftMotorLeftPort = 12;
+    public static final int liftMotorRightPort = 25;
+    public static final int feederMotorLeftPort = 17;
+    public static final int feederMotorRightPort = 16;
+    public static final int armMotorsPort = 35;
     public static final double climbPower = 0.5;
     public static final double lowerPower = 0.2;
     public static final double armPower = 0.5;
@@ -198,16 +199,17 @@ public final class Constants {
     public static boolean hasSecondary = false;
 
     //*** NOT USING THESE */
-    public static final ShooterConfiguration shootHigh = new ShooterConfiguration(5100, -10000, .45);//was 4800
-    public static final ShooterConfiguration shootMid = new ShooterConfiguration(1600, -8000, 0);
-    public static final ShooterConfiguration shootLow = new ShooterConfiguration(800, -4000, 0.8);
+    //public static final ShooterConfiguration shootHigh = new ShooterConfiguration(5100, -10000, .45);//was 4800
+    //public static final ShooterConfiguration shootMid = new ShooterConfiguration(1600, -8000, 0);
+    //public static final ShooterConfiguration shootLow = new ShooterConfiguration(800, -4000, 0.8);
     //*********************/
 
 
+    public static final ShooterConfiguration shootAutoHighClose = new ShooterConfiguration(1950, -8500, 0);
     public static final ShooterConfiguration shootAutoClose = new ShooterConfiguration(750, -4000, 0.8);
-    public static final ShooterConfiguration shootAutoHighClose = new ShooterConfiguration(2450, -9000, 0);
-    public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(3800, -9000, 0.4);
-    public static final ShooterConfiguration shootLongShot = new ShooterConfiguration(4700, -10000, 0.5);
+    //public static final ShooterConfiguration shootAutoHighClose = new ShooterConfiguration(2450, -9000, 0);
+    public static final ShooterConfiguration shootAutoOutside = new ShooterConfiguration(2850, -9550, 0.6);
+    //public static final ShooterConfiguration shootLongShot = new ShooterConfiguration(4700, -10000, 0.5);
 
     public static final double kShootHighRPM = 4800;
     public static final double kShootLowRPM = 950;
@@ -281,7 +283,7 @@ public final class Constants {
           DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(+165.1));
           DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-96.7));
           DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+77.7));
-          DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(+80.8));
+          DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-156.8));//80.8
 
           // Distance between centers of right and left wheels on robot
           double kTrackWidth = DriveConstants.kTrackWidth = 0.584;
@@ -304,7 +306,7 @@ public final class Constants {
           DriveConstants.kFrontLeftTurningHome = new Rotation2d(Math.toRadians(7.7));
           DriveConstants.kRearLeftTurningHome = new Rotation2d(Math.toRadians(-19.2));
           DriveConstants.kFrontRightTurningHome = new Rotation2d(Math.toRadians(+37.5));
-          DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-134.5));
+          DriveConstants.kRearRightTurningHome = new Rotation2d(Math.toRadians(-58.6));//-134.5
 
           // Distance between centers of right and left wheels on robot
           double kTrackWidth = DriveConstants.kTrackWidth = 0.587375;

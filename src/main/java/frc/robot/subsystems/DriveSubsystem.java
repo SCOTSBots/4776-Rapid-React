@@ -376,4 +376,11 @@ public class DriveSubsystem extends SubsystemBase {
     m_rearRight.setDesiredState(new SwerveModuleState(), true, false);
   }
 
+  public void setXModuleState(){
+    m_frontLeft.setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45))), false, false);
+    m_frontRight.setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(-45))), false, false);
+    m_rearLeft.setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(-45))), false, false);
+    m_rearRight.setDesiredState(new SwerveModuleState(0, new Rotation2d(Math.toRadians(45))), false, false);
+  }
+
 }

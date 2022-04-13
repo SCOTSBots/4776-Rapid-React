@@ -105,7 +105,7 @@ public class GrabShootShoot extends SequentialCommandGroup {
 
         // Drive to the ball and turn to shoot
         driveToBall.andThen(() -> drive.drive(0, 0, 0, false)),
-        new WaitCommand(1),
+        new WaitCommand(0.25),
         new InstantCommand(() -> {
           drive.turnByAngle(179.99);
         }, drive),

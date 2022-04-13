@@ -209,7 +209,7 @@
               "_title": "SmartDashboard/Shooter RPM"
             }
           },
-          "17,6": {
+          "17,7": {
             "size": [
               4,
               2
@@ -307,21 +307,10 @@
               "_title": "Min Output"
             }
           },
-          "17,0": {
+          "17,4": {
             "size": [
               4,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Shooter Setpoint",
-              "_title": "Shooter Setpoint"
-            }
-          },
-          "17,2": {
-            "size": [
-              4,
-              4
+              3
             ],
             "content": {
               "_type": "Simple Dial",
@@ -431,6 +420,17 @@
               "_title": "Gyro Fused"
             }
           },
+          "2,3": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Climber Current",
+              "_title": "Climber Current"
+            }
+          },
           "0,0": {
             "size": [
               2,
@@ -442,15 +442,26 @@
               "_title": "Hood Raw Encoder"
             }
           },
-          "2,0": {
+          "17,0": {
             "size": [
               4,
-              4
+              2
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Climber Current",
-              "_title": "Climber Current"
+              "_source0": "network_table:///SmartDashboard/Shooter Setpoint",
+              "_title": "Shooter Setpoint"
+            }
+          },
+          "17,2": {
+            "size": [
+              4,
+              2
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/HW Setpoint",
+              "_title": "HW Setpoint"
             }
           }
         }
