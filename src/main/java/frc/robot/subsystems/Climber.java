@@ -36,10 +36,10 @@ public class Climber extends SubsystemBase {
     feederMotorRight.setInverted(false);
     feederMotorRight.setIdleMode(IdleMode.kBrake);
 
-    armMotors = null;
-    //armMotors = new CANSparkMax(ClimberConstants.armMotorsPort, MotorType.kBrushed);
-    //armMotors.setIdleMode(IdleMode.kBrake);
-    //armMotors.setSmartCurrentLimit(20);
+    //armMotors = null;
+    armMotors = new CANSparkMax(ClimberConstants.armMotorsPort, MotorType.kBrushed);
+    armMotors.setIdleMode(IdleMode.kBrake);
+    armMotors.setSmartCurrentLimit(20);
 
   }
 
@@ -60,8 +60,8 @@ public class Climber extends SubsystemBase {
     if (power > 0) {
       liftMotor.setIdleMode(IdleMode.kCoast);
       feederMotor.setIdleMode(IdleMode.kBrake);
-      feederMotor.set(power/3);
-      liftMotor.set(0);
+      feederMotor.set(power);
+      liftMotor.set(power/4);
     } else  {
       liftMotor.setIdleMode(IdleMode.kBrake);
       feederMotor.setIdleMode(IdleMode.kCoast);
@@ -71,7 +71,7 @@ public class Climber extends SubsystemBase {
   }
 
   public void runArm(double power) {
-    //armMotors.set(power);
+    armMotors.set(power);
   }
 
   public double getClimberCurrent(){

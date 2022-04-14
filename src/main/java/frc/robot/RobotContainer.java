@@ -284,6 +284,8 @@ public class RobotContainer {
         }
 
         m_intakePackage.packControl(packPower);
+      } else {
+        m_intakePackage.packControl(0);
       }
     };
     m_intakePackage.setDefaultCommand(new RunCommand(ControlIntakePackage, m_intakePackage));
@@ -427,13 +429,13 @@ public class RobotContainer {
 
       double armPower;
       if(m_manipulatorController.getRightTriggerAxis() < 0.2){
-        armPower = -new_deadzone(m_manipulatorController.getRightX()) * 0.3;
+        armPower = -new_deadzone(m_manipulatorController.getRightX()) * 0.8;
       } else {
-        armPower = m_manipulatorController.getRightTriggerAxis() * 0.3;
+        armPower = -m_manipulatorController.getRightTriggerAxis() * 0.8;
       }
 
       m_climber.runLeftLift(liftPowerLeft);
-      m_climber.runRightLift(liftPowerRight);
+      m_climber.runRightLift(liftPowerRight*1.1);
       m_climber.runArm(armPower);
       climberCurrent = m_climber.getClimberCurrent();
     } else {
